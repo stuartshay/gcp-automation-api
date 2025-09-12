@@ -15,7 +15,7 @@ This is a **GCP Automation API** built with **Go 1.24.7** that provides RESTful 
 
 ### **Project Structure**
 
-```
+```text
 ├── cmd/server/          # Application entry point and main.go
 ├── internal/            # Private application code
 │   ├── config/          # Configuration management

@@ -29,7 +29,7 @@ make dev
 
 ## Project Structure
 
-```
+```text
 ├── cmd/server/          # Application entry point
 ├── internal/            # Private application code
 ├── pkg/                 # Public library code

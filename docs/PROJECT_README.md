@@ -21,7 +21,7 @@ A REST API built with Go for automating GCP (Google Cloud Platform) resource man
 
 ## Project Structure
 
-```
+```text
 ├── cmd/server/          # Application entry point
 ├── internal/
 │   ├── config/          # Configuration management
@@ -57,20 +57,20 @@ git clone https://github.com/stuartshay/gcp-automation-api.git
 cd gcp-automation-api
 ```
 
-2. Install dependencies:
+1. Install dependencies:
 
 ```bash
 make deps
 ```
 
-3. Set up configuration:
+1. Set up configuration:
 
 ```bash
 cp configs/.env.example .env
 # Edit .env with your GCP project details
 ```
 
-4. Run the application:
+1. Run the application:
 
 ```bash
 make dev

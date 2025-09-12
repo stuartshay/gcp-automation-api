@@ -1,0 +1,306 @@
+openapi: 3.0.3
+info:
+  title: GCP Automation API
+  description: REST API for automating GCP resource management
+  version: 1.0.0
+  contact:
+    name: API Support
+    url: https://github.com/stuartshay/gcp-automation-api
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:8080
+    description: Development server
+  - url: https://api.example.com
+    description: Production server
+
+paths:
+  /health:
+    get:
+      summary: Health check
+      description: Check if the service is healthy
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: healthy
+
+  /api/v1/projects:
+    post:
+      summary: Create a GCP project
+      description: Create a new Google Cloud Platform project
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectRequest'
+      responses:
+        '201':
+          description: Project created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/projects/{id}:
+    get:
+      summary: Get a GCP project
+      description: Retrieve details of a Google Cloud Platform project
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Project ID
+      responses:
+        '200':
+          description: Project retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '404':
+          description: Project not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      summary: Delete a GCP project
+      description: Delete a Google Cloud Platform project
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Project ID
+      responses:
+        '200':
+          description: Project deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '404':
+          description: Project not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/buckets:
+    post:
+      summary: Create a GCS bucket
+      description: Create a new Google Cloud Storage bucket
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BucketRequest'
+      responses:
+        '201':
+          description: Bucket created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/buckets/{name}:
+    get:
+      summary: Get a GCS bucket
+      description: Retrieve details of a Google Cloud Storage bucket
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Bucket name
+      responses:
+        '200':
+          description: Bucket retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '404':
+          description: Bucket not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      summary: Delete a GCS bucket
+      description: Delete a Google Cloud Storage bucket
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Bucket name
+      responses:
+        '200':
+          description: Bucket deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '404':
+          description: Bucket not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    ProjectRequest:
+      type: object
+      required:
+        - project_id
+        - display_name
+      properties:
+        project_id:
+          type: string
+          description: Unique project ID
+          example: my-project-123
+        display_name:
+          type: string
+          description: Human-readable project name
+          example: My Project
+        parent_id:
+          type: string
+          description: Parent organization or folder ID
+          example: "123456789"
+        parent_type:
+          type: string
+          enum: [organization, folder]
+          description: Type of parent resource
+          example: organization
+        labels:
+          type: object
+          additionalProperties:
+            type: string
+          description: Key-value labels for the project
+          example:
+            environment: production
+            team: platform
+
+    BucketRequest:
+      type: object
+      required:
+        - name
+        - location
+      properties:
+        name:
+          type: string
+          description: Bucket name
+          example: my-storage-bucket
+        location:
+          type: string
+          description: Bucket location
+          example: us-central1
+        storage_class:
+          type: string
+          enum: [STANDARD, NEARLINE, COLDLINE, ARCHIVE]
+          description: Storage class
+          example: STANDARD
+        labels:
+          type: object
+          additionalProperties:
+            type: string
+          description: Key-value labels for the bucket
+          example:
+            environment: production
+        versioning:
+          type: boolean
+          description: Enable object versioning
+          example: true
+
+    SuccessResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Success message
+          example: Operation completed successfully
+        data:
+          type: object
+          description: Response data
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error type
+          example: Invalid request
+        message:
+          type: string
+          description: Error message
+          example: Project ID is required
+        code:
+          type: integer
+          description: HTTP status code
+          example: 400

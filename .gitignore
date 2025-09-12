@@ -7,6 +7,11 @@
 *.dll
 *.so
 *.dylib
+
+# Build output directory
+bin/
+
+# Python virtual environment
 .venv
 
 # Test binary, built with `go test -c`

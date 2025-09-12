@@ -108,7 +108,7 @@ func TestConfigLoad(t *testing.T) {
 // Test health check endpoint without GCP dependencies
 func TestHealthCheck(t *testing.T) {
 	gin.SetMode(gin.TestMode)
-	
+
 	router := gin.Default()
 	router.GET("/health", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"status": "healthy"})

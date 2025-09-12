@@ -1,0 +1,87 @@
+# Pre-commit configuration for GCP Automation API
+repos:
+  # Go formatting and linting
+  - repo: local
+    hooks:
+      - id: go-fmt
+        name: go fmt
+        entry: gofmt
+        language: system
+        args: [-w]
+        files: \.go$
+
+      - id: go-imports
+        name: go imports
+        entry: goimports
+        language: system
+        args: [-w]
+        files: \.go$
+
+      - id: go-vet
+        name: go vet
+        entry: go vet
+        language: system
+        args: [./...]
+        files: \.go$
+        pass_filenames: false
+
+      - id: go-test
+        name: go test
+        entry: go test
+        language: system
+        args: [-v, ./tests/...]
+        files: \.go$
+        pass_filenames: false
+
+      - id: golangci-lint
+        name: golangci-lint
+        entry: golangci-lint run
+        language: system
+        args: [--fix]
+        files: \.go$
+        pass_filenames: false
+
+  # Security scanning
+  - repo: local
+    hooks:
+      - id: gosec
+        name: gosec security scan
+        entry: gosec
+        language: system
+        args: [-quiet, ./...]
+        files: \.go$
+        pass_filenames: false
+
+  # General file checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+      - id: check-merge-conflict
+      - id: check-added-large-files
+      - id: detect-private-key
+      - id: check-case-conflict
+
+  # Dockerfile linting
+  - repo: https://github.com/hadolint/hadolint
+    rev: v2.12.0
+    hooks:
+      - id: hadolint-docker
+        args: [--ignore, DL3008, --ignore, DL3009]
+
+  # Markdown linting
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.35.0
+    hooks:
+      - id: markdownlint
+        args: [--fix]
+
+  # YAML formatting
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v3.0.0
+    hooks:
+      - id: prettier
+        types: [yaml]

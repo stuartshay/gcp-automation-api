@@ -15,16 +15,19 @@ The API uses Google Cloud Service Account authentication. Ensure you have:
 ## Required GCP Permissions
 
 ### For Projects
+
 - `resourcemanager.projects.create`
 - `resourcemanager.projects.delete`
 - `resourcemanager.projects.get`
 
 ### For Folders
+
 - `resourcemanager.folders.create`
 - `resourcemanager.folders.delete`
 - `resourcemanager.folders.get`
 
 ### For Storage Buckets
+
 - `storage.buckets.create`
 - `storage.buckets.delete`
 - `storage.buckets.get`
@@ -40,7 +43,7 @@ All errors follow the standard format:
 ```json
 {
   "error": "Error Type",
-  "message": "Detailed error message", 
+  "message": "Detailed error message",
   "code": 400
 }
 ```
@@ -50,6 +53,7 @@ All errors follow the standard format:
 ### Create Project
 
 **Request:**
+
 ```bash
 POST /api/v1/projects
 Content-Type: application/json
@@ -68,6 +72,7 @@ Content-Type: application/json
 ```
 
 **Response:**
+
 ```json
 {
   "message": "Project created successfully",
@@ -92,6 +97,7 @@ Content-Type: application/json
 ### Create Storage Bucket
 
 **Request:**
+
 ```bash
 POST /api/v1/buckets
 Content-Type: application/json
@@ -109,6 +115,7 @@ Content-Type: application/json
 ```
 
 **Response:**
+
 ```json
 {
   "message": "Bucket created successfully",

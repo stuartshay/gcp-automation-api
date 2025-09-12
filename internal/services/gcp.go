@@ -14,16 +14,16 @@ import (
 
 // GCPService handles all GCP operations
 type GCPService struct {
-	config             *config.Config
-	resourceManager    *cloudresourcemanager.Service
-	storageClient      *storage.Client
-	ctx                context.Context
+	config          *config.Config
+	resourceManager *cloudresourcemanager.Service
+	storageClient   *storage.Client
+	ctx             context.Context
 }
 
 // NewGCPService creates a new GCP service instance
 func NewGCPService(cfg *config.Config) (*GCPService, error) {
 	ctx := context.Background()
-	
+
 	var opts []option.ClientOption
 	if cfg.GCPCredentials != "" {
 		opts = append(opts, option.WithCredentialsFile(cfg.GCPCredentials))
@@ -42,19 +42,19 @@ func NewGCPService(cfg *config.Config) (*GCPService, error) {
 	}
 
 	return &GCPService{
-		config:             cfg,
-		resourceManager:    resourceManager,
-		storageClient:      storageClient,
-		ctx:                ctx,
+		config:          cfg,
+		resourceManager: resourceManager,
+		storageClient:   storageClient,
+		ctx:             ctx,
 	}, nil
 }
 
 // CreateProject creates a new GCP project
 func (s *GCPService) CreateProject(req *models.ProjectRequest) (*models.ProjectResponse, error) {
 	project := &cloudresourcemanager.Project{
-		ProjectId:   req.ProjectID,
-		Name:        req.DisplayName,
-		Labels:      req.Labels,
+		ProjectId: req.ProjectID,
+		Name:      req.DisplayName,
+		Labels:    req.Labels,
 	}
 
 	// Set parent if specified
@@ -150,7 +150,7 @@ func (s *GCPService) CreateFolder(req *models.FolderRequest) (*models.FolderResp
 	// This is a placeholder implementation
 	// In a real implementation, you would use the Cloud Resource Manager API
 	// to create folders, which requires additional permissions and setup
-	
+
 	response := &models.FolderResponse{
 		Name:        fmt.Sprintf("folders/%s", "generated-id"),
 		DisplayName: req.DisplayName,
@@ -187,7 +187,7 @@ func (s *GCPService) DeleteFolder(folderID string) error {
 // CreateBucket creates a new GCS bucket
 func (s *GCPService) CreateBucket(req *models.BucketRequest) (*models.BucketResponse, error) {
 	bucket := s.storageClient.Bucket(req.Name)
-	
+
 	// Set bucket attributes
 	attrs := &storage.BucketAttrs{
 		Location: req.Location,
@@ -230,7 +230,7 @@ func (s *GCPService) CreateBucket(req *models.BucketRequest) (*models.BucketResp
 // GetBucket retrieves a GCS bucket
 func (s *GCPService) GetBucket(bucketName string) (*models.BucketResponse, error) {
 	bucket := s.storageClient.Bucket(bucketName)
-	
+
 	attrs, err := bucket.Attrs(s.ctx)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get bucket: %w", err)
@@ -253,7 +253,7 @@ func (s *GCPService) GetBucket(bucketName string) (*models.BucketResponse, error
 // DeleteBucket deletes a GCS bucket
 func (s *GCPService) DeleteBucket(bucketName string) error {
 	bucket := s.storageClient.Bucket(bucketName)
-	
+
 	if err := bucket.Delete(s.ctx); err != nil {
 		return fmt.Errorf("failed to delete bucket: %w", err)
 	}

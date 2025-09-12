@@ -3,10 +3,12 @@ package main
 import (
 	"context"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"syscall"
 	"time"
 
@@ -16,11 +18,41 @@ import (
 	"github.com/stuartshay/gcp-automation-api/internal/services"
 )
 
+// setupLogging configures logging to write to both file and console
+func setupLogging(cfg *config.Config) error {
+	// Create logs directory if it doesn't exist
+	logDir := filepath.Dir(cfg.LogFile)
+	if err := os.MkdirAll(logDir, 0755); err != nil {
+		return fmt.Errorf("failed to create log directory: %w", err)
+	}
+
+	// Open log file
+	logFile, err := os.OpenFile(cfg.LogFile, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	if err != nil {
+		return fmt.Errorf("failed to open log file: %w", err)
+	}
+
+	// Set up multi-writer to write to both file and console
+	multiWriter := io.MultiWriter(os.Stdout, logFile)
+	log.SetOutput(multiWriter)
+
+	// Set log format with timestamp
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
+
+	log.Printf("Logging configured - writing to: %s", cfg.LogFile)
+	return nil
+}
+
 func main() {
 	// Load configuration
 	cfg, err := config.Load()
 	if err != nil {
 		log.Fatalf("Failed to load configuration: %v", err)
+	}
+
+	// Setup logging
+	if err := setupLogging(cfg); err != nil {
+		log.Fatalf("Failed to setup logging: %v", err)
 	}
 
 	// Initialize services
@@ -33,7 +65,7 @@ func main() {
 	handler := handlers.NewHandler(gcpService)
 
 	// Setup router
-	router := setupRouter(handler)
+	router := setupRouter(handler, cfg)
 
 	// Create HTTP server
 	srv := &http.Server{
@@ -66,7 +98,18 @@ func main() {
 	log.Println("Server exited")
 }
 
-func setupRouter(handler *handlers.Handler) *gin.Engine {
+func setupRouter(handler *handlers.Handler, cfg *config.Config) *gin.Engine {
+	// Configure Gin logging
+	if !cfg.IsDevelopment() {
+		gin.SetMode(gin.ReleaseMode)
+	}
+
+	// Set up Gin log file
+	logFile, err := os.OpenFile(cfg.LogFile, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	if err == nil {
+		gin.DefaultWriter = io.MultiWriter(os.Stdout, logFile)
+	}
+
 	router := gin.Default()
 
 	// Add middleware

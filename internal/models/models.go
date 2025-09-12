@@ -13,15 +13,15 @@ type ProjectRequest struct {
 
 // ProjectResponse represents a GCP project response
 type ProjectResponse struct {
-	ProjectID    string            `json:"project_id"`
-	DisplayName  string            `json:"display_name"`
-	ParentID     string            `json:"parent_id,omitempty"`
-	ParentType   string            `json:"parent_type,omitempty"`
-	State        string            `json:"state"`
-	Labels       map[string]string `json:"labels,omitempty"`
-	CreateTime   time.Time         `json:"create_time"`
-	UpdateTime   time.Time         `json:"update_time"`
-	ProjectNumber int64            `json:"project_number"`
+	ProjectID     string            `json:"project_id"`
+	DisplayName   string            `json:"display_name"`
+	ParentID      string            `json:"parent_id,omitempty"`
+	ParentType    string            `json:"parent_type,omitempty"`
+	State         string            `json:"state"`
+	Labels        map[string]string `json:"labels,omitempty"`
+	CreateTime    time.Time         `json:"create_time"`
+	UpdateTime    time.Time         `json:"update_time"`
+	ProjectNumber int64             `json:"project_number"`
 }
 
 // FolderRequest represents a request to create a GCP folder

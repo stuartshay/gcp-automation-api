@@ -1,33 +1,23 @@
 {
 	"recommendations": [
-		// Go Development
+
 		"golang.go",
-		// Python Development (for pre-commit tools)
 		"ms-python.python",
 		"ms-python.flake8",
 		"ms-python.black-formatter",
 		"ms-python.isort",
 		"ms-python.mypy-type-checker",
-		// Docker Support
 		"ms-azuretools.vscode-docker",
-		// YAML and JSON Support
 		"redhat.vscode-yaml",
 		"ms-vscode.vscode-json",
-		// Markdown Support
 		"yzhang.markdown-all-in-one",
 		"davidanson.vscode-markdownlint",
-		// Code Formatting
 		"esbenp.prettier-vscode",
-		// Git Support
 		"eamodio.gitlens",
-		// REST API Testing
 		"humao.rest-client",
-		// Shell Script Support
 		"timonwong.shellcheck",
 		"foxundermoon.shell-format",
-		// Environment File Support
 		"mikestead.dotenv",
-		// Theme and UI
 		"pkief.material-icon-theme",
 		"github.github-vscode-theme"
 	],

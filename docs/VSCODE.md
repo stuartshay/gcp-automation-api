@@ -72,7 +72,7 @@ The configuration sets zsh as the default terminal with these features:
     "args": ["-l"]
   },
   "bash": {
-    "path": "/bin/bash", 
+    "path": "/bin/bash",
     "args": ["-l"]
   }
 }

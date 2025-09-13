@@ -42,7 +42,7 @@
     ],
     "description": "Create a new GCP API handler function with validation"
   },
-  
+
   "Validation Test": {
     "prefix": "validtest",
     "body": [
@@ -87,7 +87,7 @@
     ],
     "description": "Create a validation test function"
   },
-  
+
   "Custom Validator": {
     "prefix": "customval",
     "body": [
@@ -100,7 +100,7 @@
     ],
     "description": "Create a custom validator function"
   },
-  
+
   "Error Response": {
     "prefix": "errresp",
     "body": [
@@ -112,7 +112,7 @@
     ],
     "description": "Return an error response"
   },
-  
+
   "Success Response": {
     "prefix": "succresp",
     "body": [

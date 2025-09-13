@@ -17,6 +17,10 @@ jobs:
   lint:
     name: Lint and Code Quality
     runs-on: ubuntu-latest
+    env:
+      # Disable GCP metadata service access during linting
+      GOOGLE_APPLICATION_CREDENTIALS: ""
+      GCP_PROJECT_ID: "mock-project"
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -71,6 +75,10 @@ jobs:
     strategy:
       matrix:
         go-version: ["1.24.7"]
+    env:
+      # Disable GCP metadata service access during tests
+      GOOGLE_APPLICATION_CREDENTIALS: ""
+      GCP_PROJECT_ID: "mock-project"
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -121,6 +129,10 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     needs: [lint, test]
+    env:
+      # Disable GCP metadata service access during build
+      GOOGLE_APPLICATION_CREDENTIALS: ""
+      GCP_PROJECT_ID: "mock-project"
     steps:
       - name: Checkout code
         uses: actions/checkout@v5

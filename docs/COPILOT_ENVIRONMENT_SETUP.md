@@ -89,6 +89,50 @@ Create a test workflow that uses the `copilot` environment to verify secret acce
    - Confirm the environment was created successfully
    - Check repository permissions
 
+4. **Firewall Rules Blocking metadata.google.internal**
+   - **Problem**: GitHub Actions firewall blocks access to `metadata.google.internal`
+   - **Symptoms**: Error message about DNS blocks for metadata.google.internal
+   - **Solution**: Set environment variables to prevent GCP client initialization during build/test phases:
+
+     ```yaml
+     env:
+       GOOGLE_APPLICATION_CREDENTIALS: ""
+       GCP_PROJECT_ID: "mock-project"
+     ```
+
+   - **Explanation**: GCP clients attempt to use Application Default Credentials by accessing the metadata service. During build/test phases, we don't need real GCP access, so we disable it to avoid firewall blocks.
+
+### GitHub Actions Firewall Configuration
+
+If you encounter firewall blocking issues, ensure your workflow jobs are configured as follows:
+
+#### Build/Test Jobs (No GCP Access Needed)
+
+```yaml
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      GOOGLE_APPLICATION_CREDENTIALS: ""
+      GCP_PROJECT_ID: "mock-project"
+    # ... rest of job
+```
+
+#### Deployment Jobs (GCP Access Required)
+
+```yaml
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: copilot
+    steps:
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+      # ... rest of deployment steps
+```
+
 ### Commands Used for Setup
 
 ```bash

@@ -4,6 +4,8 @@
 
 A Go-based REST API for automating Google Cloud Platform operations.
 
+Demo: [https://gcp-automation-api-902997681858.us-central1.run.app](https://gcp-automation-api-902997681858.us-central1.run.app/swagger/index.html#/)
+
 ## Quick Start
 
 ```bash

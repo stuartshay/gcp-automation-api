@@ -1,0 +1,53 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		// Terminal Configuration for this workspace
+		"terminal.integrated.defaultProfile.linux": "zsh",
+		"terminal.integrated.profiles.linux": {
+			"zsh": {
+				"path": "/usr/bin/zsh",
+				"args": [
+					"-l"
+				]
+			},
+			"bash": {
+				"path": "/bin/bash",
+				"args": [
+					"-l"
+				]
+			}
+		},
+		"terminal.integrated.cwd": "${workspaceFolder}",
+		"terminal.integrated.env.linux": {
+			"WORKSPACE_ROOT": "${workspaceFolder}"
+		},
+		// Go specific settings for this project
+		"go.gopath": "${workspaceFolder}",
+		"go.goroot": "/usr/local/go",
+		"go.toolsGopath": "${env:HOME}/go",
+		"go.formatTool": "goimports",
+		"go.lintTool": "golangci-lint",
+		"go.testTimeout": "30s",
+		// File watchers
+		"files.watcherExclude": {
+			"**/bin/**": true,
+			"**/logs/**": true,
+			"**/.venv/**": true,
+			"**/node_modules/**": true,
+			"**/vendor/**": true
+		}
+	},
+	"extensions": {
+		"recommendations": [
+			"golang.go",
+			"ms-python.python",
+			"ms-azuretools.vscode-docker",
+			"redhat.vscode-yaml",
+			"davidanson.vscode-markdownlint"
+		]
+	}
+}

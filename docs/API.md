@@ -4,6 +4,27 @@
 
 The GCP Automation API provides RESTful endpoints for managing Google Cloud Platform resources including Projects, Folders, and Cloud Storage Buckets.
 
+## Interactive API Documentation
+
+The API includes **Swagger UI** for interactive documentation and testing:
+
+- **Swagger UI**: [http://localhost:8090/swagger/index.html](http://localhost:8090/swagger/index.html)
+- **Swagger JSON**: [http://localhost:8090/swagger/doc.json](http://localhost:8090/swagger/doc.json)
+
+The Swagger UI provides:
+- Complete API endpoint documentation
+- Interactive request/response testing
+- Model schemas and examples
+- Authentication information
+
+## Framework & Architecture
+
+The API is built with:
+- **Echo v4** - High performance web framework
+- **Swaggo** - Automated Swagger documentation generation
+- **Clean Architecture** - Separation of concerns with handlers, services, and models
+- **Structured Logging** - JSON logging with request tracing
+
 ## Authentication
 
 The API uses Google Cloud Service Account authentication. Ensure you have:

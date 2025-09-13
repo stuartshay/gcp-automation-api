@@ -1,0 +1,129 @@
+{
+  // Terminal Configuration
+  "terminal.integrated.defaultProfile.linux": "zsh",
+  "terminal.integrated.profiles.linux": {
+    "zsh": {
+      "path": "/usr/bin/zsh",
+      "args": [
+        "-l"
+      ]
+    },
+    "bash": {
+      "path": "/bin/bash",
+      "args": [
+        "-l"
+      ]
+    }
+  },
+  "terminal.integrated.shell.linux": "/usr/bin/zsh",
+  "terminal.integrated.shellArgs.linux": [
+    "-l"
+  ],
+  // Go Extension Settings
+  "go.toolsManagement.autoUpdate": true,
+  "go.useLanguageServer": true,
+  "go.lintOnSave": "package",
+  "go.formatTool": "goimports",
+  "go.lintTool": "golangci-lint",
+  "go.testFlags": [
+    "-v"
+  ],
+  "go.buildTags": "",
+  "go.testTimeout": "30s",
+  "go.coverOnSave": false,
+  "go.coverOnSingleTest": false,
+  "go.coverOnTestPackage": true,
+  "go.gocodeAutoBuild": false,
+  // Editor Settings
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit"
+  },
+  "editor.rulers": [
+    100,
+    120
+  ],
+  "editor.tabSize": 4,
+  "editor.insertSpaces": false,
+  "editor.detectIndentation": true,
+  // File Associations
+  "files.associations": {
+    "*.go": "go",
+    "Dockerfile*": "dockerfile",
+    "*.yaml": "yaml",
+    "*.yml": "yaml",
+    ".env*": "dotenv"
+  },
+  // File Exclude Patterns
+  "files.exclude": {
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "**/node_modules": true,
+    "**/.venv": true,
+    "**/bin": true,
+    "**/logs": true,
+    "**/*.log": true
+  },
+  // Search Exclude Patterns
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/bower_components": true,
+    "**/*.code-search": true,
+    "**/bin": true,
+    "**/logs": true,
+    "**/.venv": true,
+    "**/vendor": true
+  },
+  // Language Specific Settings
+  "[go]": {
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
+    },
+    "editor.tabSize": 4,
+    "editor.insertSpaces": false
+  },
+  "[json]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true
+  },
+  "[yaml]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true
+  },
+  "[dockerfile]": {
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true
+  },
+  "[markdown]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.wordWrap": "on"
+  },
+  // Python Settings (for pre-commit tools)
+  "python.defaultInterpreterPath": "./.venv/bin/python",
+  "python.terminal.activateEnvironment": true,
+  // Git Settings
+  "git.autofetch": true,
+  "git.confirmSync": false,
+  "git.enableSmartCommit": true,
+  "git.autoStash": true,
+  // Extensions Settings
+  "extensions.ignoreRecommendations": false,
+  // Workspace Recommendations
+  "extensions.recommendations": [
+    "golang.go",
+    "ms-python.python",
+    "ms-python.flake8",
+    "ms-python.black-formatter",
+    "ms-python.isort",
+    "ms-python.mypy-type-checker",
+    "ms-azuretools.vscode-docker",
+    "redhat.vscode-yaml",
+    "yzhang.markdown-all-in-one",
+    "davidanson.vscode-markdownlint",
+    "esbenp.prettier-vscode",
+    "bradlc.vscode-tailwindcss",
+    "ms-vscode.vscode-json"
+  ]
+}

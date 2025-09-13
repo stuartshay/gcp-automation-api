@@ -4,11 +4,11 @@ import "time"
 
 // ProjectRequest represents a request to create a GCP project
 type ProjectRequest struct {
-	ProjectID   string            `json:"project_id" binding:"required"`
-	DisplayName string            `json:"display_name" binding:"required"`
-	ParentID    string            `json:"parent_id,omitempty"`
-	ParentType  string            `json:"parent_type,omitempty"` // "organization" or "folder"
-	Labels      map[string]string `json:"labels,omitempty"`
+	ProjectID   string            `json:"project_id" validate:"required,project_id" binding:"required"`
+	DisplayName string            `json:"display_name" validate:"required,min=1,max=100" binding:"required"`
+	ParentID    string            `json:"parent_id,omitempty" validate:"omitempty,numeric"`
+	ParentType  string            `json:"parent_type,omitempty" validate:"omitempty,oneof=organization folder"` // "organization" or "folder"
+	Labels      map[string]string `json:"labels,omitempty" validate:"omitempty,dive,keys,label_key,endkeys,label_value"`
 }
 
 // ProjectResponse represents a GCP project response
@@ -26,9 +26,9 @@ type ProjectResponse struct {
 
 // FolderRequest represents a request to create a GCP folder
 type FolderRequest struct {
-	DisplayName string `json:"display_name" binding:"required"`
-	ParentID    string `json:"parent_id" binding:"required"`
-	ParentType  string `json:"parent_type" binding:"required"` // "organization" or "folder"
+	DisplayName string `json:"display_name" validate:"required,min=1,max=100" binding:"required"`
+	ParentID    string `json:"parent_id" validate:"required,numeric" binding:"required"`
+	ParentType  string `json:"parent_type" validate:"required,oneof=organization folder" binding:"required"` // "organization" or "folder"
 }
 
 // FolderResponse represents a GCP folder response
@@ -44,10 +44,10 @@ type FolderResponse struct {
 
 // BucketRequest represents a request to create a GCS bucket
 type BucketRequest struct {
-	Name         string            `json:"name" binding:"required"`
-	Location     string            `json:"location" binding:"required"`
-	StorageClass string            `json:"storage_class,omitempty"`
-	Labels       map[string]string `json:"labels,omitempty"`
+	Name         string            `json:"name" validate:"required,bucket_name" binding:"required"`
+	Location     string            `json:"location" validate:"required,gcp_location" binding:"required"`
+	StorageClass string            `json:"storage_class,omitempty" validate:"omitempty,oneof=STANDARD NEARLINE COLDLINE ARCHIVE"`
+	Labels       map[string]string `json:"labels,omitempty" validate:"omitempty,dive,keys,label_key,endkeys,label_value"`
 	Versioning   bool              `json:"versioning,omitempty"`
 }
 

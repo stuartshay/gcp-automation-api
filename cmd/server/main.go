@@ -1,3 +1,29 @@
+// Package main GCP Automation API
+//
+// This is a GCP Automation API built with Go that provides RESTful endpoints
+// for automating Google Cloud Platform resource management.
+//
+// The service supports creating, retrieving, and managing:
+// - GCP Projects
+// - GCP Folders
+// - Cloud Storage Buckets
+//
+// @title GCP Automation API
+// @version 1.0
+// @description RESTful API for automating Google Cloud Platform resource management
+// @termsOfService http://swagger.io/terms/
+//
+// @contact.name API Support
+// @contact.url http://www.swagger.io/support
+// @contact.email support@swagger.io
+//
+// @license.name MIT
+// @license.url https://opensource.org/licenses/MIT
+//
+// @host localhost:8090
+// @BasePath /api/v1
+//
+// @schemes http https
 package main
 
 import (
@@ -12,10 +38,13 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/gin-gonic/gin"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+	_ "github.com/stuartshay/gcp-automation-api/docs" // Import generated docs
 	"github.com/stuartshay/gcp-automation-api/internal/config"
 	"github.com/stuartshay/gcp-automation-api/internal/handlers"
 	"github.com/stuartshay/gcp-automation-api/internal/services"
+	echoSwagger "github.com/swaggo/echo-swagger"
 )
 
 // setupLogging configures logging to write to both file and console
@@ -102,31 +131,33 @@ func main() {
 	log.Println("Server exited")
 }
 
-func setupRouter(handler *handlers.Handler, cfg *config.Config) *gin.Engine {
-	// Configure Gin logging
-	if !cfg.IsDevelopment() {
-		gin.SetMode(gin.ReleaseMode)
+func setupRouter(handler *handlers.Handler, cfg *config.Config) *echo.Echo {
+	// Create Echo instance
+	e := echo.New()
+
+	// Middleware
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
+	e.Use(middleware.CORS())
+
+	// Custom logging middleware to write to our log file
+	if cfg.LogFile != "" {
+		logFile, err := os.OpenFile(cfg.LogFile, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0600)
+		if err == nil {
+			e.Logger.SetOutput(io.MultiWriter(os.Stdout, logFile))
+		}
 	}
 
-	// Set up Gin log file
-	logFile, err := os.OpenFile(cfg.LogFile, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0600)
-	if err == nil {
-		gin.DefaultWriter = io.MultiWriter(os.Stdout, logFile)
-	}
-
-	router := gin.Default()
-
-	// Add middleware
-	router.Use(gin.Logger())
-	router.Use(gin.Recovery())
+	// Swagger endpoint
+	e.GET("/swagger/*", echoSwagger.WrapHandler)
 
 	// Health check endpoint
-	router.GET("/health", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"status": "healthy"})
+	e.GET("/health", func(c echo.Context) error {
+		return c.JSON(http.StatusOK, map[string]string{"status": "healthy"})
 	})
 
 	// API v1 routes
-	v1 := router.Group("/api/v1")
+	v1 := e.Group("/api/v1")
 	{
 		// Project endpoints
 		projects := v1.Group("/projects")
@@ -153,5 +184,5 @@ func setupRouter(handler *handlers.Handler, cfg *config.Config) *gin.Engine {
 		}
 	}
 
-	return router
+	return e
 }

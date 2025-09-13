@@ -41,6 +41,14 @@ repos:
         files: \.go$
         pass_filenames: false
 
+      - id: swag-init
+        name: swag init (generate swagger docs)
+        entry: swag init
+        language: system
+        args: [-g, cmd/server/main.go, -o, docs]
+        files: \.(go)$|handlers\.go$|models\.go$|main\.go$
+        pass_filenames: false
+
   # Security scanning
   - repo: local
     hooks:

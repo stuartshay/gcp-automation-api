@@ -1,0 +1,126 @@
+{
+  "GCP Handler Function": {
+    "prefix": "gcphandler",
+    "body": [
+      "// $1 handles $2 requests",
+      "// @Summary $2",
+      "// @Description $3",
+      "// @Tags $4",
+      "// @Accept json",
+      "// @Produce json",
+      "// @Param request body models.$5Request true \"$5 request\"",
+      "// @Success 201 {object} models.$5Response",
+      "// @Failure 400 {object} models.ErrorResponse",
+      "// @Failure 500 {object} models.ErrorResponse",
+      "// @Router /$6 [post]",
+      "func (h *Handler) $1(c echo.Context) error {",
+      "\tvar req models.$5Request",
+      "\tif err := c.Bind(&req); err != nil {",
+      "\t\treturn c.JSON(http.StatusBadRequest, models.ErrorResponse{",
+      "\t\t\tError:   \"invalid_request\",",
+      "\t\t\tMessage: err.Error(),",
+      "\t\t\tCode:    http.StatusBadRequest,",
+      "\t\t})",
+      "\t}",
+      "",
+      "\t// Validate request",
+      "\tif err := h.validator.Validate(&req); err != nil {",
+      "\t\treturn c.JSON(http.StatusBadRequest, models.ErrorResponse{",
+      "\t\t\tError:   \"validation_failed\",",
+      "\t\t\tMessage: err.Error(),",
+      "\t\t\tCode:    http.StatusBadRequest,",
+      "\t\t})",
+      "\t}",
+      "",
+      "\t// TODO: Implement $2 logic",
+      "\t$0",
+      "",
+      "\treturn c.JSON(http.StatusCreated, models.SuccessResponse{",
+      "\t\tMessage: \"$5 created successfully\",",
+      "\t})",
+      "}"
+    ],
+    "description": "Create a new GCP API handler function with validation"
+  },
+  
+  "Validation Test": {
+    "prefix": "validtest",
+    "body": [
+      "func Test$1Validation(t *testing.T) {",
+      "\tvalidator := NewValidator()",
+      "",
+      "\ttests := []struct {",
+      "\t\tname      string",
+      "\t\trequest   models.$1Request",
+      "\t\texpectErr bool",
+      "\t\terrMsg    string",
+      "\t}{",
+      "\t\t{",
+      "\t\t\tname: \"Valid $2 request\",",
+      "\t\t\trequest: models.$1Request{",
+      "\t\t\t\t$3",
+      "\t\t\t},",
+      "\t\t\texpectErr: false,",
+      "\t\t},",
+      "\t\t{",
+      "\t\t\tname: \"Invalid $2 request\",",
+      "\t\t\trequest: models.$1Request{",
+      "\t\t\t\t$4",
+      "\t\t\t},",
+      "\t\t\texpectErr: true,",
+      "\t\t\terrMsg:    \"$5\",",
+      "\t\t},",
+      "\t}",
+      "",
+      "\tfor _, tt := range tests {",
+      "\t\tt.Run(tt.name, func(t *testing.T) {",
+      "\t\t\terr := validator.Validate(&tt.request)",
+      "\t\t\tif tt.expectErr {",
+      "\t\t\t\tassert.Error(t, err)",
+      "\t\t\t\tassert.Contains(t, err.Error(), tt.errMsg)",
+      "\t\t\t} else {",
+      "\t\t\t\tassert.NoError(t, err)",
+      "\t\t\t}",
+      "\t\t})",
+      "\t}",
+      "}"
+    ],
+    "description": "Create a validation test function"
+  },
+  
+  "Custom Validator": {
+    "prefix": "customval",
+    "body": [
+      "// validate$1 validates $2",
+      "func validate$1(fl validator.FieldLevel) bool {",
+      "\tvalue := fl.Field().String()",
+      "\t$3",
+      "\treturn $4",
+      "}"
+    ],
+    "description": "Create a custom validator function"
+  },
+  
+  "Error Response": {
+    "prefix": "errresp",
+    "body": [
+      "return c.JSON(http.Status$1, models.ErrorResponse{",
+      "\tError:   \"$2\",",
+      "\tMessage: \"$3\",",
+      "\tCode:    http.Status$1,",
+      "})"
+    ],
+    "description": "Return an error response"
+  },
+  
+  "Success Response": {
+    "prefix": "succresp",
+    "body": [
+      "return c.JSON(http.Status$1, models.SuccessResponse{",
+      "\tMessage: \"$2\",",
+      "\tData:    $3,",
+      "})"
+    ],
+    "description": "Return a success response"
+  }
+}

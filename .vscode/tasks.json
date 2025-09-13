@@ -1,0 +1,217 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Build Server",
+			"type": "shell",
+			"command": "go",
+			"args": [
+				"build",
+				"-o",
+				"bin/server",
+				"cmd/server/main.go"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": false
+			},
+			"problemMatcher": "$go"
+		},
+		{
+			"label": "Run Server",
+			"type": "shell",
+			"command": "./bin/server",
+			"dependsOn": "Build Server",
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": false
+			},
+			"options": {
+				"env": {
+					"PORT": "8080",
+					"ENVIRONMENT": "development",
+					"LOG_LEVEL": "debug"
+				}
+			}
+		},
+		{
+			"label": "Run Tests",
+			"type": "shell",
+			"command": "go",
+			"args": [
+				"test",
+				"-v",
+				"./..."
+			],
+			"group": {
+				"kind": "test",
+				"isDefault": true
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": false
+			},
+			"problemMatcher": "$go"
+		},
+		{
+			"label": "Run Validator Tests",
+			"type": "shell",
+			"command": "go",
+			"args": [
+				"test",
+				"-v",
+				"./internal/validators/"
+			],
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": false
+			},
+			"problemMatcher": "$go"
+		},
+		{
+			"label": "Lint Code",
+			"type": "shell",
+			"command": "golangci-lint",
+			"args": [
+				"run"
+			],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": false
+			},
+			"problemMatcher": "$go"
+		},
+		{
+			"label": "Security Scan",
+			"type": "shell",
+			"command": "gosec",
+			"args": [
+				"./..."
+			],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": false
+			}
+		},
+		{
+			"label": "Generate Swagger Docs",
+			"type": "shell",
+			"command": "swag",
+			"args": [
+				"init"
+			],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": false
+			}
+		},
+		{
+			"label": "Pre-commit Check",
+			"type": "shell",
+			"command": "pre-commit",
+			"args": [
+				"run",
+				"--all-files"
+			],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": false
+			},
+			"options": {
+				"shell": {
+					"executable": "/usr/bin/zsh",
+					"args": [
+						"-c"
+					]
+				}
+			}
+		},
+		{
+			"label": "Activate Dev Environment",
+			"type": "shell",
+			"command": "source",
+			"args": [
+				"activate-dev.sh"
+			],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": false
+			},
+			"options": {
+				"shell": {
+					"executable": "/usr/bin/zsh",
+					"args": [
+						"-c"
+					]
+				}
+			}
+		},
+		{
+			"label": "Docker Build",
+			"type": "shell",
+			"command": "docker",
+			"args": [
+				"build",
+				"-t",
+				"gcp-automation-api",
+				"."
+			],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": false
+			}
+		}
+	]
+}

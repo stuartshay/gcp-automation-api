@@ -1,0 +1,459 @@
+basePath: /api/v1
+definitions:
+  models.BucketRequest:
+    properties:
+      labels:
+        additionalProperties:
+          type: string
+        type: object
+      location:
+        type: string
+      name:
+        type: string
+      storage_class:
+        enum:
+          - STANDARD
+          - NEARLINE
+          - COLDLINE
+          - ARCHIVE
+        type: string
+      versioning:
+        type: boolean
+    required:
+      - location
+      - name
+    type: object
+  models.BucketResponse:
+    properties:
+      create_time:
+        type: string
+      labels:
+        additionalProperties:
+          type: string
+        type: object
+      location:
+        type: string
+      name:
+        type: string
+      self_link:
+        type: string
+      storage_class:
+        type: string
+      update_time:
+        type: string
+      versioning:
+        type: boolean
+    type: object
+  models.ErrorResponse:
+    properties:
+      code:
+        type: integer
+      error:
+        type: string
+      message:
+        type: string
+    type: object
+  models.FolderRequest:
+    properties:
+      display_name:
+        maxLength: 100
+        minLength: 1
+        type: string
+      parent_id:
+        type: string
+      parent_type:
+        description: '"organization" or "folder"'
+        enum:
+          - organization
+          - folder
+        type: string
+    required:
+      - display_name
+      - parent_id
+      - parent_type
+    type: object
+  models.FolderResponse:
+    properties:
+      create_time:
+        type: string
+      display_name:
+        type: string
+      name:
+        type: string
+      parent_id:
+        type: string
+      parent_type:
+        type: string
+      state:
+        type: string
+      update_time:
+        type: string
+    type: object
+  models.ProjectRequest:
+    properties:
+      display_name:
+        maxLength: 100
+        minLength: 1
+        type: string
+      labels:
+        additionalProperties:
+          type: string
+        type: object
+      parent_id:
+        type: string
+      parent_type:
+        description: '"organization" or "folder"'
+        enum:
+          - organization
+          - folder
+        type: string
+      project_id:
+        type: string
+    required:
+      - display_name
+      - project_id
+    type: object
+  models.ProjectResponse:
+    properties:
+      create_time:
+        type: string
+      display_name:
+        type: string
+      labels:
+        additionalProperties:
+          type: string
+        type: object
+      parent_id:
+        type: string
+      parent_type:
+        type: string
+      project_id:
+        type: string
+      project_number:
+        type: integer
+      state:
+        type: string
+      update_time:
+        type: string
+    type: object
+  models.SuccessResponse:
+    properties:
+      data: {}
+      message:
+        type: string
+    type: object
+host: localhost:8090
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: RESTful API for automating Google Cloud Platform resource management
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://swagger.io/terms/
+  title: GCP Automation API
+  version: "1.0"
+paths:
+  /buckets:
+    post:
+      consumes:
+        - application/json
+      description: Create a new Google Cloud Storage bucket with the specified parameters
+      parameters:
+        - description: Bucket creation request
+          in: body
+          name: bucket
+          required: true
+          schema:
+            $ref: "#/definitions/models.BucketRequest"
+      produces:
+        - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+              - $ref: "#/definitions/models.SuccessResponse"
+              - properties:
+                  data:
+                    $ref: "#/definitions/models.BucketResponse"
+                type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: "#/definitions/models.ErrorResponse"
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: "#/definitions/models.ErrorResponse"
+      summary: Create a new Cloud Storage bucket
+      tags:
+        - Buckets
+  /buckets/{name}:
+    delete:
+      consumes:
+        - application/json
+      description: Delete a Google Cloud Storage bucket by its bucket name
+      parameters:
+        - description: Bucket name
+          in: path
+          name: name
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/models.SuccessResponse"
+        "400":
+          description: Bad Request
+          schema:
+            $ref: "#/definitions/models.ErrorResponse"
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: "#/definitions/models.ErrorResponse"
+      summary: Delete a Cloud Storage bucket
+      tags:
+        - Buckets
+    get:
+      consumes:
+        - application/json
+      description:
+        Retrieve details of a Google Cloud Storage bucket by its bucket
+        name
+      parameters:
+        - description: Bucket name
+          in: path
+          name: name
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+              - $ref: "#/definitions/models.SuccessResponse"
+              - properties:
+                  data:
+                    $ref: "#/definitions/models.BucketResponse"
+                type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: "#/definitions/models.ErrorResponse"
+        "404":
+          description: Not Found
+          schema:
+            $ref: "#/definitions/models.ErrorResponse"
+      summary: Get a Cloud Storage bucket by name
+      tags:
+        - Buckets
+  /folders:
+    post:
+      consumes:
+        - application/json
+      description: Create a new Google Cloud Platform folder with the specified parameters
+      parameters:
+        - description: Folder creation request
+          in: body
+          name: folder
+          required: true
+          schema:
+            $ref: "#/definitions/models.FolderRequest"
+      produces:
+        - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+              - $ref: "#/definitions/models.SuccessResponse"
+              - properties:
+                  data:
+                    $ref: "#/definitions/models.FolderResponse"
+                type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: "#/definitions/models.ErrorResponse"
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: "#/definitions/models.ErrorResponse"
+      summary: Create a new GCP folder
+      tags:
+        - Folders
+  /folders/{id}:
+    delete:
+      consumes:
+        - application/json
+      description: Delete a Google Cloud Platform folder by its folder ID
+      parameters:
+        - description: Folder ID
+          in: path
+          name: id
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/models.SuccessResponse"
+        "400":
+          description: Bad Request
+          schema:
+            $ref: "#/definitions/models.ErrorResponse"
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: "#/definitions/models.ErrorResponse"
+      summary: Delete a GCP folder
+      tags:
+        - Folders
+    get:
+      consumes:
+        - application/json
+      description:
+        Retrieve details of a Google Cloud Platform folder by its folder
+        ID
+      parameters:
+        - description: Folder ID
+          in: path
+          name: id
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+              - $ref: "#/definitions/models.SuccessResponse"
+              - properties:
+                  data:
+                    $ref: "#/definitions/models.FolderResponse"
+                type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: "#/definitions/models.ErrorResponse"
+        "404":
+          description: Not Found
+          schema:
+            $ref: "#/definitions/models.ErrorResponse"
+      summary: Get a GCP folder by ID
+      tags:
+        - Folders
+  /projects:
+    post:
+      consumes:
+        - application/json
+      description: Create a new Google Cloud Platform project with the specified parameters
+      parameters:
+        - description: Project creation request
+          in: body
+          name: project
+          required: true
+          schema:
+            $ref: "#/definitions/models.ProjectRequest"
+      produces:
+        - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+              - $ref: "#/definitions/models.SuccessResponse"
+              - properties:
+                  data:
+                    $ref: "#/definitions/models.ProjectResponse"
+                type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: "#/definitions/models.ErrorResponse"
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: "#/definitions/models.ErrorResponse"
+      summary: Create a new GCP project
+      tags:
+        - Projects
+  /projects/{id}:
+    delete:
+      consumes:
+        - application/json
+      description: Delete a Google Cloud Platform project by its project ID
+      parameters:
+        - description: Project ID
+          in: path
+          name: id
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/models.SuccessResponse"
+        "400":
+          description: Bad Request
+          schema:
+            $ref: "#/definitions/models.ErrorResponse"
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: "#/definitions/models.ErrorResponse"
+      summary: Delete a GCP project
+      tags:
+        - Projects
+    get:
+      consumes:
+        - application/json
+      description:
+        Retrieve details of a Google Cloud Platform project by its project
+        ID
+      parameters:
+        - description: Project ID
+          in: path
+          name: id
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+              - $ref: "#/definitions/models.SuccessResponse"
+              - properties:
+                  data:
+                    $ref: "#/definitions/models.ProjectResponse"
+                type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: "#/definitions/models.ErrorResponse"
+        "404":
+          description: Not Found
+          schema:
+            $ref: "#/definitions/models.ErrorResponse"
+      summary: Get a GCP project by ID
+      tags:
+        - Projects
+schemes:
+  - http
+  - https
+swagger: "2.0"

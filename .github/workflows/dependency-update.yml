@@ -11,7 +11,7 @@ jobs:
     name: Update Go Dependencies
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
       pull-requests: write
     steps:
       - name: Checkout code
@@ -65,7 +65,7 @@ jobs:
     name: Update Pre-commit Hooks
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
       pull-requests: write
     steps:
       - name: Checkout code

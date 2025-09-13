@@ -36,9 +36,30 @@ echo "  - Testing go install..."
 go install golang.org/x/tools/cmd/goimports@latest
 echo "  - goimports installed successfully"
 
+# Test gosec installation using the same method as CI
+echo "  - Testing gosec installation..."
+TEMP_GOSEC_DIR=$(mktemp -d)
+CURRENT_DIR=$(pwd)
+cd "$TEMP_GOSEC_DIR"
+curl -sfL https://raw.githubusercontent.com/securecodewarrior/gosec/master/install.sh | sh -s -- -b . latest
+if [ -f "./gosec" ]; then
+    ./gosec -version
+    echo "  - gosec installed successfully"
+else
+    echo "  - gosec binary not found, checking for gosec in PATH..."
+    if command -v gosec >/dev/null 2>&1; then
+        gosec -version
+        echo "  - gosec found in PATH"
+    else
+        echo "  - gosec installation failed"
+        ls -la .
+    fi
+fi
+cd "$CURRENT_DIR"
+rm -rf "$TEMP_GOSEC_DIR"
+
 echo "✅ All workflow dependencies test passed!"
 echo "🚀 Your GitHub Actions workflow should now work correctly!"
 
 # Cleanup
-cd - >/dev/null
 rm -rf "$TEMP_DIR"

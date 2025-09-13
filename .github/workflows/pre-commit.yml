@@ -42,7 +42,11 @@ jobs:
           go install golang.org/x/tools/cmd/goimports@latest
           go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
           go install github.com/swaggo/swag/cmd/swag@latest
-          go install github.com/securecodewarrior/gosec/v2/cmd/gosec@latest
+
+      - name: Install gosec
+        run: |
+          curl -sfL https://raw.githubusercontent.com/securecodewarrior/gosec/master/install.sh | sh -s -- -b $(go env GOPATH)/bin latest
+          echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
 
       - name: Install Node.js (for markdownlint and prettier)
         uses: actions/setup-node@v4

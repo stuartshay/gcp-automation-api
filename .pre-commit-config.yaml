@@ -93,6 +93,16 @@ repos:
         # Run manually with: pre-commit run actionlint --all-files
         stages: [manual]
 
+  # Shell script linting
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.11.0.1
+    hooks:
+      - id: shellcheck
+        args: ["--severity=warning"]
+        # Note: Currently reports warnings in activate-dev.sh and install.sh
+        # Run manually with: pre-commit run shellcheck --all-files
+        stages: [manual]
+
   # Dockerfile linting
   - repo: https://github.com/hadolint/hadolint
     rev: v2.13.1

@@ -1,0 +1,152 @@
+# Dependabot configuration for GCP Automation API
+# This file configures Dependabot to automatically check for dependency updates
+# across different package ecosystems used in this project.
+
+version: 2
+updates:
+  # Go modules - Main application dependencies
+  - package-ecosystem: "gomod"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "America/New_York"
+    open-pull-requests-limit: 10
+    assignees:
+      - "stuartshay"
+    commit-message:
+      prefix: "deps(go)"
+      prefix-development: "deps(go-dev)"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "go"
+      - "automerge"
+    ignore:
+      # Ignore patch-level updates for indirect dependencies to reduce noise
+      - dependency-name: "*"
+        update-types: ["version-update:semver-patch"]
+    groups:
+      google-cloud:
+        patterns:
+          - "cloud.google.com/*"
+          - "google.golang.org/*"
+        update-types:
+          - "minor"
+          - "patch"
+      gin-framework:
+        patterns:
+          - "github.com/gin-gonic/*"
+          - "github.com/gin-contrib/*"
+        update-types:
+          - "minor"
+          - "patch"
+      testing:
+        patterns:
+          - "github.com/stretchr/testify"
+          - "github.com/golang/mock"
+        update-types:
+          - "minor"
+          - "patch"
+
+  # Python dependencies - Development tools (pre-commit, linting, etc.)
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "09:00"
+      timezone: "America/New_York"
+    open-pull-requests-limit: 5
+    assignees:
+      - "stuartshay"
+    commit-message:
+      prefix: "deps(python)"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "python"
+      - "dev-tools"
+    ignore:
+      # Pin major versions for development tools to avoid breaking changes
+      - dependency-name: "black"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "flake8"
+        update-types: ["version-update:semver-major"]
+    groups:
+      code-quality:
+        patterns:
+          - "black"
+          - "flake8"
+          - "isort"
+          - "mypy"
+          - "bandit"
+        update-types:
+          - "minor"
+          - "patch"
+
+  # Docker base images
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "wednesday"
+      time: "09:00"
+      timezone: "America/New_York"
+    open-pull-requests-limit: 3
+    assignees:
+      - "stuartshay"
+    commit-message:
+      prefix: "deps(docker)"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "docker"
+      - "security"
+    ignore:
+      # Only allow patch updates for Alpine to avoid breaking changes
+      - dependency-name: "alpine"
+        update-types:
+          ["version-update:semver-major", "version-update:semver-minor"]
+      # Pin Go version to maintain consistency with go.mod
+      - dependency-name: "golang"
+        update-types: ["version-update:semver-major"]
+
+  # GitHub Actions workflows
+  - package-ecosystem: "github-actions"
+    directory: "/.github/workflows"
+    schedule:
+      interval: "weekly"
+      day: "thursday"
+      time: "09:00"
+      timezone: "America/New_York"
+    open-pull-requests-limit: 5
+    assignees:
+      - "stuartshay"
+    commit-message:
+      prefix: "deps(actions)"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "github-actions"
+      - "ci-cd"
+    groups:
+      setup-actions:
+        patterns:
+          - "actions/checkout"
+          - "actions/setup-go"
+          - "actions/setup-python"
+          - "actions/cache"
+        update-types:
+          - "major"
+          - "minor"
+          - "patch"
+      security-actions:
+        patterns:
+          - "github/codeql-action"
+          - "securecodewarrior/github-action-add-sarif"
+        update-types:
+          - "major"
+          - "minor"
+          - "patch"

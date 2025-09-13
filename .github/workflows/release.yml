@@ -33,12 +33,16 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             VERSION="${{ github.event.inputs.version }}"
-      - name: Determine version
-        id: version
-        run: |
-          VERSION="${GITHUB_REF#refs/tags/}"
+          else
+            VERSION="${GITHUB_REF#refs/tags/}"
+          fi
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
           echo "Version: ${VERSION}"
+
+      - name: Cache Go modules
+        uses: actions/cache@v3
+        with:
+          path: |
             ~/.cache/go-build
             ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}

@@ -1,6 +1,6 @@
 basePath: /api/v1
 definitions:
-  models.BucketRequest:
+  github_com_stuartshay_gcp-automation-api_internal_models.BucketRequest:
     properties:
       labels:
         additionalProperties:
@@ -23,7 +23,7 @@ definitions:
       - location
       - name
     type: object
-  models.BucketResponse:
+  github_com_stuartshay_gcp-automation-api_internal_models.BucketResponse:
     properties:
       create_time:
         type: string
@@ -44,7 +44,7 @@ definitions:
       versioning:
         type: boolean
     type: object
-  models.ErrorResponse:
+  github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse:
     properties:
       code:
         type: integer
@@ -53,7 +53,7 @@ definitions:
       message:
         type: string
     type: object
-  models.FolderRequest:
+  github_com_stuartshay_gcp-automation-api_internal_models.FolderRequest:
     properties:
       display_name:
         maxLength: 100
@@ -72,7 +72,7 @@ definitions:
       - parent_id
       - parent_type
     type: object
-  models.FolderResponse:
+  github_com_stuartshay_gcp-automation-api_internal_models.FolderResponse:
     properties:
       create_time:
         type: string
@@ -89,7 +89,7 @@ definitions:
       update_time:
         type: string
     type: object
-  models.ProjectRequest:
+  github_com_stuartshay_gcp-automation-api_internal_models.ProjectRequest:
     properties:
       display_name:
         maxLength: 100
@@ -113,7 +113,7 @@ definitions:
       - display_name
       - project_id
     type: object
-  models.ProjectResponse:
+  github_com_stuartshay_gcp-automation-api_internal_models.ProjectResponse:
     properties:
       create_time:
         type: string
@@ -136,7 +136,7 @@ definitions:
       update_time:
         type: string
     type: object
-  models.SuccessResponse:
+  github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse:
     properties:
       data: {}
       message:
@@ -167,7 +167,7 @@ paths:
           name: bucket
           required: true
           schema:
-            $ref: "#/definitions/models.BucketRequest"
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.BucketRequest"
       produces:
         - application/json
       responses:
@@ -175,19 +175,19 @@ paths:
           description: Created
           schema:
             allOf:
-              - $ref: "#/definitions/models.SuccessResponse"
+              - $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
               - properties:
                   data:
-                    $ref: "#/definitions/models.BucketResponse"
+                    $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.BucketResponse"
                 type: object
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/models.ErrorResponse"
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/models.ErrorResponse"
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
       summary: Create a new Cloud Storage bucket
       tags:
         - Buckets
@@ -208,15 +208,15 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/models.SuccessResponse"
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/models.ErrorResponse"
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/models.ErrorResponse"
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
       summary: Delete a Cloud Storage bucket
       tags:
         - Buckets
@@ -239,19 +239,19 @@ paths:
           description: OK
           schema:
             allOf:
-              - $ref: "#/definitions/models.SuccessResponse"
+              - $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
               - properties:
                   data:
-                    $ref: "#/definitions/models.BucketResponse"
+                    $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.BucketResponse"
                 type: object
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/models.ErrorResponse"
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/models.ErrorResponse"
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
       summary: Get a Cloud Storage bucket by name
       tags:
         - Buckets
@@ -266,7 +266,7 @@ paths:
           name: folder
           required: true
           schema:
-            $ref: "#/definitions/models.FolderRequest"
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.FolderRequest"
       produces:
         - application/json
       responses:
@@ -274,19 +274,19 @@ paths:
           description: Created
           schema:
             allOf:
-              - $ref: "#/definitions/models.SuccessResponse"
+              - $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
               - properties:
                   data:
-                    $ref: "#/definitions/models.FolderResponse"
+                    $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.FolderResponse"
                 type: object
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/models.ErrorResponse"
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/models.ErrorResponse"
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
       summary: Create a new GCP folder
       tags:
         - Folders
@@ -307,15 +307,15 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/models.SuccessResponse"
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/models.ErrorResponse"
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/models.ErrorResponse"
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
       summary: Delete a GCP folder
       tags:
         - Folders
@@ -338,19 +338,19 @@ paths:
           description: OK
           schema:
             allOf:
-              - $ref: "#/definitions/models.SuccessResponse"
+              - $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
               - properties:
                   data:
-                    $ref: "#/definitions/models.FolderResponse"
+                    $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.FolderResponse"
                 type: object
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/models.ErrorResponse"
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/models.ErrorResponse"
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
       summary: Get a GCP folder by ID
       tags:
         - Folders
@@ -365,7 +365,7 @@ paths:
           name: project
           required: true
           schema:
-            $ref: "#/definitions/models.ProjectRequest"
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ProjectRequest"
       produces:
         - application/json
       responses:
@@ -373,19 +373,19 @@ paths:
           description: Created
           schema:
             allOf:
-              - $ref: "#/definitions/models.SuccessResponse"
+              - $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
               - properties:
                   data:
-                    $ref: "#/definitions/models.ProjectResponse"
+                    $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ProjectResponse"
                 type: object
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/models.ErrorResponse"
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/models.ErrorResponse"
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
       summary: Create a new GCP project
       tags:
         - Projects
@@ -406,15 +406,15 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/models.SuccessResponse"
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/models.ErrorResponse"
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/models.ErrorResponse"
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
       summary: Delete a GCP project
       tags:
         - Projects
@@ -437,19 +437,19 @@ paths:
           description: OK
           schema:
             allOf:
-              - $ref: "#/definitions/models.SuccessResponse"
+              - $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
               - properties:
                   data:
-                    $ref: "#/definitions/models.ProjectResponse"
+                    $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ProjectResponse"
                 type: object
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/models.ErrorResponse"
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/models.ErrorResponse"
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
       summary: Get a GCP project by ID
       tags:
         - Projects

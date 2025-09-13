@@ -44,7 +44,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.BucketRequest"
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.BucketRequest"
                         }
                     }
                 ],
@@ -54,13 +54,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/models.SuccessResponse"
+                                    "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/models.BucketResponse"
+                                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.BucketResponse"
                                         }
                                     }
                                 }
@@ -70,13 +70,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
                         }
                     }
                 }
@@ -110,13 +110,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/models.SuccessResponse"
+                                    "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/models.BucketResponse"
+                                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.BucketResponse"
                                         }
                                     }
                                 }
@@ -126,13 +126,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
                         }
                     }
                 }
@@ -162,19 +162,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.SuccessResponse"
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
                         }
                     }
                 }
@@ -200,7 +200,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.FolderRequest"
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.FolderRequest"
                         }
                     }
                 ],
@@ -210,13 +210,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/models.SuccessResponse"
+                                    "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/models.FolderResponse"
+                                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.FolderResponse"
                                         }
                                     }
                                 }
@@ -226,13 +226,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
                         }
                     }
                 }
@@ -266,13 +266,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/models.SuccessResponse"
+                                    "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/models.FolderResponse"
+                                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.FolderResponse"
                                         }
                                     }
                                 }
@@ -282,13 +282,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
                         }
                     }
                 }
@@ -318,19 +318,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.SuccessResponse"
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
                         }
                     }
                 }
@@ -356,7 +356,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.ProjectRequest"
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ProjectRequest"
                         }
                     }
                 ],
@@ -366,13 +366,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/models.SuccessResponse"
+                                    "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/models.ProjectResponse"
+                                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ProjectResponse"
                                         }
                                     }
                                 }
@@ -382,13 +382,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
                         }
                     }
                 }
@@ -422,13 +422,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/models.SuccessResponse"
+                                    "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/models.ProjectResponse"
+                                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ProjectResponse"
                                         }
                                     }
                                 }
@@ -438,13 +438,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
                         }
                     }
                 }
@@ -474,19 +474,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.SuccessResponse"
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
                         }
                     }
                 }
@@ -494,7 +494,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "models.BucketRequest": {
+        "github_com_stuartshay_gcp-automation-api_internal_models.BucketRequest": {
             "type": "object",
             "required": [
                 "location",
@@ -527,7 +527,7 @@ const docTemplate = `{
                 }
             }
         },
-        "models.BucketResponse": {
+        "github_com_stuartshay_gcp-automation-api_internal_models.BucketResponse": {
             "type": "object",
             "properties": {
                 "create_time": {
@@ -559,7 +559,7 @@ const docTemplate = `{
                 }
             }
         },
-        "models.ErrorResponse": {
+        "github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse": {
             "type": "object",
             "properties": {
                 "code": {
@@ -573,7 +573,7 @@ const docTemplate = `{
                 }
             }
         },
-        "models.FolderRequest": {
+        "github_com_stuartshay_gcp-automation-api_internal_models.FolderRequest": {
             "type": "object",
             "required": [
                 "display_name",
@@ -599,7 +599,7 @@ const docTemplate = `{
                 }
             }
         },
-        "models.FolderResponse": {
+        "github_com_stuartshay_gcp-automation-api_internal_models.FolderResponse": {
             "type": "object",
             "properties": {
                 "create_time": {
@@ -625,7 +625,7 @@ const docTemplate = `{
                 }
             }
         },
-        "models.ProjectRequest": {
+        "github_com_stuartshay_gcp-automation-api_internal_models.ProjectRequest": {
             "type": "object",
             "required": [
                 "display_name",
@@ -659,7 +659,7 @@ const docTemplate = `{
                 }
             }
         },
-        "models.ProjectResponse": {
+        "github_com_stuartshay_gcp-automation-api_internal_models.ProjectResponse": {
             "type": "object",
             "properties": {
                 "create_time": {
@@ -694,7 +694,7 @@ const docTemplate = `{
                 }
             }
         },
-        "models.SuccessResponse": {
+        "github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse": {
             "type": "object",
             "properties": {
                 "data": {},

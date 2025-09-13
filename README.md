@@ -1,8 +1,8 @@
 # GCP Automation API
 
-A Go-based REST API for automating Google Cloud Platform operations.
-
 [![Pre-commit Checks](https://github.com/stuartshay/gcp-automation-api/actions/workflows/pre-commit.yml/badge.svg)](https://github.com/stuartshay/gcp-automation-api/actions/workflows/pre-commit.yml)
+
+A Go-based REST API for automating Google Cloud Platform operations.
 
 ## Quick Start
 

@@ -1,11 +1,11 @@
 # Build stage
-FROM golang:1.25-alpine AS builder
+FROM golang:1.24-alpine AS builder
 
 # Set working directory
 WORKDIR /app
 
 # Install git and ca-certificates
-RUN apk add --no-cache git=2.40.1-r0 ca-certificates=20230506-r0
+RUN apk add --no-cache git=2.49.1-r0 ca-certificates=20250619-r0
 
 # Copy go mod files
 COPY go.mod go.sum ./
@@ -20,10 +20,10 @@ COPY . .
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -o gcp-automation-api ./cmd/server
 
 # Final stage
-FROM alpine:3.18
+FROM alpine:3.22
 
 # Install ca-certificates for HTTPS requests
-RUN apk --no-cache add ca-certificates=20230506-r0
+RUN apk --no-cache add ca-certificates=20250619-r0
 
 # Create non-root user
 RUN addgroup -g 1001 appgroup && \

@@ -41,19 +41,12 @@ echo "  - Testing gosec installation..."
 TEMP_GOSEC_DIR=$(mktemp -d)
 CURRENT_DIR=$(pwd)
 cd "$TEMP_GOSEC_DIR"
-curl -sfL https://raw.githubusercontent.com/securego/gosec/master/install.sh | sh -s -- -b . latest
-if [ -f "./gosec" ]; then
-    ./gosec -version
+go install github.com/securego/gosec/v2/cmd/gosec@v2.22.8
+if command -v gosec >/dev/null 2>&1; then
+    gosec -version
     echo "  - gosec installed successfully"
 else
-    echo "  - gosec binary not found, checking for gosec in PATH..."
-    if command -v gosec >/dev/null 2>&1; then
-        gosec -version
-        echo "  - gosec found in PATH"
-    else
-        echo "  - gosec installation failed"
-        ls -la .
-    fi
+    echo "  - gosec installation failed"
 fi
 cd "$CURRENT_DIR"
 rm -rf "$TEMP_GOSEC_DIR"

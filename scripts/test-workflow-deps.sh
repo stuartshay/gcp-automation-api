@@ -41,7 +41,7 @@ echo "  - Testing gosec installation..."
 TEMP_GOSEC_DIR=$(mktemp -d)
 CURRENT_DIR=$(pwd)
 cd "$TEMP_GOSEC_DIR"
-curl -sfL https://raw.githubusercontent.com/securecodewarrior/gosec/master/install.sh | sh -s -- -b . latest
+curl -sfL https://raw.githubusercontent.com/securego/gosec/master/install.sh | sh -s -- -b . latest
 if [ -f "./gosec" ]; then
     ./gosec -version
     echo "  - gosec installed successfully"

@@ -145,7 +145,7 @@ updates:
       security-actions:
         patterns:
           - "github/codeql-action"
-          - "securecodewarrior/github-action-add-sarif"
+          - "securego/gosec"
         update-types:
           - "major"
           - "minor"

@@ -84,7 +84,7 @@ security:
 	@if command -v gosec >/dev/null 2>&1; then \
 		gosec ./...; \
 	else \
-		echo "gosec not installed. Install it with: go install github.com/securecodewarrior/gosec/v2/cmd/gosec@latest"; \
+		echo "gosec not installed. Install it with: go install github.com/securego/gosec/v2/cmd/gosec@latest"; \
 	fi
 
 # Docker build

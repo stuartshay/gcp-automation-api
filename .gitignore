@@ -40,3 +40,13 @@ logs/
 # Editor/IDE
 # .idea/
 # .vscode/
+
+# Pre-commit
+.pre-commit.log
+
+# GitHub Actions artifacts
+dist/
+
+# Temporary files
+*.tmp
+*.temp

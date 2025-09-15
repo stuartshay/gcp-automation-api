@@ -29,7 +29,7 @@ repos:
       #   name: go test
       #   entry: go test
       #   language: system
-      #   args: [-v, ./tests]
+      #   args: [-v, ./tests/...]
       #   files: \.go$
       #   pass_filenames: false
       #   # Note: Tests are temporarily disabled due to GCP authentication issues in CI

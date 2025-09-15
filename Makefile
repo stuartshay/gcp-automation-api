@@ -88,6 +88,21 @@ run: build
 	@echo "Running $(BINARY_NAME)..."
 	$(BINARY_PATH)
 
+# Generate a development JWT token and print to terminal
+generate-jwt: build-auth-cli
+	@if [ -z "$$USER_ID" ] || [ -z "$$EMAIL" ] || [ -z "$$NAME" ]; then \
+		echo "Usage: make generate-jwt USER_ID=<id> EMAIL=<email> NAME=<name>"; \
+		exit 1; \
+	fi
+	@OUTPUT=`$(AUTH_CLI_PATH) test-token --user-id=$$USER_ID --email=$$EMAIL --name=$$NAME` ; \
+	TOKEN=`echo "$$OUTPUT" | awk '/^Token:/ {print $2}'` ; \
+	if [ -z "$$TOKEN" ]; then \
+		echo "Failed to generate JWT token. CLI output:" ; \
+		echo "$$OUTPUT" ; \
+		exit 1; \
+	else \
+		echo "JWT Token: $$TOKEN" ; \
+	fi
 # Run the auth CLI tool
 run-auth-cli: build-auth-cli
 	@echo "Running $(AUTH_CLI_NAME)..."
@@ -156,6 +171,7 @@ help:
 	@echo "  dev                      - Run in development mode"
 	@echo "  run                      - Build and run the API server"
 	@echo "  run-auth-cli             - Build and run the auth CLI tool"
+	@echo "  generate-jwt             - Generate a development JWT token (usage: make generate-jwt USER_ID=<id> EMAIL=<email> NAME=<name>)"
 	@echo "  build-all                - Build for multiple platforms (server + auth-cli)"
 	@echo "  lint                     - Run linter"
 	@echo "  fmt                      - Format code"

@@ -80,6 +80,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-go-
 
+      - name: Check Go module cache size
+        run: |
+          echo "Go build cache size:"
+          du -sh ~/.cache/go-build || true
+          echo "Go module cache size:"
+          du -sh ~/go/pkg/mod || true
+
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
@@ -87,6 +94,8 @@ jobs:
 
       - name: Download Go dependencies
         run: go mod download
+        env:
+          GOPATH: ${{ env.GOPATH || '/home/runner/go' }}
 
       - name: Set up pre-commit cache
         uses: actions/cache@v4

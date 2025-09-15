@@ -121,7 +121,6 @@ build-all:
 	GOOS=darwin GOARCH=amd64 $(GOBUILD) -ldflags="-w -s" -o bin/$(AUTH_CLI_NAME)-darwin-amd64 ./cmd/auth-cli
 	GOOS=windows GOARCH=amd64 $(GOBUILD) -ldflags="-w -s" -o bin/$(AUTH_CLI_NAME)-windows-amd64.exe ./cmd/auth-cli
 
-	@echo "  generate-jwt             - Generate a development JWT token (usage: make generate-jwt USER_ID=<id> EMAIL=<email> NAME=<name>)"
 # Lint the code
 lint:
 	@echo "Running linter..."
@@ -172,6 +171,7 @@ help:
 	@echo "  dev                      - Run in development mode"
 	@echo "  run                      - Build and run the API server"
 	@echo "  run-auth-cli             - Build and run the auth CLI tool"
+	@echo "  generate-jwt             - Generate a development JWT token (usage: make generate-jwt USER_ID=<id> EMAIL=<email> NAME=<name>)"
 	@echo "  build-all                - Build for multiple platforms (server + auth-cli)"
 	@echo "  lint                     - Run linter"
 	@echo "  fmt                      - Format code"

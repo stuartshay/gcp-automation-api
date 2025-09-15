@@ -95,7 +95,7 @@ generate-jwt: build-auth-cli
 		exit 1; \
 	fi
 	@OUTPUT=`$(AUTH_CLI_PATH) test-token --user-id=$$USER_ID --email=$$EMAIL --name=$$NAME` ; \
-	TOKEN=`echo "$$OUTPUT" | awk '/^Token:/ {print substr($$0, index($$0,$$2))}'` ; \
+	TOKEN=`echo "$$OUTPUT" | awk '/^Token:/ {print $2}'` ; \
 	if [ -z "$$TOKEN" ]; then \
 		echo "Failed to generate JWT token. CLI output:" ; \
 		echo "$$OUTPUT" ; \

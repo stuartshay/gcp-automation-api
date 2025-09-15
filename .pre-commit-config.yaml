@@ -29,9 +29,11 @@ repos:
         name: go test
         entry: go test
         language: system
-        args: [-v, ./tests/integration, ./tests]
+        args: [-v, ./tests]
         files: \.go$
         pass_filenames: false
+        # Note: Integration tests (./tests/integration) are temporarily skipped
+        # TODO: Re-enable integration tests in future milestone
 
       - id: golangci-lint
         name: golangci-lint

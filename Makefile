@@ -94,12 +94,14 @@ generate-jwt: build-auth-cli
 		echo "Usage: make generate-jwt USER_ID=<id> EMAIL=<email> NAME=<name>"; \
 		exit 1; \
 	fi
-	@TOKEN=`$(AUTH_CLI_PATH) test-token --user-id=$$USER_ID --email=$$EMAIL --name=$$NAME | grep '^Token:' | sed 's/Token: //'` && \
+	@OUTPUT=`$(AUTH_CLI_PATH) test-token --user-id=$$USER_ID --email=$$EMAIL --name=$$NAME` ; \
+	TOKEN=`echo "$$OUTPUT" | awk '/^Token:/ {print substr($$0, index($$0,$$2))}'` ; \
 	if [ -z "$$TOKEN" ]; then \
-		echo "Failed to generate JWT token"; \
+		echo "Failed to generate JWT token. CLI output:" ; \
+		echo "$$OUTPUT" ; \
 		exit 1; \
 	else \
-		echo "JWT Token: $$TOKEN"; \
+		echo "JWT Token: $$TOKEN" ; \
 	fi
 # Run the auth CLI tool
 run-auth-cli: build-auth-cli

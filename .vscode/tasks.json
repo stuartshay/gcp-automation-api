@@ -100,8 +100,7 @@
 				"test",
 				"-v",
 				"-race",
-				"-coverprofile=coverage.out",
-				"./..."
+				"-coverprofile=coverage.out"
 			],
 			"group": "test",
 			"presentation": {
@@ -112,7 +111,17 @@
 				"showReuseMessage": true,
 				"clear": false
 			},
-			"problemMatcher": "$go"
+			"problemMatcher": "$go",
+			"options": {
+				"shellQuoting": {
+					"escape": "\"",
+					"strong": false
+				},
+				"shell": {
+					"executable": "/bin/bash",
+					"args": ["-c", "go test -v -race -coverprofile=coverage.out $(go list ./... | grep -v '/tests$' | grep -v '/tests/' | grep -v '/mocks$')"]
+				}
+			}
 		},
 		{
 			"label": "Run Validator Tests",

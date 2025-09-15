@@ -11,15 +11,17 @@ import (
 
 // Handler contains all HTTP handlers
 type Handler struct {
-	gcpService *services.GCPService
-	validator  *validators.CustomValidator
+	gcpService  services.GCPServiceInterface
+	authService *services.AuthService
+	validator   *validators.CustomValidator
 }
 
 // NewHandler creates a new handler instance
-func NewHandler(gcpService *services.GCPService) *Handler {
+func NewHandler(gcpService services.GCPServiceInterface, authService *services.AuthService) *Handler {
 	return &Handler{
-		gcpService: gcpService,
-		validator:  validators.NewValidator(),
+		gcpService:  gcpService,
+		authService: authService,
+		validator:   validators.NewValidator(),
 	}
 }
 
@@ -29,6 +31,7 @@ func NewHandler(gcpService *services.GCPService) *Handler {
 // @Tags Projects
 // @Accept json
 // @Produce json
+// @Security BearerAuth
 // @Param project body models.ProjectRequest true "Project creation request"
 // @Success 201 {object} models.SuccessResponse{data=models.ProjectResponse}
 // @Failure 400 {object} models.ErrorResponse
@@ -74,6 +77,7 @@ func (h *Handler) CreateProject(c echo.Context) error {
 // @Tags Projects
 // @Accept json
 // @Produce json
+// @Security BearerAuth
 // @Param id path string true "Project ID"
 // @Success 200 {object} models.SuccessResponse{data=models.ProjectResponse}
 // @Failure 400 {object} models.ErrorResponse
@@ -110,6 +114,7 @@ func (h *Handler) GetProject(c echo.Context) error {
 // @Tags Projects
 // @Accept json
 // @Produce json
+// @Security BearerAuth
 // @Param id path string true "Project ID"
 // @Success 200 {object} models.SuccessResponse
 // @Failure 400 {object} models.ErrorResponse
@@ -145,6 +150,7 @@ func (h *Handler) DeleteProject(c echo.Context) error {
 // @Tags Folders
 // @Accept json
 // @Produce json
+// @Security BearerAuth
 // @Param folder body models.FolderRequest true "Folder creation request"
 // @Success 201 {object} models.SuccessResponse{data=models.FolderResponse}
 // @Failure 400 {object} models.ErrorResponse
@@ -190,6 +196,7 @@ func (h *Handler) CreateFolder(c echo.Context) error {
 // @Tags Folders
 // @Accept json
 // @Produce json
+// @Security BearerAuth
 // @Param id path string true "Folder ID"
 // @Success 200 {object} models.SuccessResponse{data=models.FolderResponse}
 // @Failure 400 {object} models.ErrorResponse
@@ -226,6 +233,7 @@ func (h *Handler) GetFolder(c echo.Context) error {
 // @Tags Folders
 // @Accept json
 // @Produce json
+// @Security BearerAuth
 // @Param id path string true "Folder ID"
 // @Success 200 {object} models.SuccessResponse
 // @Failure 400 {object} models.ErrorResponse
@@ -261,6 +269,7 @@ func (h *Handler) DeleteFolder(c echo.Context) error {
 // @Tags Buckets
 // @Accept json
 // @Produce json
+// @Security BearerAuth
 // @Param bucket body models.BucketRequest true "Bucket creation request"
 // @Success 201 {object} models.SuccessResponse{data=models.BucketResponse}
 // @Failure 400 {object} models.ErrorResponse
@@ -306,6 +315,7 @@ func (h *Handler) CreateBucket(c echo.Context) error {
 // @Tags Buckets
 // @Accept json
 // @Produce json
+// @Security BearerAuth
 // @Param name path string true "Bucket name"
 // @Success 200 {object} models.SuccessResponse{data=models.BucketResponse}
 // @Failure 400 {object} models.ErrorResponse
@@ -342,6 +352,7 @@ func (h *Handler) GetBucket(c echo.Context) error {
 // @Tags Buckets
 // @Accept json
 // @Produce json
+// @Security BearerAuth
 // @Param name path string true "Bucket name"
 // @Success 200 {object} models.SuccessResponse
 // @Failure 400 {object} models.ErrorResponse

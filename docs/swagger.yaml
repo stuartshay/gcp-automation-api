@@ -142,7 +142,7 @@ definitions:
       message:
         type: string
     type: object
-host: localhost:8090
+host: localhost:8080
 info:
   contact:
     email: support@swagger.io
@@ -188,6 +188,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Create a new Cloud Storage bucket
       tags:
       - Buckets
@@ -217,6 +219,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Delete a Cloud Storage bucket
       tags:
       - Buckets
@@ -251,6 +255,8 @@ paths:
           description: Not Found
           schema:
             $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Get a Cloud Storage bucket by name
       tags:
       - Buckets
@@ -286,6 +292,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Create a new GCP folder
       tags:
       - Folders
@@ -315,6 +323,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Delete a GCP folder
       tags:
       - Folders
@@ -349,6 +359,8 @@ paths:
           description: Not Found
           schema:
             $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Get a GCP folder by ID
       tags:
       - Folders
@@ -384,6 +396,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Create a new GCP project
       tags:
       - Projects
@@ -413,6 +427,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Delete a GCP project
       tags:
       - Projects
@@ -447,10 +463,19 @@ paths:
           description: Not Found
           schema:
             $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Get a GCP project by ID
       tags:
       - Projects
 schemes:
 - http
 - https
+securityDefinitions:
+  BearerAuth:
+    description: 'JWT Authorization header using the Bearer scheme. Example: "Authorization:
+      Bearer {token}"'
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

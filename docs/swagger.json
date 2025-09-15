@@ -19,11 +19,16 @@
         },
         "version": "1.0"
     },
-    "host": "localhost:8090",
+    "host": "localhost:8080",
     "basePath": "/api/v1",
     "paths": {
         "/buckets": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Create a new Google Cloud Storage bucket with the specified parameters",
                 "consumes": [
                     "application/json"
@@ -82,6 +87,11 @@
         },
         "/buckets/{name}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Retrieve details of a Google Cloud Storage bucket by its bucket name",
                 "consumes": [
                     "application/json"
@@ -136,6 +146,11 @@
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Delete a Google Cloud Storage bucket by its bucket name",
                 "consumes": [
                     "application/json"
@@ -180,6 +195,11 @@
         },
         "/folders": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Create a new Google Cloud Platform folder with the specified parameters",
                 "consumes": [
                     "application/json"
@@ -238,6 +258,11 @@
         },
         "/folders/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Retrieve details of a Google Cloud Platform folder by its folder ID",
                 "consumes": [
                     "application/json"
@@ -292,6 +317,11 @@
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Delete a Google Cloud Platform folder by its folder ID",
                 "consumes": [
                     "application/json"
@@ -336,6 +366,11 @@
         },
         "/projects": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Create a new Google Cloud Platform project with the specified parameters",
                 "consumes": [
                     "application/json"
@@ -394,6 +429,11 @@
         },
         "/projects/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Retrieve details of a Google Cloud Platform project by its project ID",
                 "consumes": [
                     "application/json"
@@ -448,6 +488,11 @@
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Delete a Google Cloud Platform project by its project ID",
                 "consumes": [
                     "application/json"
@@ -700,6 +745,14 @@
                     "type": "string"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "description": "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }

@@ -105,7 +105,10 @@ jobs:
 
       - name: Run tests
         run: |
-          go test -v -race -coverprofile=coverage.out ./...
+          # First run all tests (including integration tests) without coverage
+          go test -v -race ./...
+          # Then run tests with coverage, excluding test-only packages to avoid "[no statements]" errors
+          go test -v -race -coverprofile=coverage.out $(go list ./... | grep -v '/tests$' | grep -v '/tests/' | grep -v '/mocks$')
 
       - name: Generate coverage report
         run: go tool cover -html=coverage.out -o coverage.html

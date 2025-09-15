@@ -1,0 +1,49 @@
+{
+  "valid_folder": {
+    "display_name": "Test Folder",
+    "parent_id": "123456789",
+    "parent_type": "organization"
+  },
+  "folder_parent": {
+    "display_name": "Nested Folder",
+    "parent_id": "987654321",
+    "parent_type": "folder"
+  },
+  "development_folder": {
+    "display_name": "Development Environment",
+    "parent_id": "555666777",
+    "parent_type": "organization"
+  },
+  "staging_folder": {
+    "display_name": "Staging Environment",
+    "parent_id": "folders/development-folder-id",
+    "parent_type": "folder"
+  },
+  "missing_display_name": {
+    "parent_id": "123456789",
+    "parent_type": "organization"
+  },
+  "missing_parent_id": {
+    "display_name": "Missing Parent ID",
+    "parent_type": "organization"
+  },
+  "missing_parent_type": {
+    "display_name": "Missing Parent Type",
+    "parent_id": "123456789"
+  },
+  "invalid_parent_type": {
+    "display_name": "Invalid Parent Type",
+    "parent_id": "123456789",
+    "parent_type": "invalid"
+  },
+  "empty_display_name": {
+    "display_name": "",
+    "parent_id": "123456789",
+    "parent_type": "organization"
+  },
+  "long_display_name": {
+    "display_name": "This is a very long folder name that exceeds the maximum allowed length for folder display names in Google Cloud Platform which should be validated",
+    "parent_id": "123456789",
+    "parent_type": "organization"
+  }
+}

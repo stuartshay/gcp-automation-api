@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: GCP Automation API
-  description: REST API for automating GCP resource management
+  description: REST API for automating GCP resource management with JWT authentication
   version: 1.0.0
   contact:
     name: API Support
@@ -16,11 +16,15 @@ servers:
   - url: https://api.example.com
     description: Production server
 
+security:
+  - BearerAuth: []
+
 paths:
   /health:
     get:
       summary: Health check
       description: Check if the service is healthy
+      security: [] # No authentication required
       responses:
         "200":
           description: Service is healthy
@@ -33,10 +37,186 @@ paths:
                     type: string
                     example: healthy
 
+  /auth/login:
+    post:
+      summary: Login with Google ID token
+      description: Authenticate user with Google ID token and receive JWT access token
+      security: [] # No authentication required
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponse"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/LoginResponse"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/test-token:
+    post:
+      summary: Generate test token (Development only)
+      description: Generate a test JWT token for development and testing purposes
+      security: [] # No authentication required
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - user_id
+                - email
+                - name
+              properties:
+                user_id:
+                  type: string
+                  example: "test-user-123"
+                email:
+                  type: string
+                  format: email
+                  example: "test@example.com"
+                name:
+                  type: string
+                  example: "Test User"
+      responses:
+        "200":
+          description: Test token generated successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          access_token:
+                            type: string
+                          token_type:
+                            type: string
+                            example: "Bearer"
+                          expires_in:
+                            type: integer
+                            example: 86400
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Not allowed in production
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/refresh:
+    post:
+      summary: Refresh JWT token
+      description: Refresh an existing JWT token to extend its expiration
+      tags:
+        - Authentication
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Token refreshed successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponse"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/LoginResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/profile:
+    get:
+      summary: Get user profile
+      description: Get the current authenticated user's profile information
+      tags:
+        - Authentication
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessResponse"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/GoogleUserInfo"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /api/v1/projects:
     post:
       summary: Create a GCP project
       description: Create a new Google Cloud Platform project
+      tags:
+        - Projects
+      security:
+        - BearerAuth: []
       requestBody:
         required: true
         content:
@@ -67,6 +247,10 @@ paths:
     get:
       summary: Get a GCP project
       description: Retrieve details of a Google Cloud Platform project
+      tags:
+        - Projects
+      security:
+        - BearerAuth: []
       parameters:
         - name: id
           in: path
@@ -96,6 +280,10 @@ paths:
     delete:
       summary: Delete a GCP project
       description: Delete a Google Cloud Platform project
+      tags:
+        - Projects
+      security:
+        - BearerAuth: []
       parameters:
         - name: id
           in: path
@@ -127,6 +315,10 @@ paths:
     post:
       summary: Create a GCS bucket
       description: Create a new Google Cloud Storage bucket
+      tags:
+        - Buckets
+      security:
+        - BearerAuth: []
       requestBody:
         required: true
         content:
@@ -157,6 +349,10 @@ paths:
     get:
       summary: Get a GCS bucket
       description: Retrieve details of a Google Cloud Storage bucket
+      tags:
+        - Buckets
+      security:
+        - BearerAuth: []
       parameters:
         - name: name
           in: path
@@ -186,6 +382,10 @@ paths:
     delete:
       summary: Delete a GCS bucket
       description: Delete a Google Cloud Storage bucket
+      tags:
+        - Buckets
+      security:
+        - BearerAuth: []
       parameters:
         - name: name
           in: path
@@ -213,7 +413,116 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /api/v1/folders:
+    post:
+      summary: Create a GCP folder
+      description: Create a new Google Cloud Platform folder
+      tags:
+        - Folders
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FolderRequest"
+      responses:
+        "201":
+          description: Folder created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/folders/{id}:
+    get:
+      summary: Get a GCP folder
+      description: Retrieve details of a Google Cloud Platform folder
+      tags:
+        - Folders
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Folder ID
+      responses:
+        "200":
+          description: Folder retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "404":
+          description: Folder not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      summary: Delete a GCP folder
+      description: Delete a Google Cloud Platform folder
+      tags:
+        - Folders
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Folder ID
+      responses:
+        "200":
+          description: Folder deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "404":
+          description: Folder not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
 components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token obtained from /auth/login endpoint
+
   schemas:
     ProjectRequest:
       type: object
@@ -246,6 +555,27 @@ components:
           example:
             environment: production
             team: platform
+
+    FolderRequest:
+      type: object
+      required:
+        - display_name
+        - parent_id
+        - parent_type
+      properties:
+        display_name:
+          type: string
+          description: Human-readable folder name
+          example: My Folder
+        parent_id:
+          type: string
+          description: Parent organization or folder ID
+          example: "123456789"
+        parent_type:
+          type: string
+          enum: [organization, folder]
+          description: Type of parent resource
+          example: organization
 
     BucketRequest:
       type: object
@@ -288,6 +618,72 @@ components:
         data:
           type: object
           description: Response data
+
+    LoginRequest:
+      type: object
+      required:
+        - google_id_token
+      properties:
+        google_id_token:
+          type: string
+          description: Google ID token from Google OAuth
+          example: "eyJhbGciOiJSUzI1NiIsImtpZCI6..."
+
+    LoginResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+          description: JWT access token
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6..."
+        token_type:
+          type: string
+          description: Token type
+          example: "Bearer"
+        expires_in:
+          type: integer
+          description: Token expiration time in seconds
+          example: 86400
+        user_info:
+          $ref: "#/components/schemas/GoogleUserInfo"
+
+    GoogleUserInfo:
+      type: object
+      properties:
+        sub:
+          type: string
+          description: Google user ID
+          example: "123456789"
+        email:
+          type: string
+          format: email
+          description: User email address
+          example: "user@example.com"
+        email_verified:
+          type: boolean
+          description: Whether email is verified
+          example: true
+        name:
+          type: string
+          description: User full name
+          example: "John Doe"
+        given_name:
+          type: string
+          description: User first name
+          example: "John"
+        family_name:
+          type: string
+          description: User last name
+          example: "Doe"
+        picture:
+          type: string
+          format: uri
+          description: User profile picture URL
+          example: "https://lh3.googleusercontent.com/..."
+        locale:
+          type: string
+          description: User locale
+          example: "en"
 
     ErrorResponse:
       type: object

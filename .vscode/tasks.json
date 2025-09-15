@@ -26,6 +26,27 @@
 			"problemMatcher": "$go"
 		},
 		{
+			"label": "Build Auth CLI",
+			"type": "shell",
+			"command": "go",
+			"args": [
+				"build",
+				"-o",
+				"bin/auth-cli",
+				"cmd/auth-cli/main.go"
+			],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": false
+			},
+			"problemMatcher": "$go"
+		},
+		{
 			"label": "Run Server",
 			"type": "shell",
 			"command": "./bin/server",
@@ -41,7 +62,7 @@
 			},
 			"options": {
 				"env": {
-					"PORT": "8080",
+					"PORT": "8090",
 					"ENVIRONMENT": "development",
 					"LOG_LEVEL": "debug"
 				}

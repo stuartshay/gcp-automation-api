@@ -105,6 +105,14 @@ type LoginResponse struct {
 	UserInfo    GoogleUserInfo `json:"user_info"`
 }
 
+// OAuthTokenResponse represents the OAuth2 token exchange response from Google
+type OAuthTokenResponse struct {
+	AccessToken string `json:"access_token"`
+	IDToken     string `json:"id_token"`
+	TokenType   string `json:"token_type"`
+	ExpiresIn   int    `json:"expires_in"`
+}
+
 // JWTClaims represents the JWT claims structure
 type JWTClaims struct {
 	UserID    string `json:"user_id"`

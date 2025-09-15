@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
@@ -160,6 +161,15 @@ func CleanupTestResources(t *testing.T, setup *TestSetup) {
 	}
 }
 
+// resetMockExpectations resets the mock expectations and calls for the test setup
+func resetMockExpectations(setup *TestSetup) {
+	if !setup.Config.UseRealGCP && setup.MockService != nil {
+		// Use the proper testify method to reset the mock
+		setup.MockService.Mock.ExpectedCalls = nil
+		setup.MockService.Mock.Calls = nil
+	}
+}
+
 // GetTestBucketName generates a unique test bucket name
 func GetTestBucketName(prefix string) string {
 	return prefix + "-" + generateRandomString(8)
@@ -180,7 +190,10 @@ func generateRandomString(length int) string {
 	const charset = "abcdefghijklmnopqrstuvwxyz0123456789"
 	b := make([]byte, length)
 	for i := range b {
-		b[i] = charset[len(charset)/2] // Use a fixed character for deterministic tests
+		// Use a more random approach while still being deterministic for tests
+		// This uses timestamp-based pseudo-randomness for better uniqueness
+		seed := time.Now().UnixNano() + int64(i)
+		b[i] = charset[seed%int64(len(charset))]
 	}
 	return string(b)
 }

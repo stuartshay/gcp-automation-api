@@ -126,16 +126,33 @@ func (am *AuthMiddleware) ValidateGoogleIDToken(ctx context.Context, idToken str
 		return nil, fmt.Errorf("failed to validate Google ID token: %w", err)
 	}
 
+	// Safely extract claims with type assertions
+	email, ok := payload.Claims["email"].(string)
+	if !ok {
+		return nil, fmt.Errorf("missing or invalid 'email' claim in Google ID token")
+	}
+	emailVerified, ok := payload.Claims["email_verified"].(bool)
+	if !ok {
+		return nil, fmt.Errorf("missing or invalid 'email_verified' claim in Google ID token")
+	}
+
+	// Optional fields - use safe extraction with fallback to empty string
+	name, _ := payload.Claims["name"].(string)
+	givenName, _ := payload.Claims["given_name"].(string)
+	familyName, _ := payload.Claims["family_name"].(string)
+	picture, _ := payload.Claims["picture"].(string)
+	locale, _ := payload.Claims["locale"].(string)
+
 	// Extract user information from payload
 	userInfo := &models.GoogleUserInfo{
 		Sub:           payload.Subject,
-		Email:         payload.Claims["email"].(string),
-		EmailVerified: payload.Claims["email_verified"].(bool),
-		Name:          payload.Claims["name"].(string),
-		GivenName:     payload.Claims["given_name"].(string),
-		FamilyName:    payload.Claims["family_name"].(string),
-		Picture:       payload.Claims["picture"].(string),
-		Locale:        payload.Claims["locale"].(string),
+		Email:         email,
+		EmailVerified: emailVerified,
+		Name:          name,
+		GivenName:     givenName,
+		FamilyName:    familyName,
+		Picture:       picture,
+		Locale:        locale,
 	}
 
 	// Verify email is verified

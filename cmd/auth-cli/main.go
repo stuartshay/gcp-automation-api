@@ -374,12 +374,7 @@ func exchangeCodeForToken(code string) error {
 		return fmt.Errorf("token exchange failed: %s", string(body))
 	}
 
-	var tokenResp struct {
-		AccessToken string `json:"access_token"`
-		IDToken     string `json:"id_token"`
-		TokenType   string `json:"token_type"`
-		ExpiresIn   int    `json:"expires_in"`
-	}
+	var tokenResp models.OAuthTokenResponse
 
 	if err := json.Unmarshal(body, &tokenResp); err != nil {
 		return fmt.Errorf("failed to parse token response: %w", err)
@@ -485,17 +480,32 @@ func getCredentialsPath() string {
 
 // validateFilePath ensures the file path is safe and within expected boundaries
 func validateFilePath(path string) error {
-	// Clean the path to resolve any relative path components
-	cleanPath := filepath.Clean(path)
-
-	// Check for path traversal attempts
-	if strings.Contains(cleanPath, "..") {
-		return fmt.Errorf("path traversal not allowed")
+	// Get absolute path to resolve any path traversal attempts
+	absPath, err := filepath.Abs(path)
+	if err != nil {
+		return fmt.Errorf("failed to resolve absolute path: %w", err)
 	}
 
-	// Ensure the path contains expected credentials directory
-	if !strings.Contains(cleanPath, cfg.CredentialsDir) {
-		return fmt.Errorf("invalid credentials path")
+	// Get expected credentials directory absolute path
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return fmt.Errorf("failed to get user home directory: %w", err)
+	}
+	expectedDir := filepath.Join(homeDir, cfg.CredentialsDir)
+	absExpectedDir, err := filepath.Abs(expectedDir)
+	if err != nil {
+		return fmt.Errorf("failed to resolve expected directory path: %w", err)
+	}
+
+	// Check if the resolved path is within the expected credentials directory
+	if !strings.HasPrefix(absPath, absExpectedDir+string(os.PathSeparator)) &&
+		absPath != absExpectedDir {
+		return fmt.Errorf("path is outside allowed credentials directory")
+	}
+
+	// Additional check for any remaining path traversal patterns
+	if strings.Contains(absPath, "..") {
+		return fmt.Errorf("path traversal not allowed")
 	}
 
 	return nil

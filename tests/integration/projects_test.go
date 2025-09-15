@@ -150,8 +150,11 @@ func testCreateProject(t *testing.T, setup *TestSetup, token string) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			// Reset mock expectations
+			resetMockExpectations(setup)
+
 			// Setup mock if not using real GCP
-			if !setup.Config.UseRealGCP && setup.MockService != nil {
+			if tt.mockSetup != nil {
 				tt.mockSetup(setup.MockService)
 			}
 
@@ -188,10 +191,7 @@ func testCreateProject(t *testing.T, setup *TestSetup, token string) {
 			}
 
 			// Reset mock expectations
-			if !setup.Config.UseRealGCP && setup.MockService != nil {
-				setup.MockService.ExpectedCalls = nil
-				setup.MockService.Calls = nil
-			}
+			resetMockExpectations(setup)
 		})
 	}
 }
@@ -246,8 +246,11 @@ func testGetProject(t *testing.T, setup *TestSetup, token string) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			// Reset mock expectations
+			resetMockExpectations(setup)
+
 			// Setup mock if not using real GCP
-			if !setup.Config.UseRealGCP && setup.MockService != nil {
+			if tt.mockSetup != nil {
 				tt.mockSetup(setup.MockService)
 			}
 
@@ -275,10 +278,8 @@ func testGetProject(t *testing.T, setup *TestSetup, token string) {
 			}
 
 			// Reset mock expectations
-			if !setup.Config.UseRealGCP && setup.MockService != nil {
-				setup.MockService.ExpectedCalls = nil
-				setup.MockService.Calls = nil
-			}
+			// Reset mock expectations
+			resetMockExpectations(setup)
 		})
 	}
 }
@@ -327,8 +328,11 @@ func testDeleteProject(t *testing.T, setup *TestSetup, token string) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			// Reset mock expectations
+			resetMockExpectations(setup)
+
 			// Setup mock if not using real GCP
-			if !setup.Config.UseRealGCP && setup.MockService != nil {
+			if tt.mockSetup != nil {
 				tt.mockSetup(setup.MockService)
 			}
 
@@ -351,10 +355,8 @@ func testDeleteProject(t *testing.T, setup *TestSetup, token string) {
 			}
 
 			// Reset mock expectations
-			if !setup.Config.UseRealGCP && setup.MockService != nil {
-				setup.MockService.ExpectedCalls = nil
-				setup.MockService.Calls = nil
-			}
+			// Reset mock expectations
+			resetMockExpectations(setup)
 		})
 	}
 }

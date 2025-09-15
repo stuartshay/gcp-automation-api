@@ -12,16 +12,16 @@ definitions:
         type: string
       storage_class:
         enum:
-          - STANDARD
-          - NEARLINE
-          - COLDLINE
-          - ARCHIVE
+        - STANDARD
+        - NEARLINE
+        - COLDLINE
+        - ARCHIVE
         type: string
       versioning:
         type: boolean
     required:
-      - location
-      - name
+    - location
+    - name
     type: object
   github_com_stuartshay_gcp-automation-api_internal_models.BucketResponse:
     properties:
@@ -64,13 +64,13 @@ definitions:
       parent_type:
         description: '"organization" or "folder"'
         enum:
-          - organization
-          - folder
+        - organization
+        - folder
         type: string
     required:
-      - display_name
-      - parent_id
-      - parent_type
+    - display_name
+    - parent_id
+    - parent_type
     type: object
   github_com_stuartshay_gcp-automation-api_internal_models.FolderResponse:
     properties:
@@ -104,14 +104,14 @@ definitions:
       parent_type:
         description: '"organization" or "folder"'
         enum:
-          - organization
-          - folder
+        - organization
+        - folder
         type: string
       project_id:
         type: string
     required:
-      - display_name
-      - project_id
+    - display_name
+    - project_id
     type: object
   github_com_stuartshay_gcp-automation-api_internal_models.ProjectResponse:
     properties:
@@ -154,332 +154,328 @@ info:
     url: https://opensource.org/licenses/MIT
   termsOfService: http://swagger.io/terms/
   title: GCP Automation API
-  version: '1.0'
+  version: "1.0"
 paths:
   /buckets:
     post:
       consumes:
-        - application/json
+      - application/json
       description: Create a new Google Cloud Storage bucket with the specified parameters
       parameters:
-        - description: Bucket creation request
-          in: body
-          name: bucket
-          required: true
-          schema:
-            $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.BucketRequest'
+      - description: Bucket creation request
+        in: body
+        name: bucket
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.BucketRequest'
       produces:
-        - application/json
+      - application/json
       responses:
-        '201':
+        "201":
           description: Created
           schema:
             allOf:
-              - $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse'
-              - properties:
-                  data:
-                    $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.BucketResponse'
-                type: object
-        '400':
+            - $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.BucketResponse'
+              type: object
+        "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
-        '500':
+        "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
       security:
-        - BearerAuth: []
+      - BearerAuth: []
       summary: Create a new Cloud Storage bucket
       tags:
-        - Buckets
+      - Buckets
   /buckets/{name}:
     delete:
       consumes:
-        - application/json
+      - application/json
       description: Delete a Google Cloud Storage bucket by its bucket name
       parameters:
-        - description: Bucket name
-          in: path
-          name: name
-          required: true
-          type: string
+      - description: Bucket name
+        in: path
+        name: name
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
-        '200':
+        "200":
           description: OK
           schema:
             $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse'
-        '400':
+        "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
-        '500':
+        "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
       security:
-        - BearerAuth: []
+      - BearerAuth: []
       summary: Delete a Cloud Storage bucket
       tags:
-        - Buckets
+      - Buckets
     get:
       consumes:
-        - application/json
-      description:
-        Retrieve details of a Google Cloud Storage bucket by its bucket
+      - application/json
+      description: Retrieve details of a Google Cloud Storage bucket by its bucket
         name
       parameters:
-        - description: Bucket name
-          in: path
-          name: name
-          required: true
-          type: string
+      - description: Bucket name
+        in: path
+        name: name
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
-        '200':
+        "200":
           description: OK
           schema:
             allOf:
-              - $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse'
-              - properties:
-                  data:
-                    $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.BucketResponse'
-                type: object
-        '400':
+            - $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.BucketResponse'
+              type: object
+        "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
-        '404':
+        "404":
           description: Not Found
           schema:
             $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
       security:
-        - BearerAuth: []
+      - BearerAuth: []
       summary: Get a Cloud Storage bucket by name
       tags:
-        - Buckets
+      - Buckets
   /folders:
     post:
       consumes:
-        - application/json
+      - application/json
       description: Create a new Google Cloud Platform folder with the specified parameters
       parameters:
-        - description: Folder creation request
-          in: body
-          name: folder
-          required: true
-          schema:
-            $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.FolderRequest'
+      - description: Folder creation request
+        in: body
+        name: folder
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.FolderRequest'
       produces:
-        - application/json
+      - application/json
       responses:
-        '201':
+        "201":
           description: Created
           schema:
             allOf:
-              - $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse'
-              - properties:
-                  data:
-                    $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.FolderResponse'
-                type: object
-        '400':
+            - $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.FolderResponse'
+              type: object
+        "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
-        '500':
+        "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
       security:
-        - BearerAuth: []
+      - BearerAuth: []
       summary: Create a new GCP folder
       tags:
-        - Folders
+      - Folders
   /folders/{id}:
     delete:
       consumes:
-        - application/json
+      - application/json
       description: Delete a Google Cloud Platform folder by its folder ID
       parameters:
-        - description: Folder ID
-          in: path
-          name: id
-          required: true
-          type: string
+      - description: Folder ID
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
-        '200':
+        "200":
           description: OK
           schema:
             $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse'
-        '400':
+        "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
-        '500':
+        "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
       security:
-        - BearerAuth: []
+      - BearerAuth: []
       summary: Delete a GCP folder
       tags:
-        - Folders
+      - Folders
     get:
       consumes:
-        - application/json
-      description:
-        Retrieve details of a Google Cloud Platform folder by its folder
+      - application/json
+      description: Retrieve details of a Google Cloud Platform folder by its folder
         ID
       parameters:
-        - description: Folder ID
-          in: path
-          name: id
-          required: true
-          type: string
+      - description: Folder ID
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
-        '200':
+        "200":
           description: OK
           schema:
             allOf:
-              - $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse'
-              - properties:
-                  data:
-                    $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.FolderResponse'
-                type: object
-        '400':
+            - $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.FolderResponse'
+              type: object
+        "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
-        '404':
+        "404":
           description: Not Found
           schema:
             $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
       security:
-        - BearerAuth: []
+      - BearerAuth: []
       summary: Get a GCP folder by ID
       tags:
-        - Folders
+      - Folders
   /projects:
     post:
       consumes:
-        - application/json
+      - application/json
       description: Create a new Google Cloud Platform project with the specified parameters
       parameters:
-        - description: Project creation request
-          in: body
-          name: project
-          required: true
-          schema:
-            $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ProjectRequest'
+      - description: Project creation request
+        in: body
+        name: project
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ProjectRequest'
       produces:
-        - application/json
+      - application/json
       responses:
-        '201':
+        "201":
           description: Created
           schema:
             allOf:
-              - $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse'
-              - properties:
-                  data:
-                    $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ProjectResponse'
-                type: object
-        '400':
+            - $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ProjectResponse'
+              type: object
+        "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
-        '500':
+        "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
       security:
-        - BearerAuth: []
+      - BearerAuth: []
       summary: Create a new GCP project
       tags:
-        - Projects
+      - Projects
   /projects/{id}:
     delete:
       consumes:
-        - application/json
+      - application/json
       description: Delete a Google Cloud Platform project by its project ID
       parameters:
-        - description: Project ID
-          in: path
-          name: id
-          required: true
-          type: string
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
-        '200':
+        "200":
           description: OK
           schema:
             $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse'
-        '400':
+        "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
-        '500':
+        "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
       security:
-        - BearerAuth: []
+      - BearerAuth: []
       summary: Delete a GCP project
       tags:
-        - Projects
+      - Projects
     get:
       consumes:
-        - application/json
-      description:
-        Retrieve details of a Google Cloud Platform project by its project
+      - application/json
+      description: Retrieve details of a Google Cloud Platform project by its project
         ID
       parameters:
-        - description: Project ID
-          in: path
-          name: id
-          required: true
-          type: string
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
-        '200':
+        "200":
           description: OK
           schema:
             allOf:
-              - $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse'
-              - properties:
-                  data:
-                    $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ProjectResponse'
-                type: object
-        '400':
+            - $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ProjectResponse'
+              type: object
+        "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
-        '404':
+        "404":
           description: Not Found
           schema:
             $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
       security:
-        - BearerAuth: []
+      - BearerAuth: []
       summary: Get a GCP project by ID
       tags:
-        - Projects
+      - Projects
 schemes:
-  - http
-  - https
+- http
+- https
 securityDefinitions:
   BearerAuth:
-    description:
-      'JWT Authorization header using the Bearer scheme. Example: "Authorization:
+    description: 'JWT Authorization header using the Bearer scheme. Example: "Authorization:
       Bearer {token}"'
     in: header
     name: Authorization
     type: apiKey
-swagger: '2.0'
+swagger: "2.0"

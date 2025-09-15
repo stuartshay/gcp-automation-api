@@ -482,9 +482,4 @@ securityDefinitions:
     in: header
     name: Authorization
     type: apiKey
-servers:
-  - url: http://localhost:8090
-    description: Local development server
-  - url: https://gcp-automation-api-902997681858.us-central1.run.app
-    description: Remote Cloud Run deployment
 swagger: '2.0'

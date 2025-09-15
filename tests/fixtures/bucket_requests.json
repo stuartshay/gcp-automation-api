@@ -1,0 +1,50 @@
+{
+  "valid_bucket": {
+    "name": "test-bucket-123",
+    "location": "us-central1",
+    "storage_class": "STANDARD",
+    "labels": {
+      "environment": "test",
+      "team": "platform"
+    },
+    "versioning": true
+  },
+  "minimal_bucket": {
+    "name": "minimal-bucket-456",
+    "location": "us-east1"
+  },
+  "nearline_bucket": {
+    "name": "nearline-bucket-789",
+    "location": "europe-west1",
+    "storage_class": "NEARLINE",
+    "labels": {
+      "environment": "staging"
+    },
+    "versioning": false
+  },
+  "coldline_bucket": {
+    "name": "coldline-bucket-101",
+    "location": "asia-southeast1",
+    "storage_class": "COLDLINE",
+    "versioning": true
+  },
+  "invalid_bucket_name": {
+    "name": "INVALID-BUCKET-NAME!",
+    "location": "us-central1"
+  },
+  "missing_name": {
+    "location": "us-central1"
+  },
+  "missing_location": {
+    "name": "missing-location-bucket"
+  },
+  "invalid_storage_class": {
+    "name": "invalid-storage-bucket",
+    "location": "us-central1",
+    "storage_class": "INVALID"
+  },
+  "invalid_location": {
+    "name": "invalid-location-bucket",
+    "location": "invalid-location"
+  }
+}

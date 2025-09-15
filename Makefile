@@ -1,6 +1,8 @@
 # Build variables
 BINARY_NAME=gcp-automation-api
 BINARY_PATH=./bin/$(BINARY_NAME)
+AUTH_CLI_NAME=auth-cli
+AUTH_CLI_PATH=./bin/$(AUTH_CLI_NAME)
 GO_MODULE=github.com/stuartshay/gcp-automation-api
 
 # Go commands
@@ -11,16 +13,26 @@ GOTEST=$(GOCMD) test
 GOGET=$(GOCMD) get
 GOMOD=$(GOCMD) mod
 
-.PHONY: build clean test deps run dev docker help
+.PHONY: build build-auth-cli build-all-binaries clean test deps run run-auth-cli dev docker help
 
 # Default target
-all: clean deps test build
+all: clean deps test build-all-binaries
 
-# Build the application
+# Build the API server
 build:
 	@echo "Building $(BINARY_NAME)..."
 	@mkdir -p bin
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(GOBUILD) -ldflags="-w -s" -o $(BINARY_PATH) ./cmd/server
+
+# Build the auth CLI tool
+build-auth-cli:
+	@echo "Building $(AUTH_CLI_NAME)..."
+	@mkdir -p bin
+	$(GOBUILD) -ldflags="-w -s" -o $(AUTH_CLI_PATH) ./cmd/auth-cli
+
+# Build both server and auth-cli
+build-all-binaries: build build-auth-cli
+	@echo "Built both $(BINARY_NAME) and $(AUTH_CLI_NAME)"
 
 # Clean build artifacts
 clean:
@@ -34,11 +46,31 @@ test:
 	@echo "Running tests..."
 	$(GOTEST) -v ./tests/...
 
+# Run integration tests (mock mode)
+test-integration:
+	@echo "Running integration tests (mock mode)..."
+	$(GOTEST) -v ./tests/integration/...
+
+# Run integration tests with real GCP (requires credentials)
+test-integration-real:
+	@echo "Running integration tests with real GCP..."
+	TEST_MODE=integration $(GOTEST) -v ./tests/integration/...
+
 # Run tests with coverage
 test-coverage:
 	@echo "Running tests with coverage..."
 	$(GOTEST) -v -coverprofile=coverage.out ./tests/...
 	$(GOCMD) tool cover -html=coverage.out -o coverage.html
+
+# Run integration tests with coverage
+test-integration-coverage:
+	@echo "Running integration tests with coverage..."
+	$(GOTEST) -v -coverprofile=integration-coverage.out ./tests/integration/...
+	$(GOCMD) tool cover -html=integration-coverage.out -o integration-coverage.html
+
+# Run all tests (unit + integration)
+test-all: test test-integration
+	@echo "All tests completed"
 
 # Install dependencies
 deps:
@@ -56,13 +88,23 @@ run: build
 	@echo "Running $(BINARY_NAME)..."
 	$(BINARY_PATH)
 
+# Run the auth CLI tool
+run-auth-cli: build-auth-cli
+	@echo "Running $(AUTH_CLI_NAME)..."
+	$(AUTH_CLI_PATH)
+
 # Build for multiple platforms
 build-all:
 	@echo "Building for multiple platforms..."
 	@mkdir -p bin
+	# Build API server for multiple platforms
 	GOOS=linux GOARCH=amd64 $(GOBUILD) -ldflags="-w -s" -o bin/$(BINARY_NAME)-linux-amd64 ./cmd/server
 	GOOS=darwin GOARCH=amd64 $(GOBUILD) -ldflags="-w -s" -o bin/$(BINARY_NAME)-darwin-amd64 ./cmd/server
 	GOOS=windows GOARCH=amd64 $(GOBUILD) -ldflags="-w -s" -o bin/$(BINARY_NAME)-windows-amd64.exe ./cmd/server
+	# Build auth-cli for multiple platforms
+	GOOS=linux GOARCH=amd64 $(GOBUILD) -ldflags="-w -s" -o bin/$(AUTH_CLI_NAME)-linux-amd64 ./cmd/auth-cli
+	GOOS=darwin GOARCH=amd64 $(GOBUILD) -ldflags="-w -s" -o bin/$(AUTH_CLI_NAME)-darwin-amd64 ./cmd/auth-cli
+	GOOS=windows GOARCH=amd64 $(GOBUILD) -ldflags="-w -s" -o bin/$(AUTH_CLI_NAME)-windows-amd64.exe ./cmd/auth-cli
 
 # Lint the code
 lint:
@@ -100,17 +142,24 @@ docker-run:
 # Help
 help:
 	@echo "Available targets:"
-	@echo "  build        - Build the application"
-	@echo "  clean        - Clean build artifacts"
-	@echo "  test         - Run tests"
-	@echo "  test-coverage - Run tests with coverage"
-	@echo "  deps         - Install dependencies"
-	@echo "  dev          - Run in development mode"
-	@echo "  run          - Build and run the application"
-	@echo "  build-all    - Build for multiple platforms"
-	@echo "  lint         - Run linter"
-	@echo "  fmt          - Format code"
-	@echo "  security     - Check for security vulnerabilities"
-	@echo "  docker       - Build Docker image"
-	@echo "  docker-run   - Run Docker container"
-	@echo "  help         - Show this help message"
+	@echo "  build                    - Build the API server"
+	@echo "  build-auth-cli           - Build the auth CLI tool"
+	@echo "  build-all-binaries       - Build both server and auth-cli"
+	@echo "  clean                    - Clean build artifacts"
+	@echo "  test                     - Run unit tests"
+	@echo "  test-integration         - Run integration tests (mock mode)"
+	@echo "  test-integration-real    - Run integration tests with real GCP"
+	@echo "  test-coverage            - Run tests with coverage"
+	@echo "  test-integration-coverage - Run integration tests with coverage"
+	@echo "  test-all                 - Run all tests (unit + integration)"
+	@echo "  deps                     - Install dependencies"
+	@echo "  dev                      - Run in development mode"
+	@echo "  run                      - Build and run the API server"
+	@echo "  run-auth-cli             - Build and run the auth CLI tool"
+	@echo "  build-all                - Build for multiple platforms (server + auth-cli)"
+	@echo "  lint                     - Run linter"
+	@echo "  fmt                      - Format code"
+	@echo "  security                 - Check for security vulnerabilities"
+	@echo "  docker                   - Build Docker image"
+	@echo "  docker-run               - Run Docker container"
+	@echo "  help                     - Show this help message"

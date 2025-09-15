@@ -20,10 +20,15 @@
 // @license.name MIT
 // @license.url https://opensource.org/licenses/MIT
 //
-// @host localhost:8090
+// @host localhost:8080
 // @BasePath /api/v1
 //
 // @schemes http https
+//
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+// @description JWT Authorization header using the Bearer scheme. Example: "Authorization: Bearer {token}"
 package main
 
 import (
@@ -43,6 +48,7 @@ import (
 	_ "github.com/stuartshay/gcp-automation-api/docs" // Import generated docs
 	"github.com/stuartshay/gcp-automation-api/internal/config"
 	"github.com/stuartshay/gcp-automation-api/internal/handlers"
+	authmiddleware "github.com/stuartshay/gcp-automation-api/internal/middleware"
 	"github.com/stuartshay/gcp-automation-api/internal/services"
 	echoSwagger "github.com/swaggo/echo-swagger"
 )
@@ -90,11 +96,14 @@ func main() {
 		log.Fatalf("Failed to initialize GCP service: %v", err)
 	}
 
+	// Initialize authentication service
+	authService := services.NewAuthService(cfg)
+
 	// Initialize handlers
-	handler := handlers.NewHandler(gcpService)
+	handler := handlers.NewHandler(gcpService, authService)
 
 	// Setup router
-	router := setupRouter(handler, cfg)
+	router := setupRouter(handler, authService, cfg)
 
 	// Create HTTP server
 	srv := &http.Server{
@@ -131,7 +140,7 @@ func main() {
 	log.Println("Server exited")
 }
 
-func setupRouter(handler *handlers.Handler, cfg *config.Config) *echo.Echo {
+func setupRouter(handler *handlers.Handler, authService *services.AuthService, cfg *config.Config) *echo.Echo {
 	// Create Echo instance
 	e := echo.New()
 
@@ -151,13 +160,17 @@ func setupRouter(handler *handlers.Handler, cfg *config.Config) *echo.Echo {
 	// Swagger endpoint
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 
-	// Health check endpoint
+	// Health check endpoint (no authentication required)
 	e.GET("/health", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, map[string]string{"status": "healthy"})
 	})
 
-	// API v1 routes
+	// Create authentication middleware
+	authMiddleware := authmiddleware.NewAuthMiddleware(cfg)
+
+	// API v1 routes (all require authentication)
 	v1 := e.Group("/api/v1")
+	v1.Use(authMiddleware.RequireAuth())
 	{
 		// Project endpoints
 		projects := v1.Group("/projects")

@@ -27,7 +27,125 @@ The API is built with:
 
 ## Authentication
 
-The API uses Google Cloud Service Account authentication. Ensure you have:
+The API uses **JWT (JSON Web Token) authentication** with optional Google OAuth integration.
+
+### JWT Authentication
+
+All API endpoints (except `/health`) require JWT authentication:
+
+1. **Obtain a JWT Token**: Use one of the authentication methods below
+2. **Include in Requests**: Add the `Authorization: Bearer <token>` header to all requests
+3. **Token Expiration**: Tokens are valid for 24 hours by default
+
+### Authentication Methods
+
+#### 1. Google OAuth Login (Production)
+
+```bash
+POST /auth/login
+Content-Type: application/json
+
+{
+  "google_id_token": "your-google-id-token-here"
+}
+```
+
+**Response:**
+
+```json
+{
+  "message": "Login successful",
+  "data": {
+    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "expires_in": 86400,
+    "token_type": "Bearer"
+  }
+}
+```
+
+#### 2. Test Token Generation (Development Only)
+
+```bash
+POST /auth/test-token
+Content-Type: application/json
+
+{
+  "user_id": "test-user-123",
+  "email": "test@example.com",
+  "name": "Test User"
+}
+```
+
+**Response:**
+
+```json
+{
+  "message": "Test token generated successfully",
+  "data": {
+    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "expires_in": 86400,
+    "token_type": "Bearer"
+  }
+}
+```
+
+### Using JWT Tokens
+
+Include the JWT token in the Authorization header for all API requests:
+
+```bash
+curl -X GET "http://localhost:8090/api/v1/projects/my-project" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+```
+
+### Swagger UI Authentication
+
+The Swagger UI includes a convenient **"Authorize" button** for JWT authentication:
+
+1. Open Swagger UI: [http://localhost:8090/swagger/index.html](http://localhost:8090/swagger/index.html)
+2. Click the **"Authorize"** button (lock icon)
+3. Enter your JWT token in the format: `Bearer <your-token>`
+4. Click **"Authorize"**
+5. All subsequent API calls will automatically include the token
+
+### Authentication Endpoints
+
+| Endpoint | Method | Purpose | Auth Required |
+|----------|--------|---------|---------------|
+| `/auth/login` | POST | Google OAuth login | No |
+| `/auth/test-token` | POST | Generate test token (dev only) | No |
+| `/auth/refresh` | POST | Refresh JWT token | Yes |
+| `/auth/profile` | GET | Get user profile | Yes |
+
+### Environment Variables
+
+Configure JWT authentication with these environment variables:
+
+```bash
+# JWT Configuration
+JWT_SECRET=your-secret-key-here
+JWT_EXPIRATION_HOURS=24
+
+# Google OAuth (optional)
+ENABLE_GOOGLE_AUTH=true
+GOOGLE_CLIENT_ID=your-google-client-id
+```
+
+### Error Responses
+
+Authentication errors return standardized responses:
+
+```json
+{
+  "error": "unauthorized",
+  "message": "Invalid or missing JWT token",
+  "code": 401
+}
+```
+
+## GCP Service Account Authentication
+
+For backend GCP operations, the API uses Google Cloud Service Account authentication:
 
 1. A GCP Service Account with appropriate permissions
 2. Service Account JSON key file

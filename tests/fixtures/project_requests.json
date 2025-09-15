@@ -1,0 +1,38 @@
+{
+  "valid_project": {
+    "project_id": "test-project-123",
+    "display_name": "Test Project",
+    "parent_id": "123456789",
+    "parent_type": "organization",
+    "labels": {
+      "environment": "test",
+      "team": "platform"
+    }
+  },
+  "minimal_project": {
+    "project_id": "minimal-project-456",
+    "display_name": "Minimal Project"
+  },
+  "folder_parent_project": {
+    "project_id": "folder-project-789",
+    "display_name": "Folder Parent Project",
+    "parent_id": "987654321",
+    "parent_type": "folder",
+    "labels": {
+      "environment": "development"
+    }
+  },
+  "invalid_project_id": {
+    "project_id": "INVALID-PROJECT-ID!",
+    "display_name": "Invalid Project"
+  },
+  "missing_project_id": {
+    "display_name": "Missing Project ID"
+  },
+  "invalid_parent_type": {
+    "project_id": "invalid-parent-project",
+    "display_name": "Invalid Parent Type",
+    "parent_id": "123456789",
+    "parent_type": "invalid"
+  }
+}

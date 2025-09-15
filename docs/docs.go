@@ -26,6 +26,11 @@ const docTemplate = `{
     "paths": {
         "/buckets": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Create a new Google Cloud Storage bucket with the specified parameters",
                 "consumes": [
                     "application/json"
@@ -84,6 +89,11 @@ const docTemplate = `{
         },
         "/buckets/{name}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Retrieve details of a Google Cloud Storage bucket by its bucket name",
                 "consumes": [
                     "application/json"
@@ -138,6 +148,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Delete a Google Cloud Storage bucket by its bucket name",
                 "consumes": [
                     "application/json"
@@ -182,6 +197,11 @@ const docTemplate = `{
         },
         "/folders": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Create a new Google Cloud Platform folder with the specified parameters",
                 "consumes": [
                     "application/json"
@@ -240,6 +260,11 @@ const docTemplate = `{
         },
         "/folders/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Retrieve details of a Google Cloud Platform folder by its folder ID",
                 "consumes": [
                     "application/json"
@@ -294,6 +319,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Delete a Google Cloud Platform folder by its folder ID",
                 "consumes": [
                     "application/json"
@@ -338,6 +368,11 @@ const docTemplate = `{
         },
         "/projects": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Create a new Google Cloud Platform project with the specified parameters",
                 "consumes": [
                     "application/json"
@@ -396,6 +431,11 @@ const docTemplate = `{
         },
         "/projects/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Retrieve details of a Google Cloud Platform project by its project ID",
                 "consumes": [
                     "application/json"
@@ -450,6 +490,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Delete a Google Cloud Platform project by its project ID",
                 "consumes": [
                     "application/json"
@@ -703,13 +748,21 @@ const docTemplate = `{
                 }
             }
         }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "description": "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
     }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:8090",
+	Host:             "localhost:8080",
 	BasePath:         "/api/v1",
 	Schemes:          []string{"http", "https"},
 	Title:            "GCP Automation API",

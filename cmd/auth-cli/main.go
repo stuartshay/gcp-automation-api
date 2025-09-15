@@ -497,15 +497,13 @@ func validateFilePath(path string) error {
 		return fmt.Errorf("failed to resolve expected directory path: %w", err)
 	}
 
-	// Check if the resolved path is within the expected credentials directory
-	if !strings.HasPrefix(absPath, absExpectedDir+string(os.PathSeparator)) &&
-		absPath != absExpectedDir {
-		return fmt.Errorf("path is outside allowed credentials directory")
+	// Check if the resolved path is within the expected directory using filepath.Rel
+	rel, err := filepath.Rel(absExpectedDir, absPath)
+	if err != nil {
+		return fmt.Errorf("failed to compute relative path: %w", err)
 	}
-
-	// Additional check for any remaining path traversal patterns
-	if strings.Contains(absPath, "..") {
-		return fmt.Errorf("path traversal not allowed")
+	if strings.HasPrefix(rel, ".."+string(os.PathSeparator)) || rel == ".." || filepath.IsAbs(rel) {
+		return fmt.Errorf("path is outside allowed credentials directory")
 	}
 
 	return nil
@@ -529,6 +527,14 @@ func openBrowser(urlStr string) error {
 	// Only allow http and https schemes
 	if parsedURL.Scheme != "http" && parsedURL.Scheme != "https" {
 		return fmt.Errorf("unsupported URL scheme: %s", parsedURL.Scheme)
+	}
+
+	// Additional validation to ensure the URL doesn't contain shell metacharacters
+	shellMetaChars := []string{";", "&", "|", "$", "`", "(", ")", "<", ">", "\\", "\"", "'"}
+	for _, char := range shellMetaChars {
+		if strings.Contains(urlStr, char) {
+			return fmt.Errorf("URL contains potentially dangerous characters")
+		}
 	}
 
 	var cmd string

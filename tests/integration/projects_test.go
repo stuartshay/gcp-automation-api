@@ -278,7 +278,6 @@ func testGetProject(t *testing.T, setup *TestSetup, token string) {
 			}
 
 			// Reset mock expectations
-			// Reset mock expectations
 			resetMockExpectations(setup)
 		})
 	}
@@ -354,7 +353,6 @@ func testDeleteProject(t *testing.T, setup *TestSetup, token string) {
 				AssertSuccessResponse(t, rec.Body.Bytes(), "Project deleted successfully")
 			}
 
-			// Reset mock expectations
 			// Reset mock expectations
 			resetMockExpectations(setup)
 		})

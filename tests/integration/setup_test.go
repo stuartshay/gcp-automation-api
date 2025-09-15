@@ -1,7 +1,9 @@
 package integration
 
 import (
+	"crypto/rand"
 	"encoding/json"
+	"math/big"
 	"os"
 	"testing"
 	"time"
@@ -185,15 +187,20 @@ func GetTestFolderName(prefix string) string {
 	return prefix + "-" + generateRandomString(8)
 }
 
-// generateRandomString generates a random string of specified length
+// generateRandomString generates a cryptographically secure random string of specified length
 func generateRandomString(length int) string {
 	const charset = "abcdefghijklmnopqrstuvwxyz0123456789"
 	b := make([]byte, length)
 	for i := range b {
-		// Use a more random approach while still being deterministic for tests
-		// This uses timestamp-based pseudo-randomness for better uniqueness
-		seed := time.Now().UnixNano() + int64(i)
-		b[i] = charset[seed%int64(len(charset))]
+		// Use crypto/rand for secure random generation
+		n, err := rand.Int(rand.Reader, big.NewInt(int64(len(charset))))
+		if err != nil {
+			// Fallback to timestamp-based generation if crypto/rand fails
+			seed := time.Now().UnixNano() + int64(i)
+			b[i] = charset[seed%int64(len(charset))]
+		} else {
+			b[i] = charset[n.Int64()]
+		}
 	}
 	return string(b)
 }

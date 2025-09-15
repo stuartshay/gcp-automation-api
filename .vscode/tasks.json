@@ -119,7 +119,10 @@
 				},
 				"shell": {
 					"executable": "/bin/bash",
-					"args": ["-c", "go test -v -race -coverprofile=coverage.out $(go list ./... | grep -v '/tests$' | grep -v '/tests/' | grep -v '/mocks$')"]
+					"args": [
+						"-c",
+						"go test -v -race -coverprofile=coverage.out $(go list ./... | grep -v '/tests$' | grep -v '/tests/' | grep -v '/mocks$')"
+					]
 				}
 			}
 		},

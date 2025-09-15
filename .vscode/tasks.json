@@ -75,6 +75,7 @@
 			"args": [
 				"test",
 				"-v",
+				"-race",
 				"./..."
 			],
 			"group": {
@@ -92,12 +93,35 @@
 			"problemMatcher": "$go"
 		},
 		{
+			"label": "Run Tests with Coverage",
+			"type": "shell",
+			"command": "go",
+			"args": [
+				"test",
+				"-v",
+				"-race",
+				"-coverprofile=coverage.out",
+				"./..."
+			],
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": false
+			},
+			"problemMatcher": "$go"
+		},
+		{
 			"label": "Run Validator Tests",
 			"type": "shell",
 			"command": "go",
 			"args": [
 				"test",
 				"-v",
+				"-race",
 				"./internal/validators/"
 			],
 			"group": "test",

@@ -88,6 +88,19 @@ run: build
 	@echo "Running $(BINARY_NAME)..."
 	$(BINARY_PATH)
 
+# Generate a development JWT token and print to terminal
+generate-jwt: build-auth-cli
+	@if [ -z "$$USER_ID" ] || [ -z "$$EMAIL" ] || [ -z "$$NAME" ]; then \
+		echo "Usage: make generate-jwt USER_ID=<id> EMAIL=<email> NAME=<name>"; \
+		exit 1; \
+	fi
+	@TOKEN=`$(AUTH_CLI_PATH) test-token --user-id=$$USER_ID --email=$$EMAIL --name=$$NAME | grep '^Token:' | sed 's/Token: //'` && \
+	if [ -z "$$TOKEN" ]; then \
+		echo "Failed to generate JWT token"; \
+		exit 1; \
+	else \
+		echo "JWT Token: $$TOKEN"; \
+	fi
 # Run the auth CLI tool
 run-auth-cli: build-auth-cli
 	@echo "Running $(AUTH_CLI_NAME)..."
@@ -106,6 +119,7 @@ build-all:
 	GOOS=darwin GOARCH=amd64 $(GOBUILD) -ldflags="-w -s" -o bin/$(AUTH_CLI_NAME)-darwin-amd64 ./cmd/auth-cli
 	GOOS=windows GOARCH=amd64 $(GOBUILD) -ldflags="-w -s" -o bin/$(AUTH_CLI_NAME)-windows-amd64.exe ./cmd/auth-cli
 
+	@echo "  generate-jwt             - Generate a development JWT token (usage: make generate-jwt USER_ID=<id> EMAIL=<email> NAME=<name>)"
 # Lint the code
 lint:
 	@echo "Running linter..."

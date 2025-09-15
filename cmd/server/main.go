@@ -33,6 +33,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
@@ -51,6 +52,7 @@ import (
 	authmiddleware "github.com/stuartshay/gcp-automation-api/internal/middleware"
 	"github.com/stuartshay/gcp-automation-api/internal/services"
 	echoSwagger "github.com/swaggo/echo-swagger"
+	"github.com/swaggo/swag"
 )
 
 // setupLogging configures logging to write to both file and console
@@ -76,6 +78,32 @@ func setupLogging(cfg *config.Config) error {
 
 	log.Printf("Logging configured - writing to: %s", cfg.LogFile)
 	return nil
+}
+
+// createDynamicSwaggerHandler creates a custom Swagger handler that modifies the JSON response
+func createDynamicSwaggerHandler(cfg *config.Config) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		// Check if this is a request for the swagger.json
+		if c.Request().URL.Path == "/swagger/doc.json" {
+			// Get the original swagger spec
+			doc := swag.GetSwagger("swagger")
+			if doc != nil {
+				// Parse the JSON and modify host and schemes
+				var swaggerSpec map[string]interface{}
+				if err := json.Unmarshal([]byte(doc.ReadDoc()), &swaggerSpec); err == nil {
+					// Update host and schemes
+					swaggerSpec["host"] = cfg.SwaggerHost
+					swaggerSpec["schemes"] = []string{cfg.SwaggerScheme}
+
+					// Return the modified JSON
+					return c.JSON(http.StatusOK, swaggerSpec)
+				}
+			}
+		}
+
+		// For all other swagger requests, use the default handler
+		return echoSwagger.WrapHandler(c)
+	}
 }
 
 func main() {
@@ -157,8 +185,8 @@ func setupRouter(handler *handlers.Handler, authService *services.AuthService, c
 		}
 	}
 
-	// Swagger endpoint
-	e.GET("/swagger/*", echoSwagger.WrapHandler)
+	// Swagger endpoint with dynamic configuration
+	e.GET("/swagger/*", createDynamicSwaggerHandler(cfg))
 
 	// Health check endpoint (no authentication required)
 	e.GET("/health", func(c echo.Context) error {

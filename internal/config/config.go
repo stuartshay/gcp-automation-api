@@ -28,6 +28,9 @@ type Config struct {
 	OAuthCallbackPort string
 	CredentialsDir    string
 	CredentialsFile   string
+	// Swagger Configuration
+	SwaggerHost   string
+	SwaggerScheme string
 }
 
 // Load reads configuration from environment variables with defaults
@@ -54,6 +57,9 @@ func Load() (*Config, error) {
 		OAuthCallbackPort: getEnv("OAUTH_CALLBACK_PORT", "8085"),
 		CredentialsDir:    getEnv("CREDENTIALS_DIR", ".gcp-automation"),
 		CredentialsFile:   getEnv("CREDENTIALS_FILE", "credentials.json"),
+		// Swagger Configuration
+		SwaggerHost:   getEnv("SWAGGER_HOST", "localhost:8080"),
+		SwaggerScheme: getEnv("SWAGGER_SCHEME", "http"),
 	}
 
 	return cfg, nil

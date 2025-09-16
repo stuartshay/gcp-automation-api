@@ -231,20 +231,25 @@ jobs:
             fi
           done
 
+          # Function to find duplicate Go caches (keep only latest for each unique go.sum hash)
+          find_duplicate_go_caches() {
+            awk '{
+              # Extract the hash part from the cache key
+              if (match($2, /go-.*-([a-f0-9]+)$/, arr)) {
+                hash = arr[1]
+                if (seen[hash]++) {
+                  print $3  # Print cache ID for deletion
+                }
+              }
+            }'
+          }
+
           # Delete duplicate Go caches (keep only latest for each unique go.sum hash)
           echo "Cleaning up duplicate Go module caches..."
-          bash scripts/cleanup-go-caches.sh "${{ github.repository }}"
-
-      - name: Post-cleanup cache report
-        run: |
-          echo "📊 Post-cleanup cache report:"
-
-          CACHES=$(gh api repos/${{ github.repository }}/actions/caches --paginate)
-          TOTAL_SIZE_BYTES=$(echo "$CACHES" | jq '[.actions_caches[].size_in_bytes] | add // 0')
-          TOTAL_SIZE_GB=$(echo "scale=2; $TOTAL_SIZE_BYTES / 1024 / 1024 / 1024" | bc)
-          CACHE_COUNT=$(echo "$CACHES" | jq '.actions_caches | length')
-
-          echo "Final cache size: ${TOTAL_SIZE_GB} GB (${CACHE_COUNT} caches)"
+          gh api repos/${{ github.repository }}/actions/caches --paginate | \
+          jq -r '.actions_caches[] | select(.key | contains("go-")) | "\(.created_at) \(.key) \(.id)"' | \
+          sort -r | \
+          find_duplicate_go_caches | \
 
           if (( $(echo "$TOTAL_SIZE_GB > 9" | bc -l) )); then
             echo "⚠️ Warning: Cache size is still high (${TOTAL_SIZE_GB} GB)"

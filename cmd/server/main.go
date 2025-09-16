@@ -80,28 +80,45 @@ func setupLogging(cfg *config.Config) error {
 	return nil
 }
 
-// createDynamicSwaggerHandler creates a custom Swagger handler that modifies the JSON response
+// createDynamicSwaggerHandler creates a custom Swagger handler that serves swagger.json file with examples
 func createDynamicSwaggerHandler(cfg *config.Config) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		// Check if this is a request for the swagger.json
 		if c.Request().URL.Path == "/swagger/doc.json" {
-			// Get the original swagger spec
-			doc := swag.GetSwagger("swagger")
-			if doc != nil {
-				// Parse the JSON and modify host and schemes
-				var swaggerSpec map[string]interface{}
-				if err := json.Unmarshal([]byte(doc.ReadDoc()), &swaggerSpec); err != nil {
-					// Log the error and fall back to default handler
-					log.Printf("Failed to unmarshal swagger JSON: %v", err)
-				} else {
-					// Update host and schemes
-					swaggerSpec["host"] = cfg.SwaggerHost
-					swaggerSpec["schemes"] = []string{cfg.SwaggerScheme}
-
-					// Return the modified JSON
-					return c.JSON(http.StatusOK, swaggerSpec)
+			// Read the swagger.json file directly (contains x-examples)
+			swaggerFile := "docs/swagger.json"
+			swaggerData, err := os.ReadFile(swaggerFile)
+			if err != nil {
+				log.Printf("Failed to read swagger.json file: %v", err)
+				// Fall back to embedded docs
+				doc := swag.GetSwagger("swagger")
+				if doc != nil {
+					var swaggerSpec map[string]interface{}
+					if err := json.Unmarshal([]byte(doc.ReadDoc()), &swaggerSpec); err != nil {
+						log.Printf("Failed to unmarshal swagger JSON: %v", err)
+					} else {
+						// Update host and schemes
+						swaggerSpec["host"] = cfg.SwaggerHost
+						swaggerSpec["schemes"] = []string{cfg.SwaggerScheme}
+						return c.JSON(http.StatusOK, swaggerSpec)
+					}
 				}
+				return echo.NewHTTPError(http.StatusInternalServerError, "Failed to load swagger documentation")
 			}
+
+			// Parse the file content and update host/schemes
+			var swaggerSpec map[string]interface{}
+			if err := json.Unmarshal(swaggerData, &swaggerSpec); err != nil {
+				log.Printf("Failed to unmarshal swagger.json file: %v", err)
+				return echo.NewHTTPError(http.StatusInternalServerError, "Invalid swagger.json format")
+			}
+
+			// Update host and schemes to match configuration
+			swaggerSpec["host"] = cfg.SwaggerHost
+			swaggerSpec["schemes"] = []string{cfg.SwaggerScheme}
+
+			// Return the modified JSON with x-examples intact
+			return c.JSON(http.StatusOK, swaggerSpec)
 		}
 
 		// For all other swagger requests, use the default handler

@@ -2,7 +2,58 @@ package models
 
 import "time"
 
+// BasicProjectRequest represents a basic request to create a GCP project (minimal fields)
+type BasicProjectRequest struct {
+	ProjectID   string `json:"project_id" validate:"required,project_id" binding:"required" example:"my-simple-project-2024"`
+	DisplayName string `json:"display_name" validate:"required,min=1,max=100" binding:"required" example:"My Simple Project"`
+}
+
+// AdvancedProjectRequest represents an advanced request to create a GCP project (all fields)
+type AdvancedProjectRequest struct {
+	ProjectID   string            `json:"project_id" validate:"required,project_id" binding:"required" example:"enterprise-app-prod-2024"`
+	DisplayName string            `json:"display_name" validate:"required,min=1,max=100" binding:"required" example:"Enterprise Application - Production"`
+	ParentID    string            `json:"parent_id,omitempty" validate:"omitempty,numeric" example:"123456789012"`
+	ParentType  string            `json:"parent_type,omitempty" validate:"omitempty,oneof=organization folder" example:"organization"`
+	Labels      map[string]string `json:"labels,omitempty" validate:"omitempty,dive,keys,label_key,endkeys,label_value" example:"{\"environment\":\"production\",\"team\":\"backend\",\"cost-center\":\"engineering\",\"compliance\":\"sox\"}"`
+}
+
 // ProjectRequest represents a request to create a GCP project
+// @Example Basic {
+//   "project_id": "my-simple-project-2024",
+//   "display_name": "My Simple Project"
+// }
+// @Example Advanced {
+//   "project_id": "enterprise-app-prod-2024",
+//   "display_name": "Enterprise Application - Production",
+//   "parent_id": "123456789012",
+//   "parent_type": "organization",
+//   "labels": {
+//     "environment": "production",
+//     "team": "backend",
+//     "cost-center": "engineering",
+//     "compliance": "sox"
+//   }
+// }
+
+// ProjectRequest represents a request to create a GCP project
+//
+//	@Example Basic {
+//	  "project_id": "my-simple-project-2024",
+//	  "display_name": "My Simple Project"
+//	}
+//
+//	@Example Advanced {
+//	  "project_id": "enterprise-app-prod-2024",
+//	  "display_name": "Enterprise Application - Production",
+//	  "parent_id": "123456789012",
+//	  "parent_type": "organization",
+//	  "labels": {
+//	    "environment": "production",
+//	    "team": "backend",
+//	    "cost-center": "engineering",
+//	    "compliance": "sox"
+//	  }
+//	}
 type ProjectRequest struct {
 	ProjectID   string            `json:"project_id" validate:"required,project_id" binding:"required" example:"my-dev-project-2024"`
 	DisplayName string            `json:"display_name" validate:"required,min=1,max=100" binding:"required" example:"My Development Project"`

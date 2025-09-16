@@ -10,6 +10,12 @@ import (
 // CreateFolder handles folder creation requests
 // @Summary Create a new GCP folder
 // @Description Create a new Google Cloud Platform folder with the specified parameters
+// @Description
+// @Description ## Example Usage:
+// @Description ### Basic Example (models.BasicFolderRequest):
+// @Description Simple folder under organization root
+// @Description ### Advanced Example (models.AdvancedFolderRequest):
+// @Description Nested folder structure for complex hierarchies
 // @Tags Folders
 // @Accept json
 // @Produce json

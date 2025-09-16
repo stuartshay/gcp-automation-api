@@ -29,7 +29,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "Create a new Google Cloud Storage bucket with the specified parameters including advanced options for KMS encryption, retention policies, and access controls",
+                "description": "Create a new Google Cloud Storage bucket with the specified parameters including advanced options for KMS encryption, retention policies, and access controls\n\n## Example Usage:\n### Basic Example (models.BasicBucketRequest):\nSimple bucket creation with minimal required fields\n### Advanced Example (models.AdvancedBucketRequest):\nEnterprise bucket with security features, labels, and compliance settings",
                 "consumes": [
                     "application/json"
                 ],
@@ -199,6 +199,111 @@
                 }
             }
         },
+        "/examples/buckets": {
+            "get": {
+                "description": "Provides both basic and advanced example request bodies for creating GCS buckets",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Examples"
+                ],
+                "summary": "Get example request bodies for bucket creation",
+                "responses": {
+                    "200": {
+                        "description": "Advanced bucket creation example",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.AdvancedBucketRequest"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/examples/folders": {
+            "get": {
+                "description": "Provides both basic and advanced example request bodies for creating GCP folders",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Examples"
+                ],
+                "summary": "Get example request bodies for folder creation",
+                "responses": {
+                    "200": {
+                        "description": "Advanced folder creation example",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.AdvancedFolderRequest"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/examples/projects": {
+            "get": {
+                "description": "Provides both basic and advanced example request bodies for creating GCP projects",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Examples"
+                ],
+                "summary": "Get example request bodies for project creation",
+                "responses": {
+                    "200": {
+                        "description": "Advanced project creation example",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.AdvancedProjectRequest"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/folders": {
             "post": {
                 "security": [
@@ -206,7 +311,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "Create a new Google Cloud Platform folder with the specified parameters",
+                "description": "Create a new Google Cloud Platform folder with the specified parameters\n\n## Example Usage:\n### Basic Example (models.BasicFolderRequest):\nSimple folder under organization root\n### Advanced Example (models.AdvancedFolderRequest):\nNested folder structure for complex hierarchies",
                 "consumes": [
                     "application/json"
                 ],
@@ -383,7 +488,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "Create a new Google Cloud Platform project with the specified parameters",
+                "description": "Create a new Google Cloud Platform project with the specified parameters\n\n## Example Usage:\n### Basic Example (models.BasicProjectRequest):\nSimple project creation with just ID and display name\n### Advanced Example (models.AdvancedProjectRequest):\nEnterprise project with organization hierarchy, labels, and governance",
                 "consumes": [
                     "application/json"
                 ],
@@ -555,6 +660,214 @@
         }
     },
     "definitions": {
+        "github_com_stuartshay_gcp-automation-api_internal_models.AdvancedBucketRequest": {
+            "type": "object",
+            "required": [
+                "location",
+                "name"
+            ],
+            "properties": {
+                "kms_key_name": {
+                    "description": "Phase 1 Advanced Options - Security \u0026 Compliance",
+                    "type": "string",
+                    "example": "projects/velvety-byway-327718/locations/us-central1/keyRings/bucket-encryption/cryptoKeys/bucket-key"
+                },
+                "labels": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "example": {
+                        "\"cost-center\"": "\"engineering\"}",
+                        "\"team\"": "\"platform\"",
+                        "{\"environment\"": "\"production\""
+                    }
+                },
+                "location": {
+                    "type": "string",
+                    "example": "us-central1"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "my-enterprise-bucket-2024"
+                },
+                "public_access_prevention": {
+                    "type": "string",
+                    "enum": [
+                        "inherited",
+                        "enforced",
+                        "unspecified"
+                    ],
+                    "example": "enforced"
+                },
+                "retention_policy": {
+                    "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.RetentionPolicy"
+                },
+                "storage_class": {
+                    "type": "string",
+                    "enum": [
+                        "STANDARD",
+                        "NEARLINE",
+                        "COLDLINE",
+                        "ARCHIVE"
+                    ],
+                    "example": "STANDARD"
+                },
+                "uniform_bucket_level_access": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "versioning": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "github_com_stuartshay_gcp-automation-api_internal_models.AdvancedFolderRequest": {
+            "type": "object",
+            "required": [
+                "display_name",
+                "parent_id",
+                "parent_type"
+            ],
+            "properties": {
+                "display_name": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 1,
+                    "example": "Production - North America Region"
+                },
+                "parent_id": {
+                    "type": "string",
+                    "example": "987654321098"
+                },
+                "parent_type": {
+                    "type": "string",
+                    "enum": [
+                        "organization",
+                        "folder"
+                    ],
+                    "example": "folder"
+                }
+            }
+        },
+        "github_com_stuartshay_gcp-automation-api_internal_models.AdvancedProjectRequest": {
+            "type": "object",
+            "required": [
+                "display_name",
+                "project_id"
+            ],
+            "properties": {
+                "display_name": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 1,
+                    "example": "Enterprise Application - Production"
+                },
+                "labels": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "example": {
+                        "\"compliance\"": "\"sox\"}",
+                        "\"cost-center\"": "\"engineering\"",
+                        "\"team\"": "\"backend\"",
+                        "{\"environment\"": "\"production\""
+                    }
+                },
+                "parent_id": {
+                    "type": "string",
+                    "example": "123456789012"
+                },
+                "parent_type": {
+                    "type": "string",
+                    "enum": [
+                        "organization",
+                        "folder"
+                    ],
+                    "example": "organization"
+                },
+                "project_id": {
+                    "type": "string",
+                    "example": "enterprise-app-prod-2024"
+                }
+            }
+        },
+        "github_com_stuartshay_gcp-automation-api_internal_models.BasicBucketRequest": {
+            "type": "object",
+            "required": [
+                "location",
+                "name"
+            ],
+            "properties": {
+                "location": {
+                    "type": "string",
+                    "example": "us-central1"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "my-simple-storage-bucket"
+                },
+                "storage_class": {
+                    "type": "string",
+                    "enum": [
+                        "STANDARD",
+                        "NEARLINE",
+                        "COLDLINE",
+                        "ARCHIVE"
+                    ],
+                    "example": "STANDARD"
+                }
+            }
+        },
+        "github_com_stuartshay_gcp-automation-api_internal_models.BasicFolderRequest": {
+            "type": "object",
+            "required": [
+                "display_name",
+                "parent_id",
+                "parent_type"
+            ],
+            "properties": {
+                "display_name": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 1,
+                    "example": "Development Environment"
+                },
+                "parent_id": {
+                    "type": "string",
+                    "example": "123456789012"
+                },
+                "parent_type": {
+                    "type": "string",
+                    "enum": [
+                        "organization",
+                        "folder"
+                    ],
+                    "example": "organization"
+                }
+            }
+        },
+        "github_com_stuartshay_gcp-automation-api_internal_models.BasicProjectRequest": {
+            "type": "object",
+            "required": [
+                "display_name",
+                "project_id"
+            ],
+            "properties": {
+                "display_name": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 1,
+                    "example": "My Simple Project"
+                },
+                "project_id": {
+                    "type": "string",
+                    "example": "my-simple-project-2024"
+                }
+            }
+        },
         "github_com_stuartshay_gcp-automation-api_internal_models.BucketRequest": {
             "type": "object",
             "required": [

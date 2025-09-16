@@ -10,6 +10,12 @@ import (
 // CreateProject handles project creation requests
 // @Summary Create a new GCP project
 // @Description Create a new Google Cloud Platform project with the specified parameters
+// @Description
+// @Description ## Example Usage:
+// @Description ### Basic Example (models.BasicProjectRequest):
+// @Description Simple project creation with just ID and display name
+// @Description ### Advanced Example (models.AdvancedProjectRequest):
+// @Description Enterprise project with organization hierarchy, labels, and governance
 // @Tags Projects
 // @Accept json
 // @Produce json

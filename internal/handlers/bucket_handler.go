@@ -10,6 +10,12 @@ import (
 // CreateBucket handles bucket creation requests
 // @Summary Create a new Cloud Storage bucket
 // @Description Create a new Google Cloud Storage bucket with the specified parameters including advanced options for KMS encryption, retention policies, and access controls
+// @Description
+// @Description ## Example Usage:
+// @Description ### Basic Example (models.BasicBucketRequest):
+// @Description Simple bucket creation with minimal required fields
+// @Description ### Advanced Example (models.AdvancedBucketRequest):
+// @Description Enterprise bucket with security features, labels, and compliance settings
 // @Tags Buckets
 // @Accept json
 // @Produce json

@@ -90,7 +90,10 @@ func createDynamicSwaggerHandler(cfg *config.Config) echo.HandlerFunc {
 			if doc != nil {
 				// Parse the JSON and modify host and schemes
 				var swaggerSpec map[string]interface{}
-				if err := json.Unmarshal([]byte(doc.ReadDoc()), &swaggerSpec); err == nil {
+				if err := json.Unmarshal([]byte(doc.ReadDoc()), &swaggerSpec); err != nil {
+					// Log the error and fall back to default handler
+					log.Printf("Failed to unmarshal swagger JSON: %v", err)
+				} else {
 					// Update host and schemes
 					swaggerSpec["host"] = cfg.SwaggerHost
 					swaggerSpec["schemes"] = []string{cfg.SwaggerScheme}

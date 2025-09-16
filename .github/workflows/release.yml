@@ -129,6 +129,10 @@ jobs:
           build-args: |
             VERSION=${{ needs.build-and-test.outputs.version }}
           cache-from: type=gha
+          # NOTE: Using mode=min here reduces cache effectiveness for Docker builds,
+          # but keeps the cache size smaller. This is a trade-off between cache size
+          # and build performance. Consider switching to mode=max if faster builds
+          # are preferred and storage is not a concern.
           cache-to: type=gha,mode=min
 
   create-release:

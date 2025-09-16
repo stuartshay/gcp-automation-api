@@ -3,8 +3,6 @@ package models
 import "time"
 
 // FolderRequest represents a request to create a GCP folder
-
-// FolderRequest represents a request to create a GCP folder
 //
 //	@Example Basic {
 //	  "display_name": "Development Environment",

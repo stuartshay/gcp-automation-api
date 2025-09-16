@@ -31,7 +31,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Create a new Google Cloud Storage bucket with optional advanced security and compliance features",
+                "description": "Create a new Google Cloud Storage bucket with the specified parameters including advanced options for KMS encryption, retention policies, and access controls",
                 "consumes": [
                     "application/json"
                 ],
@@ -41,7 +41,7 @@ const docTemplate = `{
                 "tags": [
                     "Buckets"
                 ],
-                "summary": "Create a new GCS bucket",
+                "summary": "Create a new Cloud Storage bucket",
                 "parameters": [
                     {
                         "description": "Bucket creation request",
@@ -141,6 +141,12 @@ const docTemplate = `{
                     },
                     "404": {
                         "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
                         }
@@ -315,6 +321,12 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
                         }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                        }
                     }
                 }
             },
@@ -483,6 +495,12 @@ const docTemplate = `{
                     },
                     "404": {
                         "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
                         }

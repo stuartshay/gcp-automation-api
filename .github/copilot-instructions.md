@@ -10,7 +10,7 @@ This is a **GCP Automation API** built with **Go 1.24.7** that provides RESTful 
 
 - **Language**: Go 1.24.7
 - **Web Framework**: Gin (github.com/gin-gonic/gin)
-- **GCP SDK**: Google Cloud Go SDK (cloud.google.com/go/*)
+- **GCP SDK**: Google Cloud Go SDK (cloud.google.com/go/\*)
 - **Architecture**: Clean architecture with separation of concerns
 
 ### **Project Structure**
@@ -32,7 +32,7 @@ This is a **GCP Automation API** built with **Go 1.24.7** that provides RESTful 
 
 - **Environment Variables**: Loaded from `.env` file
 - **Authentication**: Google Cloud Application Default Credentials (ADC)
-- **Port**: 8090 (configurable via PORT env var)
+- **Port**: 8080 (configurable via PORT env var)
 - **Project ID**: velvety-byway-327718
 - **Region**: us-central1
 
@@ -40,7 +40,7 @@ This is a **GCP Automation API** built with **Go 1.24.7** that provides RESTful 
 
 ### **RESTful API Structure**
 
-Base URL: `http://localhost:8090/api/v1`
+Base URL: `http://localhost:8080/api/v1`
 
 #### **Projects**
 
@@ -175,7 +175,7 @@ func TestCreateProject(t *testing.T) {
 
 ```bash
 # Server Configuration
-PORT=8090
+PORT=8080
 ENVIRONMENT=development
 LOG_LEVEL=info
 ENABLE_DEBUG=true

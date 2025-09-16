@@ -62,7 +62,7 @@
 			},
 			"options": {
 				"env": {
-					"PORT": "8090",
+					"PORT": "8080",
 					"ENVIRONMENT": "development",
 					"LOG_LEVEL": "debug"
 				}

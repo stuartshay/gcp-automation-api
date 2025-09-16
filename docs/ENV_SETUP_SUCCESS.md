@@ -16,7 +16,7 @@ Your `.env` configuration has been successfully set up with Google Cloud authent
 Your `.env` file contains:
 
 ```bash
-PORT=8090
+PORT=8080
 ENVIRONMENT=development
 LOG_LEVEL=info
 ENABLE_DEBUG=true
@@ -58,7 +58,7 @@ source activate-dev.sh && make dev
 
 ```bash
 # Health check
-curl http://localhost:8090/health
+curl http://localhost:8080/health
 
 # Should return: {"status":"healthy"}
 ```
@@ -68,13 +68,13 @@ curl http://localhost:8090/health
 ### **Health Check**
 
 ```bash
-curl -s http://localhost:8090/health | jq .
+curl -s http://localhost:8080/health | jq .
 ```
 
 ### **Create a Storage Bucket**
 
 ```bash
-curl -X POST http://localhost:8090/api/v1/buckets \
+curl -X POST http://localhost:8080/api/v1/buckets \
   -H "Content-Type: application/json" \
   -d '{
     "name": "test-bucket-$(date +%s)",
@@ -86,7 +86,7 @@ curl -X POST http://localhost:8090/api/v1/buckets \
 ### **List/Get Project Info**
 
 ```bash
-curl -X GET http://localhost:8090/api/v1/projects/velvety-byway-327718
+curl -X GET http://localhost:8080/api/v1/projects/velvety-byway-327718
 ```
 
 ## 🔧 Available GCP Services
@@ -153,7 +153,7 @@ If you get "address already in use":
 
 ```bash
 # Find what's using the port
-lsof -i :8090
+lsof -i :8080
 
 # Kill the process
 kill -9 <PID>

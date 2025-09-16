@@ -8,8 +8,8 @@ The GCP Automation API provides RESTful endpoints for managing Google Cloud Plat
 
 The API includes **Swagger UI** for interactive documentation and testing:
 
-- **Swagger UI**: [http://localhost:8090/swagger/index.html](http://localhost:8090/swagger/index.html)
-- **Swagger JSON**: [http://localhost:8090/swagger/doc.json](http://localhost:8090/swagger/doc.json)
+- **Swagger UI**: [http://localhost:8080/swagger/index.html](http://localhost:8080/swagger/index.html)
+- **Swagger JSON**: [http://localhost:8080/swagger/doc.json](http://localhost:8080/swagger/doc.json)
 
 The Swagger UI provides:
 - Complete API endpoint documentation
@@ -94,7 +94,7 @@ Content-Type: application/json
 Include the JWT token in the Authorization header for all API requests:
 
 ```bash
-curl -X GET "http://localhost:8090/api/v1/projects/my-project" \
+curl -X GET "http://localhost:8080/api/v1/projects/my-project" \
   -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 ```
 
@@ -102,7 +102,7 @@ curl -X GET "http://localhost:8090/api/v1/projects/my-project" \
 
 The Swagger UI includes a convenient **"Authorize" button** for JWT authentication:
 
-1. Open Swagger UI: [http://localhost:8090/swagger/index.html](http://localhost:8090/swagger/index.html)
+1. Open Swagger UI: [http://localhost:8080/swagger/index.html](http://localhost:8080/swagger/index.html)
 2. Click the **"Authorize"** button (lock icon)
 3. Enter your JWT token in the format: `Bearer <your-token>`
 4. Click **"Authorize"**

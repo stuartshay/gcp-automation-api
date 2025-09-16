@@ -40,13 +40,14 @@ jobs:
           echo "Version: ${VERSION}"
 
       - name: Cache Go modules
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             ~/.cache/go-build
             ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          key: ${{ runner.os }}-go-${{ env.GO_VERSION }}-${{ hashFiles('go.mod', 'go.sum') }}
           restore-keys: |
+            ${{ runner.os }}-go-${{ env.GO_VERSION }}-
             ${{ runner.os }}-go-
 
       - name: Download dependencies
@@ -128,7 +129,11 @@ jobs:
           build-args: |
             VERSION=${{ needs.build-and-test.outputs.version }}
           cache-from: type=gha
-          cache-to: type=gha,mode=max
+          # NOTE: Using mode=min here reduces cache effectiveness for Docker builds,
+          # but keeps the cache size smaller. This is a trade-off between cache size
+          # and build performance. mode=min typically uses 60-80% less cache storage than mode=max.
+          # Consider switching to mode=max if faster builds are preferred and storage is not a concern.
+          cache-to: type=gha,mode=min
 
   create-release:
     name: Create GitHub Release

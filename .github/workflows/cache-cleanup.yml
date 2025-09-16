@@ -1,0 +1,279 @@
+name: Cache Cleanup
+
+on:
+  schedule:
+    # Run every day at 2:00 AM UTC to clean up old caches
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+    inputs:
+      cleanup_strategy:
+        description: "Cleanup strategy"
+        required: true
+        default: "conservative"
+        type: choice
+        options:
+          - conservative
+          - aggressive
+          - emergency
+      max_cache_size_gb:
+        description: "Maximum total cache size in GB"
+        required: true
+        default: "8"
+        type: string
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  cleanup:
+    name: Clean up old caches
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Install GitHub CLI
+        run: |
+          type -p curl >/dev/null || sudo apt update && sudo apt install curl -y
+          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+          && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+          && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+          && sudo apt update \
+          && sudo apt install gh -y
+
+      - name: Authenticate GitHub CLI
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
+
+      - name: Get current cache usage
+        id: cache-info
+        run: |
+          # Get all caches and calculate total size
+          CACHES=$(gh api repos/${{ github.repository }}/actions/caches --paginate)
+
+          echo "Current caches:"
+          echo "$CACHES" | jq -r '.actions_caches[] | "\(.key) | \(.size_in_bytes) bytes | \(.created_at)"'
+
+          TOTAL_SIZE_BYTES=$(echo "$CACHES" | jq '[.actions_caches[].size_in_bytes] | add // 0')
+          TOTAL_SIZE_GB=$(echo "scale=2; $TOTAL_SIZE_BYTES / 1024 / 1024 / 1024" | bc)
+          CACHE_COUNT=$(echo "$CACHES" | jq '.actions_caches | length')
+
+          echo "total_size_bytes=$TOTAL_SIZE_BYTES" >> $GITHUB_OUTPUT
+          echo "total_size_gb=$TOTAL_SIZE_GB" >> $GITHUB_OUTPUT
+          echo "cache_count=$CACHE_COUNT" >> $GITHUB_OUTPUT
+
+          echo "Total cache size: ${TOTAL_SIZE_GB} GB (${CACHE_COUNT} caches)"
+
+      - name: Determine cleanup strategy
+        id: strategy
+        run: |
+          STRATEGY="${{ github.event.inputs.cleanup_strategy || 'conservative' }}"
+          MAX_SIZE_GB="${{ github.event.inputs.max_cache_size_gb || '8' }}"
+
+          echo "strategy=$STRATEGY" >> $GITHUB_OUTPUT
+          echo "max_size_gb=$MAX_SIZE_GB" >> $GITHUB_OUTPUT
+
+          echo "Cleanup strategy: $STRATEGY"
+          echo "Maximum cache size: ${MAX_SIZE_GB} GB"
+
+      - name: Clean up caches - Conservative
+        if: steps.strategy.outputs.strategy == 'conservative'
+        run: |
+          echo "🧹 Running conservative cleanup..."
+
+          # Delete caches older than 7 days
+          CUTOFF_DATE=$(date -d '7 days ago' --iso-8601=seconds)
+          echo "Deleting caches older than: $CUTOFF_DATE"
+
+          gh api repos/${{ github.repository }}/actions/caches --paginate | \
+          jq -r --arg cutoff "$CUTOFF_DATE" \
+          '.actions_caches[] | select(.created_at < $cutoff) | .id' | \
+          while read -r cache_id; do
+            if [ -n "$cache_id" ]; then
+              echo "Deleting cache ID: $cache_id"
+              if ! gh api --method DELETE repos/${{ github.repository }}/actions/caches/$cache_id 2>/dev/null; then
+                exit_code=$?
+                if [ $exit_code -eq 22 ]; then
+                  echo "  ⚠️ Cache already deleted: $cache_id"
+                else
+                  echo "  ❌ Failed to delete cache (exit code: $exit_code): $cache_id"
+                fi
+              else
+                echo "  ✅ Successfully deleted: $cache_id"
+              fi
+            fi
+          done
+
+      - name: Clean up caches - Aggressive
+        if: steps.strategy.outputs.strategy == 'aggressive'
+        run: |
+          echo "🔥 Running aggressive cleanup..."
+
+          # Delete caches older than 3 days, or if over limit, delete oldest first
+          CUTOFF_DATE=$(date -d '3 days ago' --iso-8601=seconds)
+          MAX_SIZE_BYTES=$(echo "${{ steps.strategy.outputs.max_size_gb }} * 1024 * 1024 * 1024" | bc)
+
+          echo "Deleting caches older than: $CUTOFF_DATE"
+          echo "Target max size: ${{ steps.strategy.outputs.max_size_gb }} GB"
+
+          # Get caches sorted by creation date (oldest first)
+          CACHES_TO_DELETE=$(gh api repos/${{ github.repository }}/actions/caches --paginate | \
+          jq -r --arg cutoff "$CUTOFF_DATE" \
+          '.actions_caches[] | select(.created_at < $cutoff) | .id')
+
+          # Delete old caches first
+          echo "$CACHES_TO_DELETE" | while read -r cache_id; do
+            if [ -n "$cache_id" ]; then
+              echo "Deleting old cache ID: $cache_id"
+              if ! gh api --method DELETE repos/${{ github.repository }}/actions/caches/$cache_id 2>/dev/null; then
+                exit_code=$?
+                if [ $exit_code -eq 22 ]; then
+                  echo "  ⚠️ Cache already deleted: $cache_id"
+                else
+                  echo "  ❌ Failed to delete cache (exit code: $exit_code): $cache_id"
+                fi
+              else
+                echo "  ✅ Successfully deleted: $cache_id"
+              fi
+            fi
+          done
+
+          # Check if we're still over the limit and delete more if needed
+          CURRENT_SIZE=$(gh api repos/${{ github.repository }}/actions/caches --paginate | \
+          jq '[.actions_caches[].size_in_bytes] | add // 0')
+
+          if [ "$CURRENT_SIZE" -gt "$MAX_SIZE_BYTES" ]; then
+            echo "Still over limit, deleting oldest caches until under limit..."
+            while true; do
+              # Get all caches sorted by creation date (oldest first), with their sizes
+              gh api repos/${{ github.repository }}/actions/caches --paginate | \
+              jq -r '.actions_caches[] | "\(.created_at) \(.id) \(.size_in_bytes)"' | \
+              sort > caches_list.txt
+
+              # Calculate current total size
+              CURRENT_TOTAL_SIZE=$(awk '{sum += $3} END {print sum}' caches_list.txt)
+
+              if [ "$CURRENT_TOTAL_SIZE" -le "$MAX_SIZE_BYTES" ]; then
+                echo "Target size reached, stopping cleanup"
+                break
+              fi
+
+              # Get oldest cache info
+              read CREATED_AT CACHE_ID SIZE < <(head -n 1 caches_list.txt)
+              if [ -z "$CACHE_ID" ]; then
+                echo "No more caches to delete."
+                break
+              fi
+
+              echo "Deleting cache ID: $CACHE_ID (created: $CREATED_AT, size: $SIZE)"
+              if ! gh api --method DELETE repos/${{ github.repository }}/actions/caches/$CACHE_ID 2>/dev/null; then
+                exit_code=$?
+                if [ $exit_code -eq 22 ]; then
+                  echo "  ⚠️ Cache already deleted: $CACHE_ID"
+                else
+                  echo "  ❌ Failed to delete cache (exit code: $exit_code): $CACHE_ID"
+                fi
+              else
+                echo "  ✅ Successfully deleted: $CACHE_ID"
+              fi
+
+              # Remove the deleted cache from the list
+              sed -i '1d' caches_list.txt
+            done
+            rm -f caches_list.txt
+          fi
+
+      - name: Clean up caches - Emergency
+        if: steps.strategy.outputs.strategy == 'emergency'
+        run: |
+          echo "🚨 Running emergency cleanup - deleting ALL caches!"
+
+          gh api repos/${{ github.repository }}/actions/caches --paginate | \
+          jq -r '.actions_caches[] | .id' | \
+          while read -r cache_id; do
+            if [ -n "$cache_id" ]; then
+              echo "Deleting cache ID: $cache_id"
+              if ! gh api --method DELETE repos/${{ github.repository }}/actions/caches/$cache_id 2>/dev/null; then
+                exit_code=$?
+                if [ $exit_code -eq 22 ]; then
+                  echo "  ⚠️ Cache already deleted: $cache_id"
+                else
+                  echo "  ❌ Failed to delete cache (exit code: $exit_code): $cache_id"
+                fi
+              else
+                echo "  ✅ Successfully deleted: $cache_id"
+              fi
+            fi
+          done
+
+      - name: Clean up specific cache types
+        if: steps.strategy.outputs.strategy != 'emergency'
+        run: |
+          echo "🎯 Cleaning up specific problematic cache types..."
+
+          # Delete Docker buildx caches that are typically large
+          gh api repos/${{ github.repository }}/actions/caches --paginate | \
+          jq -r '.actions_caches[] | select(.key | contains("buildx")) | .id' | \
+          head -20 | \
+          while read -r cache_id; do
+            if [ -n "$cache_id" ]; then
+              echo "Deleting buildx cache ID: $cache_id"
+              if ! gh api --method DELETE repos/${{ github.repository }}/actions/caches/$cache_id 2>/dev/null; then
+                exit_code=$?
+                if [ $exit_code -eq 22 ]; then
+                  echo "  ⚠️ Cache already deleted: $cache_id"
+                else
+                  echo "  ❌ Failed to delete cache (exit code: $exit_code): $cache_id"
+                fi
+              else
+                echo "  ✅ Successfully deleted buildx cache: $cache_id"
+              fi
+            fi
+          done
+
+          # Function to find duplicate Go caches (keep only latest for each unique go.sum hash)
+          find_duplicate_go_caches() {
+            awk '{
+              # Extract the hash part from the cache key
+              if (match($2, /go-.*-([a-f0-9]+)$/, arr)) {
+                hash = arr[1]
+                if (seen[hash]++) {
+                  print $3  # Print cache ID for deletion
+                }
+              }
+            }'
+          }
+
+          # Delete duplicate Go caches (keep only latest for each unique go.sum hash)
+          echo "Cleaning up duplicate Go module caches..."
+          gh api repos/${{ github.repository }}/actions/caches --paginate | \
+          jq -r '.actions_caches[] | select(.key | contains("go-")) | "\(.created_at) \(.key) \(.id)"' | \
+          sort -r | \
+          find_duplicate_go_caches | \
+
+          if (( $(echo "$TOTAL_SIZE_GB > 9" | bc -l) )); then
+            echo "⚠️ Warning: Cache size is still high (${TOTAL_SIZE_GB} GB)"
+            echo "Consider running aggressive or emergency cleanup"
+          elif (( $(echo "$TOTAL_SIZE_GB > 7" | bc -l) )); then
+            echo "⚡ Cache size is approaching limit (${TOTAL_SIZE_GB} GB)"
+          else
+            echo "✅ Cache size is within acceptable limits (${TOTAL_SIZE_GB} GB)"
+          fi
+
+          echo ""
+          echo "Current caches by type:"
+          echo "$CACHES" | jq -r '.actions_caches[] | "\(.key) | \((.size_in_bytes / 1024 / 1024 / 1024 * 100 | floor) / 100) GB"' | \
+          sort | head -20
+
+      - name: Create issue if cache size is still high
+        if: steps.strategy.outputs.strategy != 'emergency'
+        run: |
+          CACHES=$(gh api repos/${{ github.repository }}/actions/caches --paginate)
+          TOTAL_SIZE_BYTES=$(echo "$CACHES" | jq '[.actions_caches[].size_in_bytes] | add // 0')
+          TOTAL_SIZE_GB=$(echo "scale=2; $TOTAL_SIZE_BYTES / 1024 / 1024 / 1024" | bc)
+
+          if (( $(echo "$TOTAL_SIZE_GB > 9" | bc -l) )); then
+            echo "⚠️ WARNING: Cache size is still critically high (${TOTAL_SIZE_GB} GB)"
+            echo "Consider running: gh workflow run cache-cleanup.yml -f cleanup_strategy=aggressive"
+            echo "Or for emergency: gh workflow run cache-cleanup.yml -f cleanup_strategy=emergency"
+          fi

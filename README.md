@@ -49,7 +49,7 @@ curl -H "Authorization: Bearer $TOKEN" http://localhost:8080/api/v1/projects
 4. Enter: `Bearer YOUR_JWT_TOKEN`
 5. Test endpoints interactively
 
-See [CLI Authentication Documentation](./docs/CLI_AUTHENTICATION.md) for complete authentication details.
+See [CLI Authentication Documentation](./assets/docs/CLI_AUTHENTICATION.md) for complete authentication details.
 
 ## Quick Start
 
@@ -72,7 +72,7 @@ make dev
 
 📚 **All documentation is located in the [`docs/`](./docs/) folder.**
 
-- **[Project Documentation](./docs/PROJECT_README.md)** - Complete project overview, architecture, and detailed setup
+- **[Project Documentation](./assets/docs/PROJECT_README.md)** - Complete project overview, architecture, and detailed setup
 - **[API Documentation](./docs/API.md)** - REST API endpoints and usage
 - **[Setup Documentation](./docs/)** - Installation and configuration guides
 

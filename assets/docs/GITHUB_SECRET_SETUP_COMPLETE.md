@@ -32,7 +32,7 @@ Successfully configured GitHub Actions with Google Cloud Artifact Registry authe
 
 ### 5. Pipeline Test
 - **Trigger**: Push to master branch
-- **Test File**: `docs/CI_CD_TEST.md`
+- **Test File**: `assets/docs/CI_CD_TEST.md`
 - **Commit**: `341679a`
 - **Status**: ✅ Triggered successfully
 

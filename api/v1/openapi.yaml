@@ -13,7 +13,7 @@ info:
 servers:
   - url: http://localhost:8080
     description: Development server
-  - url: https://api.example.com
+  - url: https://gcp-automation-api-902997681858.us-central1.run.app
     description: Production server
 
 security:

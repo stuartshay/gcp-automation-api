@@ -38,6 +38,12 @@ COPY --from=builder /app/gcp-automation-api .
 # Copy configuration files
 COPY --from=builder /app/configs ./configs
 
+# Copy static files for Swagger UI
+COPY --from=builder /app/static ./static
+
+# Copy API specification files
+COPY --from=builder /app/api ./api
+
 # Change ownership to appuser
 RUN chown -R appuser:appgroup /app
 

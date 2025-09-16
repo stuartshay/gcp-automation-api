@@ -6,7 +6,7 @@
 set -e
 
 # Configuration
-REPO="${1:-stuartshay/gcp-automation-api}"
+REPO="${GITHUB_REPOSITORY:-${1:-stuartshay/gcp-automation-api}}"
 MAX_SIZE_GB="${2:-8}"
 DEFAULT_STRATEGY="${3:-conservative}"
 

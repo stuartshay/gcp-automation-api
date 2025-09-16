@@ -48,7 +48,7 @@ get_cutoff_date() {
 
 # Helper function to delete cache with proper error handling
 delete_cache() {
-    local cache_id=$1
+    local cache_idhttps://github.com/stuartshay/gcp-automation-api/pull/16=$1
     local description=$2
 
     if gh api --method DELETE repos/$REPO/actions/caches/$cache_id 2>/dev/null; then
@@ -209,11 +209,17 @@ cleanup_aggressive() {
 
     if [ "$current_size" -gt "$max_size_bytes" ]; then
         log_info "Still over limit, deleting more caches (oldest first)..."
-        while IFS=' ' read -r created_at cache_id key; do
-            current_size=$(gh api repos/$REPO/actions/caches --paginate | jq '[.actions_caches[].size_in_bytes] | add // 0')
-            if [ "$current_size" -gt "$max_size_bytes" ]; then
-                if delete_cache "$cache_id" "$key (created: $created_at)"; then
+
+        # Calculate remaining size needed to delete
+        local remaining_size_to_delete
+        remaining_size_to_delete=$(echo "$current_size - $max_size_bytes" | bc)
+        local running_size=0
+
+        while IFS=' ' read -r created_at cache_id key size; do
+            if [ "$running_size" -lt "$remaining_size_to_delete" ]; then
+                if delete_cache "$cache_id" "$key (created: $created_at, size: $size bytes)"; then
                     ((deleted_count++))
+                    running_size=$(echo "$running_size + $size" | bc)
                 else
                     ((failed_count++))
                 fi
@@ -221,7 +227,7 @@ cleanup_aggressive() {
                 log_success "Target size reached, stopping cleanup"
                 break
             fi
-        done < <(echo "$current_caches" | jq -r '.actions_caches[] | "\(.created_at) \(.id) \(.key)"' | sort)
+        done < <(echo "$current_caches" | jq -r '.actions_caches[] | "\(.created_at) \(.id) \(.key) \(.size_in_bytes)"' | sort)
     fi
 
     log_success "Aggressive cleanup completed: $deleted_count deleted, $failed_count failed"

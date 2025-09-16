@@ -125,7 +125,16 @@ jobs:
           echo "$CACHES_TO_DELETE" | while read -r cache_id; do
             if [ -n "$cache_id" ]; then
               echo "Deleting old cache ID: $cache_id"
-              gh api --method DELETE repos/${{ github.repository }}/actions/caches/$cache_id || true
+              if ! gh api --method DELETE repos/${{ github.repository }}/actions/caches/$cache_id 2>/dev/null; then
+                exit_code=$?
+                if [ $exit_code -eq 22 ]; then
+                  echo "  ⚠️ Cache already deleted: $cache_id"
+                else
+                  echo "  ❌ Failed to delete cache (exit code: $exit_code): $cache_id"
+                fi
+              else
+                echo "  ✅ Successfully deleted: $cache_id"
+              fi
             fi
           done
 
@@ -157,7 +166,16 @@ jobs:
               fi
 
               echo "Deleting cache ID: $CACHE_ID (created: $CREATED_AT, size: $SIZE)"
-              gh api --method DELETE repos/${{ github.repository }}/actions/caches/$CACHE_ID || true
+              if ! gh api --method DELETE repos/${{ github.repository }}/actions/caches/$CACHE_ID 2>/dev/null; then
+                exit_code=$?
+                if [ $exit_code -eq 22 ]; then
+                  echo "  ⚠️ Cache already deleted: $CACHE_ID"
+                else
+                  echo "  ❌ Failed to delete cache (exit code: $exit_code): $CACHE_ID"
+                fi
+              else
+                echo "  ✅ Successfully deleted: $CACHE_ID"
+              fi
 
               # Remove the deleted cache from the list
               sed -i '1d' caches_list.txt

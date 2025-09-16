@@ -3,8 +3,6 @@ package models
 import "time"
 
 // BucketRequest represents a request to create a GCS bucket
-
-// BucketRequest represents a request to create a GCS bucket
 //
 //	@Example Basic {
 //	  "name": "my-simple-storage-bucket",

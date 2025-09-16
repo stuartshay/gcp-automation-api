@@ -3,8 +3,6 @@ package models
 import "time"
 
 // ProjectRequest represents a request to create a GCP project
-
-// ProjectRequest represents a request to create a GCP project
 //
 //	@Example Basic {
 //	  "project_id": "my-simple-project-2024",

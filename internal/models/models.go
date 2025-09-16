@@ -6,12 +6,18 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
+// RetentionPolicy represents bucket retention policy configuration
+type RetentionPolicy struct {
+	RetentionPeriodSeconds int64 `json:"retention_period_seconds" validate:"min=1,max=3155760000" example:"86400"` // 1 second to 100 years
+	IsLocked               bool  `json:"is_locked" example:"false"`
+}
+
 // ProjectRequest represents a request to create a GCP project
 type ProjectRequest struct {
-	ProjectID   string            `json:"project_id" validate:"required,project_id" binding:"required"`
-	DisplayName string            `json:"display_name" validate:"required,min=1,max=100" binding:"required"`
-	ParentID    string            `json:"parent_id,omitempty" validate:"omitempty,numeric"`
-	ParentType  string            `json:"parent_type,omitempty" validate:"omitempty,oneof=organization folder"` // "organization" or "folder"
+	ProjectID   string            `json:"project_id" validate:"required,project_id" binding:"required" example:"my-dev-project-2024"`
+	DisplayName string            `json:"display_name" validate:"required,min=1,max=100" binding:"required" example:"My Development Project"`
+	ParentID    string            `json:"parent_id,omitempty" validate:"omitempty,numeric" example:"123456789012"`
+	ParentType  string            `json:"parent_type,omitempty" validate:"omitempty,oneof=organization folder" example:"organization"` // "organization" or "folder"
 	Labels      map[string]string `json:"labels,omitempty" validate:"omitempty,dive,keys,label_key,endkeys,label_value"`
 }
 
@@ -30,9 +36,9 @@ type ProjectResponse struct {
 
 // FolderRequest represents a request to create a GCP folder
 type FolderRequest struct {
-	DisplayName string `json:"display_name" validate:"required,min=1,max=100" binding:"required"`
-	ParentID    string `json:"parent_id" validate:"required,numeric" binding:"required"`
-	ParentType  string `json:"parent_type" validate:"required,oneof=organization folder" binding:"required"` // "organization" or "folder"
+	DisplayName string `json:"display_name" validate:"required,min=1,max=100" binding:"required" example:"Development Environment"`
+	ParentID    string `json:"parent_id" validate:"required,numeric" binding:"required" example:"123456789012"`
+	ParentType  string `json:"parent_type" validate:"required,oneof=organization folder" binding:"required" example:"organization"` // "organization" or "folder"
 }
 
 // FolderResponse represents a GCP folder response
@@ -48,11 +54,17 @@ type FolderResponse struct {
 
 // BucketRequest represents a request to create a GCS bucket
 type BucketRequest struct {
-	Name         string            `json:"name" validate:"required,bucket_name" binding:"required"`
-	Location     string            `json:"location" validate:"required,gcp_location" binding:"required"`
-	StorageClass string            `json:"storage_class,omitempty" validate:"omitempty,oneof=STANDARD NEARLINE COLDLINE ARCHIVE"`
+	Name         string            `json:"name" validate:"required,bucket_name" binding:"required" example:"my-project-storage-bucket"`
+	Location     string            `json:"location" validate:"required,gcp_location" binding:"required" example:"us-central1"`
+	StorageClass string            `json:"storage_class,omitempty" validate:"omitempty,oneof=STANDARD NEARLINE COLDLINE ARCHIVE" example:"STANDARD"`
 	Labels       map[string]string `json:"labels,omitempty" validate:"omitempty,dive,keys,label_key,endkeys,label_value"`
-	Versioning   bool              `json:"versioning,omitempty"`
+	Versioning   bool              `json:"versioning,omitempty" example:"true"`
+
+	// Phase 1 Advanced Options - Security & Compliance
+	KMSKeyName               string           `json:"kms_key_name,omitempty" validate:"omitempty" example:"projects/my-project/locations/us-central1/keyRings/my-keyring/cryptoKeys/my-key"`
+	RetentionPolicy          *RetentionPolicy `json:"retention_policy,omitempty" validate:"omitempty"`
+	UniformBucketLevelAccess bool             `json:"uniform_bucket_level_access,omitempty" example:"true"`
+	PublicAccessPrevention   string           `json:"public_access_prevention,omitempty" validate:"omitempty,oneof=inherited enforced unspecified" example:"enforced"`
 }
 
 // BucketResponse represents a GCS bucket response
@@ -65,6 +77,12 @@ type BucketResponse struct {
 	CreateTime   time.Time         `json:"create_time"`
 	UpdateTime   time.Time         `json:"update_time"`
 	SelfLink     string            `json:"self_link"`
+
+	// Phase 1 Advanced Options - Security & Compliance
+	KMSKeyName               string           `json:"kms_key_name,omitempty"`
+	RetentionPolicy          *RetentionPolicy `json:"retention_policy,omitempty"`
+	UniformBucketLevelAccess bool             `json:"uniform_bucket_level_access,omitempty"`
+	PublicAccessPrevention   string           `json:"public_access_prevention,omitempty"`
 }
 
 // ErrorResponse represents an API error response

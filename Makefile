@@ -13,7 +13,7 @@ GOTEST=$(GOCMD) test
 GOGET=$(GOCMD) get
 GOMOD=$(GOCMD) mod
 
-.PHONY: build build-auth-cli build-all-binaries clean test deps run run-auth-cli dev docker help
+.PHONY: build build-auth-cli build-all-binaries clean test deps run run-auth-cli dev docker sample-jwt help
 
 # Default target
 all: clean deps test build-all-binaries
@@ -95,13 +95,36 @@ generate-jwt: build-auth-cli
 		exit 1; \
 	fi
 	@OUTPUT=`$(AUTH_CLI_PATH) test-token --user-id=$$USER_ID --email=$$EMAIL --name=$$NAME` ; \
-	TOKEN=`echo "$$OUTPUT" | awk '/^Token:/ {print $2}'` ; \
+	TOKEN=`echo "$$OUTPUT" | sed -n 's/^Token: //p'` ; \
 	if [ -z "$$TOKEN" ]; then \
 		echo "Failed to generate JWT token. CLI output:" ; \
 		echo "$$OUTPUT" ; \
 		exit 1; \
 	else \
 		echo "JWT Token: $$TOKEN" ; \
+	fi
+
+# Generate a sample JWT token with predefined test values
+sample-jwt: build-auth-cli
+	@echo "Generating sample JWT token..."
+	@OUTPUT=`$(AUTH_CLI_PATH) test-token --user-id=test-user-123 --email=test@example.com --name="Test User"` ; \
+	TOKEN=`echo "$$OUTPUT" | sed -n 's/^Token: //p'` ; \
+	if [ -z "$$TOKEN" ]; then \
+		echo "Failed to generate sample JWT token. CLI output:" ; \
+		echo "$$OUTPUT" ; \
+		exit 1; \
+	else \
+		echo "Sample JWT Token: $$TOKEN" ; \
+		echo ""; \
+		echo "User Details:"; \
+		echo "  User ID: test-user-123"; \
+		echo "  Email: test@example.com"; \
+		echo "  Name: Test User"; \
+		echo ""; \
+		echo "This token can be used for testing API endpoints that require authentication."; \
+		echo ""; \
+		echo "Example usage:"; \
+		echo "  curl -H \"Authorization: Bearer $$TOKEN\" http://localhost:8080/api/v1/projects"; \
 	fi
 # Run the auth CLI tool
 run-auth-cli: build-auth-cli
@@ -172,6 +195,7 @@ help:
 	@echo "  run                      - Build and run the API server"
 	@echo "  run-auth-cli             - Build and run the auth CLI tool"
 	@echo "  generate-jwt             - Generate a development JWT token (usage: make generate-jwt USER_ID=<id> EMAIL=<email> NAME=<name>)"
+	@echo "  sample-jwt               - Generate a sample JWT token with predefined test values"
 	@echo "  build-all                - Build for multiple platforms (server + auth-cli)"
 	@echo "  lint                     - Run linter"
 	@echo "  fmt                      - Format code"

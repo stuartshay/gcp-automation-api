@@ -263,9 +263,9 @@ func (h *Handler) DeleteFolder(c echo.Context) error {
 	})
 }
 
-// CreateBucket handles bucket creation requests
-// @Summary Create a new Cloud Storage bucket
-// @Description Create a new Google Cloud Storage bucket with the specified parameters
+// CreateBucket creates a new GCS bucket
+// @Summary Create a new GCS bucket
+// @Description Create a new Google Cloud Storage bucket with optional advanced security and compliance features
 // @Tags Buckets
 // @Accept json
 // @Produce json

@@ -48,7 +48,7 @@ get_cutoff_date() {
 
 # Helper function to delete cache with proper error handling
 delete_cache() {
-    local cache_idhttps://github.com/stuartshay/gcp-automation-api/pull/16=$1
+    local cache_id=$1
     local description=$2
 
     if gh api --method DELETE repos/$REPO/actions/caches/$cache_id 2>/dev/null; then

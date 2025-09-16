@@ -23,7 +23,7 @@ make build-auth-cli
 TOKEN=$(./bin/auth-cli token)
 
 # Use the token in API requests
-curl -X GET http://localhost:8090/api/v1/projects/my-project \
+curl -X GET http://localhost:8080/api/v1/projects/my-project \
   -H "Authorization: Bearer $TOKEN"
 ```
 
@@ -38,13 +38,13 @@ curl -X GET http://localhost:8090/api/v1/projects/my-project \
 
 # Use token with API
 TOKEN=$(./bin/auth-cli token)
-curl -H "Authorization: Bearer $TOKEN" http://localhost:8090/api/v1/projects
+curl -H "Authorization: Bearer $TOKEN" http://localhost:8080/api/v1/projects
 ```
 
 ### Swagger UI
 
 1. Get your token: `./bin/auth-cli token`
-2. Open [http://localhost:8090/swagger/index.html](http://localhost:8090/swagger/index.html)
+2. Open [http://localhost:8080/swagger/index.html](http://localhost:8080/swagger/index.html)
 3. Click **"Authorize"** button
 4. Enter: `Bearer YOUR_JWT_TOKEN`
 5. Test endpoints interactively

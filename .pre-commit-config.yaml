@@ -45,17 +45,12 @@ repos:
 
       - id: swag-init
         name: swag init (generate swagger docs)
-        entry: swag
+        entry: bash
         language: system
         args:
           [
-            init,
-            -g,
-            cmd/server/main.go,
-            -o,
-            docs,
-            --parseDependency,
-            --parseInternal,
+            -c,
+            "swag init -g cmd/server/main.go -o docs --parseDependency --parseInternal && python3 scripts/add-swagger-examples.py",
           ]
         files: \.(go)$|handlers\.go$|models\.go$|main\.go$
         pass_filenames: false

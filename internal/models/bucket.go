@@ -2,52 +2,7 @@ package models
 
 import "time"
 
-// BasicBucketRequest represents a basic request to create a GCS bucket (minimal fields)
-type BasicBucketRequest struct {
-	Name         string `json:"name" validate:"required,bucket_name" binding:"required" example:"my-simple-storage-bucket"`
-	Location     string `json:"location" validate:"required,gcp_location" binding:"required" example:"us-central1"`
-	StorageClass string `json:"storage_class,omitempty" validate:"omitempty,oneof=STANDARD NEARLINE COLDLINE ARCHIVE" example:"STANDARD"`
-}
-
-// AdvancedBucketRequest represents an advanced request to create a GCS bucket (all fields)
-type AdvancedBucketRequest struct {
-	Name         string            `json:"name" validate:"required,bucket_name" binding:"required" example:"my-enterprise-bucket-2024"`
-	Location     string            `json:"location" validate:"required,gcp_location" binding:"required" example:"us-central1"`
-	StorageClass string            `json:"storage_class,omitempty" validate:"omitempty,oneof=STANDARD NEARLINE COLDLINE ARCHIVE" example:"STANDARD"`
-	Labels       map[string]string `json:"labels,omitempty" validate:"omitempty,dive,keys,label_key,endkeys,label_value" example:"{\"environment\":\"production\",\"team\":\"platform\",\"cost-center\":\"engineering\"}"`
-	Versioning   bool              `json:"versioning,omitempty" example:"true"`
-
-	// Phase 1 Advanced Options - Security & Compliance
-	KMSKeyName               string           `json:"kms_key_name,omitempty" validate:"omitempty" example:"projects/velvety-byway-327718/locations/us-central1/keyRings/bucket-encryption/cryptoKeys/bucket-key"`
-	RetentionPolicy          *RetentionPolicy `json:"retention_policy,omitempty" validate:"omitempty"`
-	UniformBucketLevelAccess bool             `json:"uniform_bucket_level_access,omitempty" example:"true"`
-	PublicAccessPrevention   string           `json:"public_access_prevention,omitempty" validate:"omitempty,oneof=inherited enforced unspecified" example:"enforced"`
-}
-
 // BucketRequest represents a request to create a GCS bucket
-// @Example Basic {
-//   "name": "my-simple-storage-bucket",
-//   "location": "us-central1",
-//   "storage_class": "STANDARD"
-// }
-// @Example Advanced {
-//   "name": "my-enterprise-bucket-2024",
-//   "location": "us-central1",
-//   "storage_class": "STANDARD",
-//   "labels": {
-//     "environment": "production",
-//     "team": "platform",
-//     "cost-center": "engineering"
-//   },
-//   "versioning": true,
-//   "kms_key_name": "projects/velvety-byway-327718/locations/us-central1/keyRings/bucket-encryption/cryptoKeys/bucket-key",
-//   "retention_policy": {
-//     "retention_period_days": 90,
-//     "is_locked": false
-//   },
-//   "uniform_bucket_level_access": true,
-//   "public_access_prevention": "enforced"
-// }
 
 // BucketRequest represents a request to create a GCS bucket
 //

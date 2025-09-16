@@ -226,14 +226,6 @@ func setupRouter(handler *handlers.Handler, authService *services.AuthService, c
 			buckets.GET("/:name", handler.GetBucket)
 			buckets.DELETE("/:name", handler.DeleteBucket)
 		}
-
-		// Example endpoints - provides sample request bodies for API testing
-		examples := v1.Group("/examples")
-		{
-			examples.GET("/buckets", handler.GetBucketExamples)
-			examples.GET("/projects", handler.GetProjectExamples)
-			examples.GET("/folders", handler.GetFolderExamples)
-		}
 	}
 
 	return e

@@ -1,819 +1,837 @@
 {
-    "schemes": [
-        "http",
-        "https"
-    ],
-    "swagger": "2.0",
-    "info": {
-        "description": "RESTful API for automating Google Cloud Platform resource management",
-        "title": "GCP Automation API",
-        "termsOfService": "http://swagger.io/terms/",
-        "contact": {
-            "name": "API Support",
-            "url": "http://www.swagger.io/support",
-            "email": "support@swagger.io"
-        },
-        "license": {
-            "name": "MIT",
-            "url": "https://opensource.org/licenses/MIT"
-        },
-        "version": "1.0"
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "swagger": "2.0",
+  "info": {
+    "description": "RESTful API for automating Google Cloud Platform resource management",
+    "title": "GCP Automation API",
+    "termsOfService": "http://swagger.io/terms/",
+    "contact": {
+      "name": "API Support",
+      "url": "http://www.swagger.io/support",
+      "email": "support@swagger.io"
     },
-    "host": "localhost:8080",
-    "basePath": "/api/v1",
-    "paths": {
-        "/buckets": {
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Create a new Google Cloud Storage bucket with optional advanced security and compliance features",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Buckets"
-                ],
-                "summary": "Create a new GCS bucket",
-                "parameters": [
-                    {
-                        "description": "Bucket creation request",
-                        "name": "bucket",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.BucketRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.BucketResponse"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/buckets/{name}": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Retrieve details of a Google Cloud Storage bucket by its bucket name",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Buckets"
-                ],
-                "summary": "Get a Cloud Storage bucket by name",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Bucket name",
-                        "name": "name",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.BucketResponse"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Delete a Google Cloud Storage bucket by its bucket name",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Buckets"
-                ],
-                "summary": "Delete a Cloud Storage bucket",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Bucket name",
-                        "name": "name",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/folders": {
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Create a new Google Cloud Platform folder with the specified parameters",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Folders"
-                ],
-                "summary": "Create a new GCP folder",
-                "parameters": [
-                    {
-                        "description": "Folder creation request",
-                        "name": "folder",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.FolderRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.FolderResponse"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/folders/{id}": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Retrieve details of a Google Cloud Platform folder by its folder ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Folders"
-                ],
-                "summary": "Get a GCP folder by ID",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Folder ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.FolderResponse"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Delete a Google Cloud Platform folder by its folder ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Folders"
-                ],
-                "summary": "Delete a GCP folder",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Folder ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/projects": {
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Create a new Google Cloud Platform project with the specified parameters",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Projects"
-                ],
-                "summary": "Create a new GCP project",
-                "parameters": [
-                    {
-                        "description": "Project creation request",
-                        "name": "project",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ProjectRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ProjectResponse"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/projects/{id}": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Retrieve details of a Google Cloud Platform project by its project ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Projects"
-                ],
-                "summary": "Get a GCP project by ID",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Project ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ProjectResponse"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Delete a Google Cloud Platform project by its project ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Projects"
-                ],
-                "summary": "Delete a GCP project",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Project ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        }
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
     },
-    "definitions": {
-        "github_com_stuartshay_gcp-automation-api_internal_models.BucketRequest": {
-            "type": "object",
-            "required": [
-                "location",
-                "name"
-            ],
-            "properties": {
-                "kms_key_name": {
-                    "description": "Phase 1 Advanced Options - Security \u0026 Compliance",
-                    "type": "string",
-                    "example": "projects/my-project/locations/us-central1/keyRings/my-keyring/cryptoKeys/my-key"
+    "version": "1.0"
+  },
+  "host": "localhost:8080",
+  "basePath": "/api/v1",
+  "paths": {
+    "/buckets": {
+      "post": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "description": "Create a new Google Cloud Storage bucket with the specified parameters including advanced options for KMS encryption, retention policies, and access controls\n\n## Example Usage:\n### Basic Example (models.BasicBucketRequest):\nSimple bucket creation with minimal required fields\n### Advanced Example (models.AdvancedBucketRequest):\nEnterprise bucket with security features, labels, and compliance settings",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Buckets"
+        ],
+        "summary": "Create a new Cloud Storage bucket",
+        "parameters": [
+          {
+            "description": "Bucket creation request",
+            "name": "bucket",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.BucketRequest"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
                 },
-                "labels": {
-                    "type": "object",
-                    "additionalProperties": {
-                        "type": "string"
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.BucketResponse"
                     }
-                },
-                "location": {
-                    "type": "string",
-                    "example": "us-central1"
-                },
-                "name": {
-                    "type": "string",
-                    "example": "my-project-storage-bucket"
-                },
-                "public_access_prevention": {
-                    "type": "string",
-                    "enum": [
-                        "inherited",
-                        "enforced",
-                        "unspecified"
-                    ],
-                    "example": "enforced"
-                },
-                "retention_policy": {
-                    "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.RetentionPolicy"
-                },
-                "storage_class": {
-                    "type": "string",
-                    "enum": [
-                        "STANDARD",
-                        "NEARLINE",
-                        "COLDLINE",
-                        "ARCHIVE"
-                    ],
-                    "example": "STANDARD"
-                },
-                "uniform_bucket_level_access": {
-                    "type": "boolean",
-                    "example": true
-                },
-                "versioning": {
-                    "type": "boolean",
-                    "example": true
+                  }
                 }
+              ]
             }
-        },
-        "github_com_stuartshay_gcp-automation-api_internal_models.BucketResponse": {
-            "type": "object",
-            "properties": {
-                "create_time": {
-                    "type": "string"
-                },
-                "kms_key_name": {
-                    "description": "Phase 1 Advanced Options - Security \u0026 Compliance",
-                    "type": "string"
-                },
-                "labels": {
-                    "type": "object",
-                    "additionalProperties": {
-                        "type": "string"
-                    }
-                },
-                "location": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "public_access_prevention": {
-                    "type": "string"
-                },
-                "retention_policy": {
-                    "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.RetentionPolicy"
-                },
-                "self_link": {
-                    "type": "string"
-                },
-                "storage_class": {
-                    "type": "string"
-                },
-                "uniform_bucket_level_access": {
-                    "type": "boolean"
-                },
-                "update_time": {
-                    "type": "string"
-                },
-                "versioning": {
-                    "type": "boolean"
-                }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
             }
-        },
-        "github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "type": "integer"
-                },
-                "error": {
-                    "type": "string"
-                },
-                "message": {
-                    "type": "string"
-                }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
             }
-        },
-        "github_com_stuartshay_gcp-automation-api_internal_models.FolderRequest": {
-            "type": "object",
-            "required": [
-                "display_name",
-                "parent_id",
-                "parent_type"
-            ],
-            "properties": {
-                "display_name": {
-                    "type": "string",
-                    "maxLength": 100,
-                    "minLength": 1,
-                    "example": "Development Environment"
-                },
-                "parent_id": {
-                    "type": "string",
-                    "example": "123456789012"
-                },
-                "parent_type": {
-                    "description": "\"organization\" or \"folder\"",
-                    "type": "string",
-                    "enum": [
-                        "organization",
-                        "folder"
-                    ],
-                    "example": "organization"
-                }
-            }
-        },
-        "github_com_stuartshay_gcp-automation-api_internal_models.FolderResponse": {
-            "type": "object",
-            "properties": {
-                "create_time": {
-                    "type": "string"
-                },
-                "display_name": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "parent_id": {
-                    "type": "string"
-                },
-                "parent_type": {
-                    "type": "string"
-                },
-                "state": {
-                    "type": "string"
-                },
-                "update_time": {
-                    "type": "string"
-                }
-            }
-        },
-        "github_com_stuartshay_gcp-automation-api_internal_models.ProjectRequest": {
-            "type": "object",
-            "required": [
-                "display_name",
-                "project_id"
-            ],
-            "properties": {
-                "display_name": {
-                    "type": "string",
-                    "maxLength": 100,
-                    "minLength": 1,
-                    "example": "My Development Project"
-                },
-                "labels": {
-                    "type": "object",
-                    "additionalProperties": {
-                        "type": "string"
-                    }
-                },
-                "parent_id": {
-                    "type": "string",
-                    "example": "123456789012"
-                },
-                "parent_type": {
-                    "description": "\"organization\" or \"folder\"",
-                    "type": "string",
-                    "enum": [
-                        "organization",
-                        "folder"
-                    ],
-                    "example": "organization"
-                },
-                "project_id": {
-                    "type": "string",
-                    "example": "my-dev-project-2024"
-                }
-            }
-        },
-        "github_com_stuartshay_gcp-automation-api_internal_models.ProjectResponse": {
-            "type": "object",
-            "properties": {
-                "create_time": {
-                    "type": "string"
-                },
-                "display_name": {
-                    "type": "string"
-                },
-                "labels": {
-                    "type": "object",
-                    "additionalProperties": {
-                        "type": "string"
-                    }
-                },
-                "parent_id": {
-                    "type": "string"
-                },
-                "parent_type": {
-                    "type": "string"
-                },
-                "project_id": {
-                    "type": "string"
-                },
-                "project_number": {
-                    "type": "integer"
-                },
-                "state": {
-                    "type": "string"
-                },
-                "update_time": {
-                    "type": "string"
-                }
-            }
-        },
-        "github_com_stuartshay_gcp-automation-api_internal_models.RetentionPolicy": {
-            "type": "object",
-            "properties": {
-                "is_locked": {
-                    "type": "boolean",
-                    "example": false
-                },
-                "retention_period_seconds": {
-                    "description": "1 second to 100 years",
-                    "type": "integer",
-                    "maximum": 3155760000,
-                    "minimum": 1,
-                    "example": 86400
-                }
-            }
-        },
-        "github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse": {
-            "type": "object",
-            "properties": {
-                "data": {},
-                "message": {
-                    "type": "string"
-                }
-            }
+          }
         }
+      }
     },
-    "securityDefinitions": {
-        "BearerAuth": {
-            "description": "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
-            "type": "apiKey",
-            "name": "Authorization",
-            "in": "header"
+    "/buckets/{name}": {
+      "get": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "description": "Retrieve details of a Google Cloud Storage bucket by its bucket name",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Buckets"
+        ],
+        "summary": "Get a Cloud Storage bucket by name",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Bucket name",
+            "name": "name",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.BucketResponse"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            }
+          }
         }
+      },
+      "delete": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "description": "Delete a Google Cloud Storage bucket by its bucket name",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Buckets"
+        ],
+        "summary": "Delete a Cloud Storage bucket",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Bucket name",
+            "name": "name",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/folders": {
+      "post": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "description": "Create a new Google Cloud Platform folder with the specified parameters\n\n## Example Usage:\n### Basic Example (models.BasicFolderRequest):\nSimple folder under organization root\n### Advanced Example (models.AdvancedFolderRequest):\nNested folder structure for complex hierarchies",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Folders"
+        ],
+        "summary": "Create a new GCP folder",
+        "parameters": [
+          {
+            "description": "Folder creation request",
+            "name": "folder",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.FolderRequest"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.FolderResponse"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/folders/{id}": {
+      "get": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "description": "Retrieve details of a Google Cloud Platform folder by its folder ID",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Folders"
+        ],
+        "summary": "Get a GCP folder by ID",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Folder ID",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.FolderResponse"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            }
+          }
+        }
+      },
+      "delete": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "description": "Delete a Google Cloud Platform folder by its folder ID",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Folders"
+        ],
+        "summary": "Delete a GCP folder",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Folder ID",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/projects": {
+      "post": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "description": "Create a new Google Cloud Platform project with the specified parameters\n\n## Example Usage:\n### Basic Example (models.BasicProjectRequest):\nSimple project creation with just ID and display name\n### Advanced Example (models.AdvancedProjectRequest):\nEnterprise project with organization hierarchy, labels, and governance",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Projects"
+        ],
+        "summary": "Create a new GCP project",
+        "parameters": [
+          {
+            "description": "Project creation request",
+            "name": "project",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ProjectRequest"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ProjectResponse"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/projects/{id}": {
+      "get": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "description": "Retrieve details of a Google Cloud Platform project by its project ID",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Projects"
+        ],
+        "summary": "Get a GCP project by ID",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Project ID",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ProjectResponse"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            }
+          }
+        }
+      },
+      "delete": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "description": "Delete a Google Cloud Platform project by its project ID",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Projects"
+        ],
+        "summary": "Delete a GCP project",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Project ID",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            }
+          }
+        }
+      }
     }
+  },
+  "definitions": {
+    "github_com_stuartshay_gcp-automation-api_internal_models.BucketRequest": {
+      "type": "object",
+      "required": [
+        "location",
+        "name"
+      ],
+      "properties": {
+        "kms_key_name": {
+          "description": "Phase 1 Advanced Options - Security & Compliance",
+          "type": "string",
+          "example": "projects/my-project/locations/us-central1/keyRings/my-keyring/cryptoKeys/my-key"
+        },
+        "labels": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "location": {
+          "type": "string",
+          "example": "us-central1"
+        },
+        "name": {
+          "type": "string",
+          "example": "my-project-storage-bucket"
+        },
+        "public_access_prevention": {
+          "type": "string",
+          "enum": [
+            "inherited",
+            "enforced",
+            "unspecified"
+          ],
+          "example": "enforced"
+        },
+        "retention_policy": {
+          "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.RetentionPolicy"
+        },
+        "storage_class": {
+          "type": "string",
+          "enum": [
+            "STANDARD",
+            "NEARLINE",
+            "COLDLINE",
+            "ARCHIVE"
+          ],
+          "example": "STANDARD"
+        },
+        "uniform_bucket_level_access": {
+          "type": "boolean",
+          "example": true
+        },
+        "versioning": {
+          "type": "boolean",
+          "example": true
+        }
+      }
+    },
+    "github_com_stuartshay_gcp-automation-api_internal_models.BucketResponse": {
+      "type": "object",
+      "properties": {
+        "create_time": {
+          "type": "string"
+        },
+        "kms_key_name": {
+          "description": "Phase 1 Advanced Options - Security & Compliance",
+          "type": "string"
+        },
+        "labels": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "location": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "public_access_prevention": {
+          "type": "string"
+        },
+        "retention_policy": {
+          "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.RetentionPolicy"
+        },
+        "self_link": {
+          "type": "string"
+        },
+        "storage_class": {
+          "type": "string"
+        },
+        "uniform_bucket_level_access": {
+          "type": "boolean"
+        },
+        "update_time": {
+          "type": "string"
+        },
+        "versioning": {
+          "type": "boolean"
+        }
+      }
+    },
+    "github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer"
+        },
+        "error": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "github_com_stuartshay_gcp-automation-api_internal_models.FolderRequest": {
+      "type": "object",
+      "required": [
+        "display_name",
+        "parent_id",
+        "parent_type"
+      ],
+      "properties": {
+        "display_name": {
+          "type": "string",
+          "maxLength": 100,
+          "minLength": 1,
+          "example": "Development Environment"
+        },
+        "parent_id": {
+          "type": "string",
+          "example": "123456789012"
+        },
+        "parent_type": {
+          "description": "\"organization\" or \"folder\"",
+          "type": "string",
+          "enum": [
+            "organization",
+            "folder"
+          ],
+          "example": "organization"
+        }
+      }
+    },
+    "github_com_stuartshay_gcp-automation-api_internal_models.FolderResponse": {
+      "type": "object",
+      "properties": {
+        "create_time": {
+          "type": "string"
+        },
+        "display_name": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "parent_id": {
+          "type": "string"
+        },
+        "parent_type": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "update_time": {
+          "type": "string"
+        }
+      }
+    },
+    "github_com_stuartshay_gcp-automation-api_internal_models.ProjectRequest": {
+      "type": "object",
+      "required": [
+        "display_name",
+        "project_id"
+      ],
+      "properties": {
+        "display_name": {
+          "type": "string",
+          "maxLength": 100,
+          "minLength": 1,
+          "example": "My Development Project"
+        },
+        "labels": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "parent_id": {
+          "type": "string",
+          "example": "123456789012"
+        },
+        "parent_type": {
+          "description": "\"organization\" or \"folder\"",
+          "type": "string",
+          "enum": [
+            "organization",
+            "folder"
+          ],
+          "example": "organization"
+        },
+        "project_id": {
+          "type": "string",
+          "example": "my-dev-project-2024"
+        }
+      }
+    },
+    "github_com_stuartshay_gcp-automation-api_internal_models.ProjectResponse": {
+      "type": "object",
+      "properties": {
+        "create_time": {
+          "type": "string"
+        },
+        "display_name": {
+          "type": "string"
+        },
+        "labels": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "parent_id": {
+          "type": "string"
+        },
+        "parent_type": {
+          "type": "string"
+        },
+        "project_id": {
+          "type": "string"
+        },
+        "project_number": {
+          "type": "integer"
+        },
+        "state": {
+          "type": "string"
+        },
+        "update_time": {
+          "type": "string"
+        }
+      }
+    },
+    "github_com_stuartshay_gcp-automation-api_internal_models.RetentionPolicy": {
+      "type": "object",
+      "properties": {
+        "is_locked": {
+          "type": "boolean",
+          "example": false
+        },
+        "retention_period_seconds": {
+          "description": "1 second to 100 years",
+          "type": "integer",
+          "maximum": 3155760000,
+          "minimum": 1,
+          "example": 86400
+        }
+      }
+    },
+    "github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse": {
+      "type": "object",
+      "properties": {
+        "data": {},
+        "message": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "BearerAuth": {
+      "description": "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    }
+  }
 }

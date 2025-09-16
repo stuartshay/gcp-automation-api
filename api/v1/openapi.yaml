@@ -212,7 +212,7 @@ paths:
   /api/v1/projects:
     post:
       summary: Create a GCP project
-      description: Create a new Google Cloud Platform project
+      description: Create a new Google Cloud Platform project with the specified parameters
       tags:
         - Projects
       security:
@@ -223,6 +223,26 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/ProjectRequest"
+            examples:
+              basic:
+                summary: Basic Project Creation
+                description: Simple project creation with just ID and display name
+                value:
+                  project_id: "my-simple-project-2024"
+                  display_name: "My Simple Project"
+              advanced:
+                summary: Advanced Project Creation
+                description: Enterprise project with organization hierarchy, labels, and governance
+                value:
+                  project_id: "enterprise-app-prod-2024"
+                  display_name: "Enterprise Application - Production"
+                  parent_id: "123456789012"
+                  parent_type: "organization"
+                  labels:
+                    environment: "production"
+                    team: "backend"
+                    cost-center: "engineering"
+                    compliance: "sox"
       responses:
         "201":
           description: Project created successfully
@@ -314,7 +334,7 @@ paths:
   /api/v1/buckets:
     post:
       summary: Create a GCS bucket
-      description: Create a new Google Cloud Storage bucket
+      description: Create a new Google Cloud Storage bucket with the specified parameters including advanced options for KMS encryption, retention policies, and access controls
       tags:
         - Buckets
       security:
@@ -325,6 +345,32 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/BucketRequest"
+            examples:
+              basic:
+                summary: Basic Bucket Creation
+                description: Simple bucket creation with minimal required fields
+                value:
+                  name: "my-simple-storage-bucket"
+                  location: "us-central1"
+                  storage_class: "STANDARD"
+              advanced:
+                summary: Advanced Bucket Creation
+                description: Enterprise bucket with security features, labels, and compliance settings
+                value:
+                  name: "my-enterprise-bucket-2024"
+                  location: "us-central1"
+                  storage_class: "STANDARD"
+                  labels:
+                    environment: "production"
+                    team: "platform"
+                    cost-center: "engineering"
+                  versioning: true
+                  kms_key_name: "projects/my-project/locations/us-central1/keyRings/my-keyring/cryptoKeys/my-key"
+                  retention_policy:
+                    retention_period_seconds: 7776000
+                    is_locked: false
+                  uniform_bucket_level_access: true
+                  public_access_prevention: "enforced"
       responses:
         "201":
           description: Bucket created successfully
@@ -416,7 +462,7 @@ paths:
   /api/v1/folders:
     post:
       summary: Create a GCP folder
-      description: Create a new Google Cloud Platform folder
+      description: Create a new Google Cloud Platform folder with the specified parameters
       tags:
         - Folders
       security:
@@ -427,6 +473,21 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/FolderRequest"
+            examples:
+              basic:
+                summary: Basic Folder Creation
+                description: Simple folder under organization root
+                value:
+                  display_name: "Development Environment"
+                  parent_id: "123456789012"
+                  parent_type: "organization"
+              advanced:
+                summary: Advanced Folder Creation
+                description: Nested folder structure for complex hierarchies
+                value:
+                  display_name: "Production - North America Region"
+                  parent_id: "987654321098"
+                  parent_type: "folder"
       responses:
         "201":
           description: Folder created successfully
@@ -607,6 +668,33 @@ components:
           type: boolean
           description: Enable object versioning
           example: true
+        kms_key_name:
+          type: string
+          description: KMS key name for encryption
+          example: "projects/my-project/locations/us-central1/keyRings/my-keyring/cryptoKeys/my-key"
+        retention_policy:
+          type: object
+          description: Retention policy for the bucket
+          properties:
+            retention_period_seconds:
+              type: integer
+              description: Retention period in seconds (1 second to 100 years)
+              minimum: 1
+              maximum: 3155760000
+              example: 86400
+            is_locked:
+              type: boolean
+              description: Whether the retention policy is locked
+              example: false
+        uniform_bucket_level_access:
+          type: boolean
+          description: Enable uniform bucket-level access
+          example: true
+        public_access_prevention:
+          type: string
+          enum: [inherited, enforced, unspecified]
+          description: Public access prevention setting
+          example: enforced
 
     SuccessResponse:
       type: object

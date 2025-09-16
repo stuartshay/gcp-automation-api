@@ -208,8 +208,14 @@ paths:
     post:
       consumes:
       - application/json
-      description: Create a new Google Cloud Storage bucket with optional advanced
-        security and compliance features
+      description: |-
+        Create a new Google Cloud Storage bucket with the specified parameters including advanced options for KMS encryption, retention policies, and access controls
+
+        ## Example Usage:
+        ### Basic Example (models.BasicBucketRequest):
+        Simple bucket creation with minimal required fields
+        ### Advanced Example (models.AdvancedBucketRequest):
+        Enterprise bucket with security features, labels, and compliance settings
       parameters:
       - description: Bucket creation request
         in: body
@@ -239,7 +245,7 @@ paths:
             $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
       security:
       - BearerAuth: []
-      summary: Create a new GCS bucket
+      summary: Create a new Cloud Storage bucket
       tags:
       - Buckets
   /buckets/{name}:
@@ -304,6 +310,10 @@ paths:
           description: Not Found
           schema:
             $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
       security:
       - BearerAuth: []
       summary: Get a Cloud Storage bucket by name
@@ -313,7 +323,14 @@ paths:
     post:
       consumes:
       - application/json
-      description: Create a new Google Cloud Platform folder with the specified parameters
+      description: |-
+        Create a new Google Cloud Platform folder with the specified parameters
+
+        ## Example Usage:
+        ### Basic Example (models.BasicFolderRequest):
+        Simple folder under organization root
+        ### Advanced Example (models.AdvancedFolderRequest):
+        Nested folder structure for complex hierarchies
       parameters:
       - description: Folder creation request
         in: body
@@ -408,6 +425,10 @@ paths:
           description: Not Found
           schema:
             $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
       security:
       - BearerAuth: []
       summary: Get a GCP folder by ID
@@ -417,7 +438,14 @@ paths:
     post:
       consumes:
       - application/json
-      description: Create a new Google Cloud Platform project with the specified parameters
+      description: |-
+        Create a new Google Cloud Platform project with the specified parameters
+
+        ## Example Usage:
+        ### Basic Example (models.BasicProjectRequest):
+        Simple project creation with just ID and display name
+        ### Advanced Example (models.AdvancedProjectRequest):
+        Enterprise project with organization hierarchy, labels, and governance
       parameters:
       - description: Project creation request
         in: body
@@ -510,6 +538,10 @@ paths:
             $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
         "404":
           description: Not Found
+          schema:
+            $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
+        "500":
+          description: Internal Server Error
           schema:
             $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
       security:

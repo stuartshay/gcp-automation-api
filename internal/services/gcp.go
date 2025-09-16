@@ -188,7 +188,7 @@ func (s *GCPService) DeleteFolder(folderID string) error {
 func (s *GCPService) CreateBucket(req *models.BucketRequest) (*models.BucketResponse, error) {
 	bucket := s.storageClient.Bucket(req.Name)
 
-	// Set bucket attributes
+	// Set basic bucket attributes
 	attrs := &storage.BucketAttrs{
 		Location: req.Location,
 		Labels:   req.Labels,
@@ -202,17 +202,54 @@ func (s *GCPService) CreateBucket(req *models.BucketRequest) (*models.BucketResp
 		attrs.VersioningEnabled = true
 	}
 
+	// Phase 1 Advanced Options - Security & Compliance
+
+	// KMS Encryption
+	if req.KMSKeyName != "" {
+		attrs.Encryption = &storage.BucketEncryption{
+			DefaultKMSKeyName: req.KMSKeyName,
+		}
+	}
+
+	// Retention Policy
+	if req.RetentionPolicy != nil {
+		attrs.RetentionPolicy = &storage.RetentionPolicy{
+			RetentionPeriod: time.Duration(req.RetentionPolicy.RetentionPeriodSeconds) * time.Second,
+			IsLocked:        req.RetentionPolicy.IsLocked,
+		}
+	}
+
+	// Uniform Bucket-Level Access
+	if req.UniformBucketLevelAccess {
+		attrs.UniformBucketLevelAccess = storage.UniformBucketLevelAccess{
+			Enabled: true,
+		}
+	}
+
+	// Public Access Prevention
+	if req.PublicAccessPrevention != "" {
+		switch req.PublicAccessPrevention {
+		case "enforced":
+			attrs.PublicAccessPrevention = storage.PublicAccessPreventionEnforced
+		case "inherited":
+			attrs.PublicAccessPrevention = storage.PublicAccessPreventionInherited
+		case "unspecified":
+			attrs.PublicAccessPrevention = storage.PublicAccessPreventionUnspecified
+		}
+	}
+
 	// Create the bucket
 	if err := bucket.Create(s.ctx, s.config.GCPProjectID, attrs); err != nil {
 		return nil, fmt.Errorf("failed to create bucket: %w", err)
 	}
 
-	// Get bucket attributes
+	// Get bucket attributes to return complete information
 	bucketAttrs, err := bucket.Attrs(s.ctx)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get bucket attributes: %w", err)
 	}
 
+	// Build response with all information including advanced options
 	response := &models.BucketResponse{
 		Name:         bucketAttrs.Name,
 		Location:     bucketAttrs.Location,
@@ -222,6 +259,29 @@ func (s *GCPService) CreateBucket(req *models.BucketRequest) (*models.BucketResp
 		CreateTime:   bucketAttrs.Created,
 		UpdateTime:   bucketAttrs.Updated,
 		SelfLink:     fmt.Sprintf("https://www.googleapis.com/storage/v1/b/%s", bucketAttrs.Name),
+	}
+
+	// Add Phase 1 Advanced Options to response
+	if bucketAttrs.Encryption != nil {
+		response.KMSKeyName = bucketAttrs.Encryption.DefaultKMSKeyName
+	}
+
+	if bucketAttrs.RetentionPolicy != nil {
+		response.RetentionPolicy = &models.RetentionPolicy{
+			RetentionPeriodSeconds: int64(bucketAttrs.RetentionPolicy.RetentionPeriod.Seconds()),
+			IsLocked:               bucketAttrs.RetentionPolicy.IsLocked,
+		}
+	}
+
+	response.UniformBucketLevelAccess = bucketAttrs.UniformBucketLevelAccess.Enabled
+
+	switch bucketAttrs.PublicAccessPrevention {
+	case storage.PublicAccessPreventionEnforced:
+		response.PublicAccessPrevention = "enforced"
+	case storage.PublicAccessPreventionInherited:
+		response.PublicAccessPrevention = "inherited"
+	case storage.PublicAccessPreventionUnspecified:
+		response.PublicAccessPrevention = "unspecified"
 	}
 
 	return response, nil
@@ -245,6 +305,29 @@ func (s *GCPService) GetBucket(bucketName string) (*models.BucketResponse, error
 		CreateTime:   attrs.Created,
 		UpdateTime:   attrs.Updated,
 		SelfLink:     fmt.Sprintf("https://www.googleapis.com/storage/v1/b/%s", attrs.Name),
+	}
+
+	// Add Phase 1 Advanced Options to response
+	if attrs.Encryption != nil {
+		response.KMSKeyName = attrs.Encryption.DefaultKMSKeyName
+	}
+
+	if attrs.RetentionPolicy != nil {
+		response.RetentionPolicy = &models.RetentionPolicy{
+			RetentionPeriodSeconds: int64(attrs.RetentionPolicy.RetentionPeriod.Seconds()),
+			IsLocked:               attrs.RetentionPolicy.IsLocked,
+		}
+	}
+
+	response.UniformBucketLevelAccess = attrs.UniformBucketLevelAccess.Enabled
+
+	switch attrs.PublicAccessPrevention {
+	case storage.PublicAccessPreventionEnforced:
+		response.PublicAccessPrevention = "enforced"
+	case storage.PublicAccessPreventionInherited:
+		response.PublicAccessPrevention = "inherited"
+	case storage.PublicAccessPreventionUnspecified:
+		response.PublicAccessPrevention = "unspecified"
 	}
 
 	return response, nil

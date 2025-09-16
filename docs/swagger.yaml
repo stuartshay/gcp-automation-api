@@ -2,22 +2,42 @@ basePath: /api/v1
 definitions:
   github_com_stuartshay_gcp-automation-api_internal_models.BucketRequest:
     properties:
+      kms_key_name:
+        description: Phase 1 Advanced Options - Security & Compliance
+        example: projects/my-project/locations/us-central1/keyRings/my-keyring/cryptoKeys/my-key
+        type: string
       labels:
         additionalProperties:
           type: string
         type: object
       location:
+        example: us-central1
         type: string
       name:
+        example: my-project-storage-bucket
         type: string
+      public_access_prevention:
+        enum:
+        - inherited
+        - enforced
+        - unspecified
+        example: enforced
+        type: string
+      retention_policy:
+        $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.RetentionPolicy'
       storage_class:
         enum:
         - STANDARD
         - NEARLINE
         - COLDLINE
         - ARCHIVE
+        example: STANDARD
         type: string
+      uniform_bucket_level_access:
+        example: true
+        type: boolean
       versioning:
+        example: true
         type: boolean
     required:
     - location
@@ -27,6 +47,9 @@ definitions:
     properties:
       create_time:
         type: string
+      kms_key_name:
+        description: Phase 1 Advanced Options - Security & Compliance
+        type: string
       labels:
         additionalProperties:
           type: string
@@ -35,10 +58,16 @@ definitions:
         type: string
       name:
         type: string
+      public_access_prevention:
+        type: string
+      retention_policy:
+        $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.RetentionPolicy'
       self_link:
         type: string
       storage_class:
         type: string
+      uniform_bucket_level_access:
+        type: boolean
       update_time:
         type: string
       versioning:
@@ -56,16 +85,19 @@ definitions:
   github_com_stuartshay_gcp-automation-api_internal_models.FolderRequest:
     properties:
       display_name:
+        example: Development Environment
         maxLength: 100
         minLength: 1
         type: string
       parent_id:
+        example: "123456789012"
         type: string
       parent_type:
         description: '"organization" or "folder"'
         enum:
         - organization
         - folder
+        example: organization
         type: string
     required:
     - display_name
@@ -92,6 +124,7 @@ definitions:
   github_com_stuartshay_gcp-automation-api_internal_models.ProjectRequest:
     properties:
       display_name:
+        example: My Development Project
         maxLength: 100
         minLength: 1
         type: string
@@ -100,14 +133,17 @@ definitions:
           type: string
         type: object
       parent_id:
+        example: "123456789012"
         type: string
       parent_type:
         description: '"organization" or "folder"'
         enum:
         - organization
         - folder
+        example: organization
         type: string
       project_id:
+        example: my-dev-project-2024
         type: string
     required:
     - display_name
@@ -135,6 +171,18 @@ definitions:
         type: string
       update_time:
         type: string
+    type: object
+  github_com_stuartshay_gcp-automation-api_internal_models.RetentionPolicy:
+    properties:
+      is_locked:
+        example: false
+        type: boolean
+      retention_period_seconds:
+        description: 1 second to 100 years
+        example: 86400
+        maximum: 3155760000
+        minimum: 1
+        type: integer
     type: object
   github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse:
     properties:

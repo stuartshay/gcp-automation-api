@@ -546,6 +546,11 @@ const docTemplate = `{
                 "name"
             ],
             "properties": {
+                "kms_key_name": {
+                    "description": "Phase 1 Advanced Options - Security \u0026 Compliance",
+                    "type": "string",
+                    "example": "projects/my-project/locations/us-central1/keyRings/my-keyring/cryptoKeys/my-key"
+                },
                 "labels": {
                     "type": "object",
                     "additionalProperties": {
@@ -553,10 +558,24 @@ const docTemplate = `{
                     }
                 },
                 "location": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "us-central1"
                 },
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "my-project-storage-bucket"
+                },
+                "public_access_prevention": {
+                    "type": "string",
+                    "enum": [
+                        "inherited",
+                        "enforced",
+                        "unspecified"
+                    ],
+                    "example": "enforced"
+                },
+                "retention_policy": {
+                    "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.RetentionPolicy"
                 },
                 "storage_class": {
                     "type": "string",
@@ -565,10 +584,16 @@ const docTemplate = `{
                         "NEARLINE",
                         "COLDLINE",
                         "ARCHIVE"
-                    ]
+                    ],
+                    "example": "STANDARD"
+                },
+                "uniform_bucket_level_access": {
+                    "type": "boolean",
+                    "example": true
                 },
                 "versioning": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "example": true
                 }
             }
         },
@@ -578,6 +603,10 @@ const docTemplate = `{
                 "create_time": {
                     "type": "string"
                 },
+                "kms_key_name": {
+                    "description": "Phase 1 Advanced Options - Security \u0026 Compliance",
+                    "type": "string"
+                },
                 "labels": {
                     "type": "object",
                     "additionalProperties": {
@@ -590,11 +619,20 @@ const docTemplate = `{
                 "name": {
                     "type": "string"
                 },
+                "public_access_prevention": {
+                    "type": "string"
+                },
+                "retention_policy": {
+                    "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.RetentionPolicy"
+                },
                 "self_link": {
                     "type": "string"
                 },
                 "storage_class": {
                     "type": "string"
+                },
+                "uniform_bucket_level_access": {
+                    "type": "boolean"
                 },
                 "update_time": {
                     "type": "string"
@@ -629,10 +667,12 @@ const docTemplate = `{
                 "display_name": {
                     "type": "string",
                     "maxLength": 100,
-                    "minLength": 1
+                    "minLength": 1,
+                    "example": "Development Environment"
                 },
                 "parent_id": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "123456789012"
                 },
                 "parent_type": {
                     "description": "\"organization\" or \"folder\"",
@@ -640,7 +680,8 @@ const docTemplate = `{
                     "enum": [
                         "organization",
                         "folder"
-                    ]
+                    ],
+                    "example": "organization"
                 }
             }
         },
@@ -680,7 +721,8 @@ const docTemplate = `{
                 "display_name": {
                     "type": "string",
                     "maxLength": 100,
-                    "minLength": 1
+                    "minLength": 1,
+                    "example": "My Development Project"
                 },
                 "labels": {
                     "type": "object",
@@ -689,7 +731,8 @@ const docTemplate = `{
                     }
                 },
                 "parent_id": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "123456789012"
                 },
                 "parent_type": {
                     "description": "\"organization\" or \"folder\"",
@@ -697,10 +740,12 @@ const docTemplate = `{
                     "enum": [
                         "organization",
                         "folder"
-                    ]
+                    ],
+                    "example": "organization"
                 },
                 "project_id": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "my-dev-project-2024"
                 }
             }
         },
@@ -736,6 +781,22 @@ const docTemplate = `{
                 },
                 "update_time": {
                     "type": "string"
+                }
+            }
+        },
+        "github_com_stuartshay_gcp-automation-api_internal_models.RetentionPolicy": {
+            "type": "object",
+            "properties": {
+                "is_locked": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "retention_period_seconds": {
+                    "description": "1 second to 100 years",
+                    "type": "integer",
+                    "maximum": 3155760000,
+                    "minimum": 1,
+                    "example": 86400
                 }
             }
         },

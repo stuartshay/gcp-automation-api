@@ -91,7 +91,16 @@ jobs:
           while read -r cache_id; do
             if [ -n "$cache_id" ]; then
               echo "Deleting cache ID: $cache_id"
-              gh api --method DELETE repos/${{ github.repository }}/actions/caches/$cache_id || true
+              if ! gh api --method DELETE repos/${{ github.repository }}/actions/caches/$cache_id 2>/dev/null; then
+                exit_code=$?
+                if [ $exit_code -eq 22 ]; then
+                  echo "  ⚠️ Cache already deleted: $cache_id"
+                else
+                  echo "  ❌ Failed to delete cache (exit code: $exit_code): $cache_id"
+                fi
+              else
+                echo "  ✅ Successfully deleted: $cache_id"
+              fi
             fi
           done
 
@@ -171,7 +180,16 @@ jobs:
           while read -r cache_id; do
             if [ -n "$cache_id" ]; then
               echo "Deleting cache ID: $cache_id"
-              gh api --method DELETE repos/${{ github.repository }}/actions/caches/$cache_id || true
+              if ! gh api --method DELETE repos/${{ github.repository }}/actions/caches/$cache_id 2>/dev/null; then
+                exit_code=$?
+                if [ $exit_code -eq 22 ]; then
+                  echo "  ⚠️ Cache already deleted: $cache_id"
+                else
+                  echo "  ❌ Failed to delete cache (exit code: $exit_code): $cache_id"
+                fi
+              else
+                echo "  ✅ Successfully deleted: $cache_id"
+              fi
             fi
           done
 
@@ -187,7 +205,16 @@ jobs:
           while read -r cache_id; do
             if [ -n "$cache_id" ]; then
               echo "Deleting buildx cache ID: $cache_id"
-              gh api --method DELETE repos/${{ github.repository }}/actions/caches/$cache_id || true
+              if ! gh api --method DELETE repos/${{ github.repository }}/actions/caches/$cache_id 2>/dev/null; then
+                exit_code=$?
+                if [ $exit_code -eq 22 ]; then
+                  echo "  ⚠️ Cache already deleted: $cache_id"
+                else
+                  echo "  ❌ Failed to delete cache (exit code: $exit_code): $cache_id"
+                fi
+              else
+                echo "  ✅ Successfully deleted buildx cache: $cache_id"
+              fi
             fi
           done
 
@@ -208,7 +235,16 @@ jobs:
           while read -r cache_id; do
             if [ -n "$cache_id" ]; then
               echo "Deleting duplicate Go cache ID: $cache_id"
-              gh api --method DELETE repos/${{ github.repository }}/actions/caches/$cache_id || true
+              if ! gh api --method DELETE repos/${{ github.repository }}/actions/caches/$cache_id 2>/dev/null; then
+                exit_code=$?
+                if [ $exit_code -eq 22 ]; then
+                  echo "  ⚠️ Cache already deleted: $cache_id"
+                else
+                  echo "  ❌ Failed to delete cache (exit code: $exit_code): $cache_id"
+                fi
+              else
+                echo "  ✅ Successfully deleted duplicate Go cache: $cache_id"
+              fi
             fi
           done
 

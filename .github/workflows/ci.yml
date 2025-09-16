@@ -227,7 +227,6 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=min
-          cache-from-inline: false
 
   deploy:
     name: Deploy to Cloud Run

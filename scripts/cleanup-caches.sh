@@ -34,6 +34,39 @@ log_error() {
     echo -e "${RED}[ERROR]${NC} $1"
 }
 
+# Helper function to get cutoff date with cross-platform compatibility
+get_cutoff_date() {
+    local days=$1
+    # Try different date command formats for cross-platform compatibility
+    date -d "${days} days ago" --iso-8601=seconds 2>/dev/null || \
+    date -v-${days}d '+%Y-%m-%dT%H:%M:%S%z' 2>/dev/null || \
+    date -d "${days} days ago" '+%Y-%m-%dT%H:%M:%S%z' 2>/dev/null || {
+        log_error "Unable to calculate cutoff date. Please ensure 'date' command supports ISO 8601 format."
+        exit 1
+    }
+}
+
+# Helper function to delete cache with proper error handling
+delete_cache() {
+    local cache_id=$1
+    local description=$2
+
+    if gh api --method DELETE repos/$REPO/actions/caches/$cache_id 2>/dev/null; then
+        echo "  ✓ Deleted: $description"
+        return 0
+    else
+        local exit_code=$?
+        if [ $exit_code -eq 22 ]; then
+            # HTTP 404 - cache already deleted
+            echo "  ⚠ Cache already deleted: $description"
+            return 0
+        else
+            log_warning "Failed to delete cache (exit code: $exit_code): $description"
+            return 1
+        fi
+    fi
+}
+
 # Check if gh CLI is installed
 check_dependencies() {
     if ! command -v gh &> /dev/null; then
@@ -122,64 +155,76 @@ list_caches() {
 cleanup_conservative() {
     log_info "Running conservative cleanup (deleting caches older than 7 days)..."
 
-    CUTOFF_DATE=$(date -d '7 days ago' --iso-8601=seconds 2>/dev/null || date -v-7d '+%Y-%m-%dT%H:%M:%S%z' 2>/dev/null || date -d '7 days ago' '+%Y-%m-%dT%H:%M:%S%z')
+    local cutoff_date
+    cutoff_date=$(get_cutoff_date 7)
 
-    DELETED_COUNT=0
-    echo "$CACHES" | jq -r --arg cutoff "$CUTOFF_DATE" \
-    '.actions_caches[] | select(.created_at < $cutoff) | "\(.id) \(.key) \(.created_at)"' | \
-    while read -r cache_id key created_at; do
+    local deleted_count=0
+    local failed_count=0
+
+    # Use process substitution to avoid subshell issue with counter
+    while IFS=' ' read -r cache_id key created_at; do
         if [ -n "$cache_id" ]; then
-            echo "  Deleting: $key (created: $created_at)"
-            if gh api --method DELETE repos/$REPO/actions/caches/$cache_id &> /dev/null; then
-                ((DELETED_COUNT++))
+            if delete_cache "$cache_id" "$key (created: $created_at)"; then
+                ((deleted_count++))
             else
-                log_warning "Failed to delete cache: $cache_id"
+                ((failed_count++))
             fi
         fi
-    done
+    done < <(echo "$CACHES" | jq -r --arg cutoff "$cutoff_date" \
+        '.actions_caches[] | select(.created_at < $cutoff) | "\(.id) \(.key) \(.created_at)"')
 
-    log_success "Conservative cleanup completed"
+    log_success "Conservative cleanup completed: $deleted_count deleted, $failed_count failed"
 }
 
 # Aggressive cleanup (3+ days old, then oldest first until under limit)
 cleanup_aggressive() {
     log_info "Running aggressive cleanup..."
 
-    MAX_SIZE_BYTES=$(echo "$MAX_SIZE_GB * 1024 * 1024 * 1024" | bc)
-    CUTOFF_DATE=$(date -d '3 days ago' --iso-8601=seconds 2>/dev/null || date -v-3d '+%Y-%m-%dT%H:%M:%S%z' 2>/dev/null || date -d '3 days ago' '+%Y-%m-%dT%H:%M:%S%z')
+    local max_size_bytes
+    max_size_bytes=$(echo "$MAX_SIZE_GB * 1024 * 1024 * 1024" | bc)
+    local cutoff_date
+    cutoff_date=$(get_cutoff_date 3)
+
+    local deleted_count=0
+    local failed_count=0
 
     # Delete old caches first
     log_info "Deleting caches older than 3 days..."
-    echo "$CACHES" | jq -r --arg cutoff "$CUTOFF_DATE" \
-    '.actions_caches[] | select(.created_at < $cutoff) | "\(.id) \(.key)"' | \
-    while read -r cache_id key; do
+    while IFS=' ' read -r cache_id key; do
         if [ -n "$cache_id" ]; then
-            echo "  Deleting old cache: $key"
-            gh api --method DELETE repos/$REPO/actions/caches/$cache_id &> /dev/null || true
+            if delete_cache "$cache_id" "$key (old cache)"; then
+                ((deleted_count++))
+            else
+                ((failed_count++))
+            fi
         fi
-    done
+    done < <(echo "$CACHES" | jq -r --arg cutoff "$cutoff_date" \
+        '.actions_caches[] | select(.created_at < $cutoff) | "\(.id) \(.key)"')
 
     # Check current size and delete more if needed
-    CURRENT_CACHES=$(gh api repos/$REPO/actions/caches --paginate)
-    CURRENT_SIZE=$(echo "$CURRENT_CACHES" | jq '[.actions_caches[].size_in_bytes] | add // 0')
+    local current_caches
+    current_caches=$(gh api repos/$REPO/actions/caches --paginate)
+    local current_size
+    current_size=$(echo "$current_caches" | jq '[.actions_caches[].size_in_bytes] | add // 0')
 
-    if [ "$CURRENT_SIZE" -gt "$MAX_SIZE_BYTES" ]; then
+    if [ "$current_size" -gt "$max_size_bytes" ]; then
         log_info "Still over limit, deleting more caches (oldest first)..."
-        echo "$CURRENT_CACHES" | jq -r '.actions_caches[] | "\(.created_at) \(.id) \(.key)"' | \
-        sort | \
-        while read -r created_at cache_id key; do
-            CURRENT_SIZE=$(gh api repos/$REPO/actions/caches --paginate | jq '[.actions_caches[].size_in_bytes] | add // 0')
-            if [ "$CURRENT_SIZE" -gt "$MAX_SIZE_BYTES" ]; then
-                echo "  Deleting: $key (created: $created_at)"
-                gh api --method DELETE repos/$REPO/actions/caches/$cache_id &> /dev/null || true
+        while IFS=' ' read -r created_at cache_id key; do
+            current_size=$(gh api repos/$REPO/actions/caches --paginate | jq '[.actions_caches[].size_in_bytes] | add // 0')
+            if [ "$current_size" -gt "$max_size_bytes" ]; then
+                if delete_cache "$cache_id" "$key (created: $created_at)"; then
+                    ((deleted_count++))
+                else
+                    ((failed_count++))
+                fi
             else
-                log_success "Target size reached"
+                log_success "Target size reached, stopping cleanup"
                 break
             fi
-        done
+        done < <(echo "$current_caches" | jq -r '.actions_caches[] | "\(.created_at) \(.id) \(.key)"' | sort)
     fi
 
-    log_success "Aggressive cleanup completed"
+    log_success "Aggressive cleanup completed: $deleted_count deleted, $failed_count failed"
 }
 
 # Emergency cleanup (delete all caches)
@@ -194,51 +239,64 @@ cleanup_emergency() {
     fi
 
     log_info "Deleting all caches..."
-    echo "$CACHES" | jq -r '.actions_caches[] | "\(.id) \(.key)"' | \
-    while read -r cache_id key; do
-        if [ -n "$cache_id" ]; then
-            echo "  Deleting: $key"
-            gh api --method DELETE repos/$REPO/actions/caches/$cache_id &> /dev/null || true
-        fi
-    done
+    local deleted_count=0
+    local failed_count=0
 
-    log_success "Emergency cleanup completed - all caches deleted"
+    while IFS=' ' read -r cache_id key; do
+        if [ -n "$cache_id" ]; then
+            if delete_cache "$cache_id" "$key"; then
+                ((deleted_count++))
+            else
+                ((failed_count++))
+            fi
+        fi
+    done < <(echo "$CACHES" | jq -r '.actions_caches[] | "\(.id) \(.key)"')
+
+    log_success "Emergency cleanup completed: $deleted_count deleted, $failed_count failed - all caches deleted"
 }
 
 # Clean specific cache types
 cleanup_specific_types() {
     log_info "Cleaning up specific problematic cache types..."
 
+    local deleted_count=0
+    local failed_count=0
+
     # Delete Docker buildx caches (usually large)
     echo "Deleting Docker buildx caches..."
-    echo "$CACHES" | jq -r '.actions_caches[] | select(.key | contains("buildx")) | "\(.id) \(.key)"' | \
-    head -20 | \
-    while read -r cache_id key; do
+    while IFS=' ' read -r cache_id key; do
         if [ -n "$cache_id" ]; then
-            echo "  Deleting buildx cache: $key"
-            gh api --method DELETE repos/$REPO/actions/caches/$cache_id &> /dev/null || true
+            if delete_cache "$cache_id" "buildx cache: $key"; then
+                ((deleted_count++))
+            else
+                ((failed_count++))
+            fi
         fi
-    done
+    done < <(echo "$CACHES" | jq -r '.actions_caches[] | select(.key | contains("buildx")) | "\(.id) \(.key)"' | head -20)
 
     # Clean up duplicate Go caches
     echo "Cleaning up duplicate Go module caches..."
-    echo "$CACHES" | jq -r '.actions_caches[] | select(.key | contains("go-")) | "\(.created_at) \(.key) \(.id)"' | \
-    sort -r | \
-    awk '{
-        # Extract the hash part from the cache key
-        if (match($2, /go-.*-([a-f0-9]+)$/, arr)) {
-            hash = arr[1]
-            if (seen[hash]++) {
-                print $3  # Print cache ID for deletion
-            }
-        }
-    }' | \
     while read -r cache_id; do
         if [ -n "$cache_id" ]; then
-            echo "  Deleting duplicate Go cache: $cache_id"
-            gh api --method DELETE repos/$REPO/actions/caches/$cache_id &> /dev/null || true
+            if delete_cache "$cache_id" "duplicate Go cache: $cache_id"; then
+                ((deleted_count++))
+            else
+                ((failed_count++))
+            fi
         fi
-    done
+    done < <(echo "$CACHES" | jq -r '.actions_caches[] | select(.key | contains("go-")) | "\(.created_at) \(.key) \(.id)"' | \
+        sort -r | \
+        awk '{
+            # Extract the hash part from the cache key
+            if (match($2, /go-.*-([a-f0-9]+)$/, arr)) {
+                hash = arr[1]
+                if (seen[hash]++) {
+                    print $3  # Print cache ID for deletion
+                }
+            }
+        }')
+
+    log_success "Specific cleanup completed: $deleted_count deleted, $failed_count failed"
 }
 
 # Main function

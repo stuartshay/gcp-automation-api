@@ -233,33 +233,7 @@ jobs:
 
           # Delete duplicate Go caches (keep only latest for each unique go.sum hash)
           echo "Cleaning up duplicate Go module caches..."
-          gh api repos/${{ github.repository }}/actions/caches --paginate | \
-          jq -r '.actions_caches[] | select(.key | contains("go-")) | "\(.created_at) \(.key) \(.id)"' | \
-          sort -r | \
-          awk '{
-            # Extract the hash part from the cache key
-            if (match($2, /go-.*-([a-f0-9]+)$/, arr)) {
-              hash = arr[1]
-              if (seen[hash]++) {
-                print $3  # Print cache ID for deletion
-              }
-            }
-          }' | \
-          while read -r cache_id; do
-            if [ -n "$cache_id" ]; then
-              echo "Deleting duplicate Go cache ID: $cache_id"
-              if ! gh api --method DELETE repos/${{ github.repository }}/actions/caches/$cache_id 2>/dev/null; then
-                exit_code=$?
-                if [ $exit_code -eq 22 ]; then
-                  echo "  ⚠️ Cache already deleted: $cache_id"
-                else
-                  echo "  ❌ Failed to delete cache (exit code: $exit_code): $cache_id"
-                fi
-              else
-                echo "  ✅ Successfully deleted duplicate Go cache: $cache_id"
-              fi
-            fi
-          done
+          bash scripts/cleanup-go-caches.sh "${{ github.repository }}"
 
       - name: Post-cleanup cache report
         run: |

@@ -263,14 +263,14 @@ func (h *Handler) DeleteFolder(c echo.Context) error {
 	})
 }
 
-// CreateBucket handles bucket creation requests
-// @Summary Create a new Cloud Storage bucket
-// @Description Create a new Google Cloud Storage bucket with the specified parameters
+// CreateBucket creates a new GCS bucket
+// @Summary Create a new GCS bucket
+// @Description Create a new Google Cloud Storage bucket with optional advanced security and compliance features
 // @Tags Buckets
 // @Accept json
 // @Produce json
 // @Security BearerAuth
-// @Param bucket body models.BucketRequest true "Bucket creation request" SchemaExample({"name": "my-project-storage-bucket", "location": "us-central1", "storage_class": "STANDARD", "labels": {"environment": "development", "team": "backend", "project": "gcp-automation"}, "versioning": true})
+// @Param bucket body models.BucketRequest true "Bucket creation request"
 // @Success 201 {object} models.SuccessResponse{data=models.BucketResponse}
 // @Failure 400 {object} models.ErrorResponse
 // @Failure 500 {object} models.ErrorResponse

@@ -31,7 +31,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Create a new Google Cloud Storage bucket with the specified parameters",
+                "description": "Create a new Google Cloud Storage bucket with optional advanced security and compliance features",
                 "consumes": [
                     "application/json"
                 ],
@@ -41,7 +41,7 @@ const docTemplate = `{
                 "tags": [
                     "Buckets"
                 ],
-                "summary": "Create a new Cloud Storage bucket",
+                "summary": "Create a new GCS bucket",
                 "parameters": [
                     {
                         "description": "Bucket creation request",

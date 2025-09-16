@@ -208,7 +208,8 @@ paths:
     post:
       consumes:
       - application/json
-      description: Create a new Google Cloud Storage bucket with the specified parameters
+      description: Create a new Google Cloud Storage bucket with optional advanced
+        security and compliance features
       parameters:
       - description: Bucket creation request
         in: body
@@ -238,7 +239,7 @@ paths:
             $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
       security:
       - BearerAuth: []
-      summary: Create a new Cloud Storage bucket
+      summary: Create a new GCS bucket
       tags:
       - Buckets
   /buckets/{name}:

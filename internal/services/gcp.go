@@ -262,27 +262,7 @@ func (s *GCPService) CreateBucket(req *models.BucketRequest) (*models.BucketResp
 	}
 
 	// Add Phase 1 Advanced Options to response
-	if bucketAttrs.Encryption != nil {
-		response.KMSKeyName = bucketAttrs.Encryption.DefaultKMSKeyName
-	}
-
-	if bucketAttrs.RetentionPolicy != nil {
-		response.RetentionPolicy = &models.RetentionPolicy{
-			RetentionPeriodSeconds: int64(bucketAttrs.RetentionPolicy.RetentionPeriod.Seconds()),
-			IsLocked:               bucketAttrs.RetentionPolicy.IsLocked,
-		}
-	}
-
-	response.UniformBucketLevelAccess = bucketAttrs.UniformBucketLevelAccess.Enabled
-
-	switch bucketAttrs.PublicAccessPrevention {
-	case storage.PublicAccessPreventionEnforced:
-		response.PublicAccessPrevention = "enforced"
-	case storage.PublicAccessPreventionInherited:
-		response.PublicAccessPrevention = "inherited"
-	case storage.PublicAccessPreventionUnspecified:
-		response.PublicAccessPrevention = "unspecified"
-	}
+	s.mapAdvancedOptionsToResponse(bucketAttrs, response)
 
 	return response, nil
 }
@@ -308,27 +288,7 @@ func (s *GCPService) GetBucket(bucketName string) (*models.BucketResponse, error
 	}
 
 	// Add Phase 1 Advanced Options to response
-	if attrs.Encryption != nil {
-		response.KMSKeyName = attrs.Encryption.DefaultKMSKeyName
-	}
-
-	if attrs.RetentionPolicy != nil {
-		response.RetentionPolicy = &models.RetentionPolicy{
-			RetentionPeriodSeconds: int64(attrs.RetentionPolicy.RetentionPeriod.Seconds()),
-			IsLocked:               attrs.RetentionPolicy.IsLocked,
-		}
-	}
-
-	response.UniformBucketLevelAccess = attrs.UniformBucketLevelAccess.Enabled
-
-	switch attrs.PublicAccessPrevention {
-	case storage.PublicAccessPreventionEnforced:
-		response.PublicAccessPrevention = "enforced"
-	case storage.PublicAccessPreventionInherited:
-		response.PublicAccessPrevention = "inherited"
-	case storage.PublicAccessPreventionUnspecified:
-		response.PublicAccessPrevention = "unspecified"
-	}
+	s.mapAdvancedOptionsToResponse(attrs, response)
 
 	return response, nil
 }
@@ -342,6 +302,35 @@ func (s *GCPService) DeleteBucket(bucketName string) error {
 	}
 
 	return nil
+}
+
+// mapAdvancedOptionsToResponse maps GCP bucket attributes advanced options to our response model
+func (s *GCPService) mapAdvancedOptionsToResponse(attrs *storage.BucketAttrs, response *models.BucketResponse) {
+	// KMS Encryption
+	if attrs.Encryption != nil {
+		response.KMSKeyName = attrs.Encryption.DefaultKMSKeyName
+	}
+
+	// Retention Policy
+	if attrs.RetentionPolicy != nil {
+		response.RetentionPolicy = &models.RetentionPolicy{
+			RetentionPeriodSeconds: int64(attrs.RetentionPolicy.RetentionPeriod.Seconds()),
+			IsLocked:               attrs.RetentionPolicy.IsLocked,
+		}
+	}
+
+	// Uniform Bucket-Level Access
+	response.UniformBucketLevelAccess = attrs.UniformBucketLevelAccess.Enabled
+
+	// Public Access Prevention
+	switch attrs.PublicAccessPrevention {
+	case storage.PublicAccessPreventionEnforced:
+		response.PublicAccessPrevention = "enforced"
+	case storage.PublicAccessPreventionInherited:
+		response.PublicAccessPrevention = "inherited"
+	case storage.PublicAccessPreventionUnspecified:
+		response.PublicAccessPrevention = "unspecified"
+	}
 }
 
 // Close closes all GCP clients

@@ -24,7 +24,7 @@ import "time"
 //	  "versioning": true,
 //	  "kms_key_name": "projects/velvety-byway-327718/locations/us-central1/keyRings/bucket-encryption/cryptoKeys/bucket-key",
 //	  "retention_policy": {
-//	    "retention_period_days": 90,
+//	    "retention_period_seconds": 7776000,
 //	    "is_locked": false
 //	  },
 //	  "uniform_bucket_level_access": true,

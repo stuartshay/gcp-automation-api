@@ -6,7 +6,26 @@
 set -e
 
 # Configuration
-REPO="${GITHUB_REPOSITORY:-${1:-stuartshay/gcp-automation-api}}"
+# Determine repository name: argument > env var > auto-detect > error
+if [ -n "$1" ]; then
+    REPO="$1"
+elif [ -n "$GITHUB_REPOSITORY" ]; then
+    REPO="$GITHUB_REPOSITORY"
+else
+    # Try to auto-detect from git remote
+    GIT_URL=$(git remote get-url origin 2>/dev/null)
+    if [ -n "$GIT_URL" ]; then
+        # Extract owner/repo from URL (supports HTTPS and SSH)
+        REPO=$(echo "$GIT_URL" | sed -E 's#(git@|https://)github.com[:/](.*)\.git#\2#')
+    fi
+fi
+
+if [ -z "$REPO" ]; then
+    echo -e "\033[0;31m[ERROR]\033[0m Repository name not provided and could not be detected."
+    echo "Please provide the repository name as the first argument (e.g., owner/repo),"
+    echo "or set the GITHUB_REPOSITORY environment variable."
+    exit 1
+fi
 MAX_SIZE_GB="${2:-8}"
 DEFAULT_STRATEGY="${3:-conservative}"
 

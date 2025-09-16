@@ -172,12 +172,12 @@ All the following endpoints require authentication and can be tested through Swa
 ### Getting Help
 
 For CLI authentication issues, see:
-- `docs/CLI_AUTHENTICATION.md` - Complete CLI authentication guide
+- `../assets/docs/CLI_AUTHENTICATION.md` - Complete CLI authentication guide
 - `./bin/auth-cli --help` - CLI help and commands
 
 For API issues, see:
 - `docs/API.md` - API documentation
-- `docs/TROUBLESHOOTING.md` - General troubleshooting guide
+- `../assets/docs/TROUBLESHOOTING.md` - General troubleshooting guide
 
 ## Security Notes
 

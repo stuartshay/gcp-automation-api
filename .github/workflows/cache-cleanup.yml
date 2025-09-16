@@ -134,40 +134,35 @@ jobs:
           jq '[.actions_caches[].size_in_bytes] | add // 0')
 
           if [ "$CURRENT_SIZE" -gt "$MAX_SIZE_BYTES" ]; then
-            echo "Still over limit, deleting more caches..."
-            # Get all caches sorted by creation date (oldest first), with their sizes
-            gh api repos/${{ github.repository }}/actions/caches --paginate | \
-            jq -r '.actions_caches[] | "\(.created_at) \(.id) \(.size_in_bytes)"' | \
-            sort | \
-            awk -v max_size="$MAX_SIZE_BYTES" '
-              BEGIN { total_size = 0 }
-              {
-                created_at = $1;
-                cache_id = $2;
-                size = $3;
-                caches[NR, "created_at"] = created_at;
-                caches[NR, "cache_id"] = cache_id;
-                caches[NR, "size"] = size;
-                total_size += size;
-              }
-              END {
-                for (i = 1; i <= NR; i++) {
-                  if (total_size > max_size) {
-                    cache_id = caches[i, "cache_id"];
-                    created_at = caches[i, "created_at"];
-                    size = caches[i, "size"];
-                    if (cache_id != "") {
-                      printf "Deleting cache ID: %s (created: %s)\n", cache_id, created_at;
-                      system("gh api --method DELETE repos/${{ github.repository }}/actions/caches/" cache_id " || true");
-                      total_size -= size;
-                    }
-                  } else {
-                    printf "Target size reached, stopping cleanup\n";
-                    break;
-                  }
-                }
-              }
-            '
+            echo "Still over limit, deleting oldest caches until under limit..."
+            while true; do
+              # Get all caches sorted by creation date (oldest first), with their sizes
+              gh api repos/${{ github.repository }}/actions/caches --paginate | \
+              jq -r '.actions_caches[] | "\(.created_at) \(.id) \(.size_in_bytes)"' | \
+              sort > caches_list.txt
+
+              # Calculate current total size
+              CURRENT_TOTAL_SIZE=$(awk '{sum += $3} END {print sum}' caches_list.txt)
+
+              if [ "$CURRENT_TOTAL_SIZE" -le "$MAX_SIZE_BYTES" ]; then
+                echo "Target size reached, stopping cleanup"
+                break
+              fi
+
+              # Get oldest cache info
+              read CREATED_AT CACHE_ID SIZE < <(head -n 1 caches_list.txt)
+              if [ -z "$CACHE_ID" ]; then
+                echo "No more caches to delete."
+                break
+              fi
+
+              echo "Deleting cache ID: $CACHE_ID (created: $CREATED_AT, size: $SIZE)"
+              gh api --method DELETE repos/${{ github.repository }}/actions/caches/$CACHE_ID || true
+
+              # Remove the deleted cache from the list
+              sed -i '1d' caches_list.txt
+            done
+            rm -f caches_list.txt
           fi
 
       - name: Clean up caches - Emergency

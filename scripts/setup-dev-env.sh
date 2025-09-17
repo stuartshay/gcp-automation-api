@@ -258,7 +258,7 @@ def to_json_payload(value: str) -> str:
     candidate = value.strip()
     try:
         json.loads(candidate)
-        return value
+        return candidate
     except json.JSONDecodeError:
         cleaned = "".join(value.split())
         try:

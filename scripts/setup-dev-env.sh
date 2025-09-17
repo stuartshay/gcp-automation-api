@@ -288,7 +288,6 @@ PY
         chmod 600 "$dest"
         success "Service account key materialized at $dest"
     else
-        umask "$old_umask"
         error "Failed to materialize service account credentials from GCP_SA_KEY (expected JSON or base64-encoded JSON)."
     fi
     umask "$old_umask"

@@ -275,7 +275,6 @@ def to_json_payload(value: str) -> str:
             raise ValueError("decoded key is not valid JSON") from exc
         return decoded_text
 
-
 try:
     payload = to_json_payload(raw)
 except ValueError as exc:

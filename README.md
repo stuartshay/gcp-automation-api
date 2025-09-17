@@ -54,19 +54,21 @@ See [CLI Authentication Documentation](./assets/docs/CLI_AUTHENTICATION.md) for 
 ## Quick Start
 
 ```bash
-# Install dependencies and set up development environment
-./install.sh
+# Fast, non-interactive bootstrap (installs Go/Python tools, writes .env)
+./scripts/setup-dev-env.sh --project YOUR_GCP_PROJECT_ID
 
 # Activate development environment
 source activate-dev.sh
 
-# Copy and configure environment variables
-cp .env.example .env
-# Edit .env with your GCP settings
+# (Optional) Inspect or tweak the generated .env file
+${EDITOR:-nano} .env
 
 # Run the development server
 make dev
 ```
+
+> **Need a full workstation setup?** The legacy `./install.sh` script is still available
+> if you need system packages such as Docker or the Google Cloud SDK installed globally.
 
 ## Documentation
 

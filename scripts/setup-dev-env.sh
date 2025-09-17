@@ -282,7 +282,7 @@ except ValueError as exc:
     sys.exit(1)
 
 with open(dest, "w", encoding="utf-8") as fh:
-    fh.write(payload.rstrip('\n') + '\n')
+    fh.write(payload + '\n')
 PY
     then
         umask "$old_umask"

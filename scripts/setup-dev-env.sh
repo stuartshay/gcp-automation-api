@@ -260,7 +260,7 @@ def to_json_payload(value: str) -> str:
         json.loads(candidate)
         return candidate
     except json.JSONDecodeError:
-        cleaned = "".join(value.split())
+        cleaned = "".join(candidate.split())
         try:
             decoded = base64.b64decode(cleaned, validate=True)
         except binascii.Error as exc:

@@ -244,7 +244,7 @@ write_service_account_file() {
     old_umask=$(umask)
     umask 077
 
-    if ! SA_KEY_CONTENT="$contents" python3 - "$dest" <<'PY'
+    if SA_KEY_CONTENT="$contents" python3 - "$dest" <<'PY'
 import base64
 import binascii
 import json

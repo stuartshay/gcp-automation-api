@@ -32,6 +32,7 @@ go.work.sum
 
 # env file
 .env
+.secrets/
 
 # Log files and directories
 *.log

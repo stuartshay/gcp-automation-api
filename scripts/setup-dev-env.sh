@@ -233,6 +233,66 @@ update_env_var() {
     mv "$tmp" "$ENV_FILE"
 }
 
+write_service_account_file() {
+    local dest="$1"
+    local contents="$2"
+
+    info "Writing service account credentials to $dest"
+    mkdir -p "$(dirname "$dest")"
+
+    local old_umask
+    old_umask=$(umask)
+    umask 077
+
+    if SA_KEY_CONTENT="$contents" python3 - "$dest" <<'PY'
+import base64
+import binascii
+import json
+import os
+import sys
+
+dest = sys.argv[1]
+raw = os.environ.get("SA_KEY_CONTENT", "")
+
+def to_json_payload(value: str) -> str:
+    candidate = value.strip()
+    try:
+        json.loads(candidate)
+        return candidate
+    except json.JSONDecodeError:
+        whitespace_removed = value.replace(' ', '').replace('\t', '').replace('\n', '').replace('\r', '')
+        try:
+            decoded = base64.b64decode(whitespace_removed, validate=True)
+        except binascii.Error as exc:
+            raise ValueError("service account key is neither valid JSON nor base64") from exc
+        try:
+            decoded_text = decoded.decode("utf-8")
+        except UnicodeDecodeError as exc:
+            raise ValueError("decoded key could not be interpreted as UTF-8 text") from exc
+        try:
+            json.loads(decoded_text)
+        except json.JSONDecodeError as exc:
+            raise ValueError("decoded key is not valid JSON") from exc
+        return decoded_text
+
+try:
+    payload = to_json_payload(raw)
+except ValueError as exc:
+    print(f"Unable to parse GCP_SA_KEY: {exc}", file=sys.stderr)
+    sys.exit(1)
+
+with open(dest, "w", encoding="utf-8") as fh:
+    fh.write(payload + '\n')
+PY
+    then
+        chmod 600 "$dest"
+        success "Service account key materialized at $dest"
+    else
+        error "Failed to materialize service account credentials from GCP_SA_KEY (expected JSON or base64-encoded JSON)."
+    fi
+    umask "$old_umask"
+}
+
 ensure_env_file
 
 PROJECT_ID="$PROJECT_OVERRIDE"
@@ -255,14 +315,7 @@ if [[ -n "${GCP_SA_KEY:-}" ]]; then
     if [[ -f "$SERVICE_ACCOUNT_DEST" && "$FORCE" -eq 0 ]]; then
         info "Service account file already exists at $SERVICE_ACCOUNT_DEST (use --force to overwrite)"
     else
-        info "Writing service account credentials to $SERVICE_ACCOUNT_DEST"
-        mkdir -p "$(dirname "$SERVICE_ACCOUNT_DEST")"
-        old_umask=$(umask)
-        umask 077
-        printf '%s' "$GCP_SA_KEY" > "$SERVICE_ACCOUNT_DEST"
-        umask "$old_umask"
-        chmod 600 "$SERVICE_ACCOUNT_DEST"
-        success "Service account key materialized"
+        write_service_account_file "$SERVICE_ACCOUNT_DEST" "$GCP_SA_KEY"
     fi
     CREDENTIALS_PATH="$SERVICE_ACCOUNT_DEST"
 elif [[ -n "${GOOGLE_APPLICATION_CREDENTIALS:-}" ]]; then

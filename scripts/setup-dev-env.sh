@@ -260,9 +260,9 @@ def to_json_payload(value: str) -> str:
         json.loads(candidate)
         return candidate
     except json.JSONDecodeError:
-        cleaned = "".join(candidate.split())
+        whitespace_removed = "".join(value.split())
         try:
-            decoded = base64.b64decode(cleaned, validate=True)
+            decoded = base64.b64decode(whitespace_removed, validate=True)
         except binascii.Error as exc:
             raise ValueError("service account key is neither valid JSON nor base64") from exc
         try:

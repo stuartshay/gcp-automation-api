@@ -260,7 +260,7 @@ def to_json_payload(value: str) -> str:
         json.loads(candidate)
         return candidate
     except json.JSONDecodeError:
-        whitespace_removed = "".join(value.split())
+        whitespace_removed = value.replace(' ', '').replace('\t', '').replace('\n', '').replace('\r', '')
         try:
             decoded = base64.b64decode(whitespace_removed, validate=True)
         except binascii.Error as exc:

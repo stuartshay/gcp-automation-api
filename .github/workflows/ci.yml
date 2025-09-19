@@ -84,7 +84,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go-version: ["1.24.7"]
+        go-version: ${{ env.GO_VERSION }}
     env:
       # Disable GCP metadata service access during tests
       GOOGLE_APPLICATION_CREDENTIALS: ""

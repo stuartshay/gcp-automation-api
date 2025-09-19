@@ -246,15 +246,39 @@ jobs:
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v3
 
+      - name: Verify Repository Variables
+        run: |
+          echo "🔍 Checking repository variables..."
+          echo "SWAGGER_HOST variable: '${{ vars.SWAGGER_HOST }}'"
+          echo "Expected value: 'gcp-automation-api-902997681858.us-central1.run.app'"
+          if [[ -n "${{ vars.SWAGGER_HOST }}" ]]; then
+            echo "✅ SWAGGER_HOST repository variable is set"
+          else
+            echo "❌ SWAGGER_HOST repository variable is NOT set"
+            echo "📝 Please set the repository variable in GitHub:"
+            echo "   Repository → Settings → Secrets and variables → Actions → Variables"
+            echo "   Name: SWAGGER_HOST"
+            echo "   Value: gcp-automation-api-902997681858.us-central1.run.app"
+          fi
+
       - name: Deploy to Cloud Run
         run: |
+          # Set default SWAGGER_HOST if not provided via repository variable
+          SWAGGER_HOST="${{ vars.SWAGGER_HOST }}"
+          if [[ -z "$SWAGGER_HOST" ]]; then
+            SWAGGER_HOST="gcp-automation-api-902997681858.us-central1.run.app"
+            echo "⚠️  SWAGGER_HOST repository variable not set, using default: $SWAGGER_HOST"
+          else
+            echo "✅ Using SWAGGER_HOST repository variable: $SWAGGER_HOST"
+          fi
+
           gcloud run deploy ${{ env.CLOUD_RUN_SERVICE }} \
             --image=${{ env.DOCKER_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY_REPO }}/${{ env.IMAGE_NAME }}:latest \
             --platform=managed \
             --region=${{ env.CLOUD_RUN_REGION }} \
             --allow-unauthenticated \
             --port=8080 \
-            --set-env-vars="ENVIRONMENT=production,LOG_LEVEL=info,GCP_PROJECT_ID=${{ env.GCP_PROJECT_ID }},SWAGGER_HOST=${{ vars.SWAGGER_HOST }},SWAGGER_SCHEME=https" \
+            --set-env-vars="ENVIRONMENT=production,LOG_LEVEL=info,GCP_PROJECT_ID=${{ env.GCP_PROJECT_ID }},SWAGGER_HOST=${SWAGGER_HOST},SWAGGER_SCHEME=https" \
             --memory=1Gi \
             --cpu=1 \
             --max-instances=10 \

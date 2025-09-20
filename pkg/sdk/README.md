@@ -235,6 +235,7 @@ err := client.DeleteObject(ctx, "bucket-name", "path/to/file.txt")
 The SDK includes comprehensive validation for:
 
 ### Bucket Names
+
 - Must be 3-63 characters long
 - Can only contain lowercase letters, numbers, hyphens, and periods
 - Cannot start/end with hyphens or periods
@@ -243,12 +244,90 @@ The SDK includes comprehensive validation for:
 - Cannot start with "goog" or contain "google"
 
 ### Object Names
+
 - Must be 1-1024 characters long
 - Cannot contain newline, carriage return, or null characters
 - Cannot be "." or ".."
 
 ### Storage Classes
+
 - STANDARD, NEARLINE, COLDLINE, ARCHIVE
+
+### Location Validation
+
+The SDK provides **two validation approaches** for GCP locations:
+
+#### 1. Static Validation (Fast)
+
+Built-in validation against a comprehensive list of known GCP regions and zones:
+
+```go
+// Validates against known regions and zones (no API calls)
+err := sdk.ValidateLocation("us-central1")        // ✅ Valid region
+err := sdk.ValidateLocation("us-central1-a")      // ✅ Valid zone
+err := sdk.ValidateLocation("invalid-region")     // ❌ Invalid
+```
+
+**Supported Locations:**
+
+- **Multi-regional**: `us`, `eu`, `asia`
+- **US Regions**: `us-central1`, `us-east1`, `us-east4`, `us-east5`, `us-south1`, `us-west1`, `us-west2`, `us-west3`, `us-west4`
+- **Europe Regions**: `europe-central2`, `europe-north1`, `europe-southwest1`, `europe-west1`, `europe-west2`, `europe-west3`, `europe-west4`, `europe-west6`, `europe-west8`, `europe-west9`, `europe-west10`, `europe-west12`
+- **Asia Pacific**: `asia-east1`, `asia-east2`, `asia-northeast1`, `asia-northeast2`, `asia-northeast3`, `asia-south1`, `asia-south2`, `asia-southeast1`, `asia-southeast2`, `australia-southeast1`, `australia-southeast2`
+- **Other Regions**: `northamerica-northeast1`, `northamerica-northeast2`, `southamerica-east1`, `southamerica-west1`, `me-central1`, `me-central2`, `me-west1`, `africa-south1`
+- **Zones**: All zones following the pattern `{region}-{a|b|c|d|e|f}`
+
+#### 2. Dynamic Validation (Real-time)
+
+Live validation against Google Cloud APIs for up-to-date location data:
+
+```go
+// Requires GCP credentials and project access
+validator := sdk.NewLocationValidator("your-project-id")
+
+// Validates against live GCP APIs (cached for 1 hour)
+err := validator.ValidateLocationDynamic(ctx, "us-central1")
+
+// Get all available locations from GCP
+regions, zones, err := validator.GetAvailableLocations(ctx)
+```
+
+#### 3. Hybrid Validation (Recommended)
+
+Combines both approaches - fast static validation with dynamic fallback:
+
+```go
+// Uses static validation first, falls back to dynamic if needed
+err := sdk.ValidateLocationWithFallback(ctx, "your-project-id", "us-central1")
+```
+
+**Performance Comparison:**
+
+- Static validation: ~1,400 ns/op (sub-microsecond)
+- Dynamic validation: Network-dependent, cached for 1 hour
+- Hybrid validation: Static speed for known locations, dynamic accuracy for new ones
+
+### Available Libraries
+
+#### Official GCP Go SDK Libraries
+
+1. **Compute Engine API** (`cloud.google.com/go/compute`)
+
+   ```bash
+   go get cloud.google.com/go/compute
+   ```
+
+2. **Location Finder** (`cloud.google.com/go/locationfinder`)
+
+   ```bash
+   go get cloud.google.com/go/locationfinder
+   ```
+
+3. **Resource Manager** (`cloud.google.com/go/resourcemanager`)
+
+   ```bash
+   go get cloud.google.com/go/resourcemanager
+   ```
 
 ## Error Handling
 

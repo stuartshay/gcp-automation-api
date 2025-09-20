@@ -8,6 +8,7 @@ import (
 
 	"cloud.google.com/go/storage"
 	"github.com/stuartshay/gcp-automation-api/internal/models"
+	"github.com/stuartshay/gcp-automation-api/pkg/validation/gcp"
 	"google.golang.org/api/iterator"
 	"google.golang.org/api/option"
 )
@@ -36,16 +37,16 @@ func NewGCPStorageClient(ctx context.Context, projectID string, opts ...option.C
 // CreateBucket creates a new GCS bucket
 func (c *GCPStorageClient) CreateBucket(ctx context.Context, req *models.BucketRequest) (*models.BucketResponse, error) {
 	// Validate request
-	if err := ValidateBucketName(req.Name); err != nil {
-		return nil, WrapError("creating bucket", req.Name, err)
+	if err := gcp.ValidateBucketName(req.Name); err != nil {
+		return nil, gcp.WrapError("creating bucket", req.Name, err)
 	}
 
-	if err := ValidateLocation(req.Location); err != nil {
-		return nil, WrapError("creating bucket", req.Name, err)
+	if err := gcp.ValidateLocation(req.Location); err != nil {
+		return nil, gcp.WrapError("creating bucket", req.Name, err)
 	}
 
-	if err := ValidateStorageClass(req.StorageClass); err != nil {
-		return nil, WrapError("creating bucket", req.Name, err)
+	if err := gcp.ValidateStorageClass(req.StorageClass); err != nil {
+		return nil, gcp.WrapError("creating bucket", req.Name, err)
 	}
 
 	bucket := c.client.Bucket(req.Name)
@@ -102,13 +103,13 @@ func (c *GCPStorageClient) CreateBucket(ctx context.Context, req *models.BucketR
 
 	// Create the bucket
 	if err := bucket.Create(ctx, c.projectID, attrs); err != nil {
-		return nil, WrapError("creating bucket", req.Name, err)
+		return nil, gcp.WrapError("creating bucket", req.Name, err)
 	}
 
 	// Get bucket attributes to return complete information
 	bucketAttrs, err := bucket.Attrs(ctx)
 	if err != nil {
-		return nil, WrapError("getting bucket attributes after creation", req.Name, err)
+		return nil, gcp.WrapError("getting bucket attributes after creation", req.Name, err)
 	}
 
 	return c.mapBucketAttrsToResponse(bucketAttrs), nil
@@ -116,15 +117,15 @@ func (c *GCPStorageClient) CreateBucket(ctx context.Context, req *models.BucketR
 
 // GetBucket retrieves a GCS bucket
 func (c *GCPStorageClient) GetBucket(ctx context.Context, bucketName string) (*models.BucketResponse, error) {
-	if err := ValidateBucketName(bucketName); err != nil {
-		return nil, WrapError("getting bucket", bucketName, err)
+	if err := gcp.ValidateBucketName(bucketName); err != nil {
+		return nil, gcp.WrapError("getting bucket", bucketName, err)
 	}
 
 	bucket := c.client.Bucket(bucketName)
 
 	attrs, err := bucket.Attrs(ctx)
 	if err != nil {
-		return nil, WrapError("getting bucket", bucketName, err)
+		return nil, gcp.WrapError("getting bucket", bucketName, err)
 	}
 
 	return c.mapBucketAttrsToResponse(attrs), nil
@@ -132,14 +133,14 @@ func (c *GCPStorageClient) GetBucket(ctx context.Context, bucketName string) (*m
 
 // DeleteBucket deletes a GCS bucket
 func (c *GCPStorageClient) DeleteBucket(ctx context.Context, bucketName string) error {
-	if err := ValidateBucketName(bucketName); err != nil {
-		return WrapError("deleting bucket", bucketName, err)
+	if err := gcp.ValidateBucketName(bucketName); err != nil {
+		return gcp.WrapError("deleting bucket", bucketName, err)
 	}
 
 	bucket := c.client.Bucket(bucketName)
 
 	if err := bucket.Delete(ctx); err != nil {
-		return WrapError("deleting bucket", bucketName, err)
+		return gcp.WrapError("deleting bucket", bucketName, err)
 	}
 
 	return nil
@@ -209,12 +210,12 @@ func (c *GCPStorageClient) UpdateBucket(ctx context.Context, bucketName string, 
 
 // UploadObject uploads an object to a bucket
 func (c *GCPStorageClient) UploadObject(ctx context.Context, bucketName, objectName string, data io.Reader) (*models.ObjectResponse, error) {
-	if err := ValidateBucketName(bucketName); err != nil {
-		return nil, WrapError("uploading object", bucketName+"/"+objectName, err)
+	if err := gcp.ValidateBucketName(bucketName); err != nil {
+		return nil, gcp.WrapError("uploading object", bucketName+"/"+objectName, err)
 	}
 
-	if err := ValidateObjectName(objectName); err != nil {
-		return nil, WrapError("uploading object", bucketName+"/"+objectName, err)
+	if err := gcp.ValidateObjectName(objectName); err != nil {
+		return nil, gcp.WrapError("uploading object", bucketName+"/"+objectName, err)
 	}
 
 	bucket := c.client.Bucket(bucketName)
@@ -223,17 +224,17 @@ func (c *GCPStorageClient) UploadObject(ctx context.Context, bucketName, objectN
 	writer := obj.NewWriter(ctx)
 
 	if _, err := io.Copy(writer, data); err != nil {
-		return nil, WrapError("uploading object", bucketName+"/"+objectName, err)
+		return nil, gcp.WrapError("uploading object", bucketName+"/"+objectName, err)
 	}
 
 	if err := writer.Close(); err != nil {
-		return nil, WrapError("closing object writer after upload", bucketName+"/"+objectName, err)
+		return nil, gcp.WrapError("closing object writer after upload", bucketName+"/"+objectName, err)
 	}
 
 	// Get object attributes
 	attrs, err := obj.Attrs(ctx)
 	if err != nil {
-		return nil, WrapError("getting object attributes after upload", bucketName+"/"+objectName, err)
+		return nil, gcp.WrapError("getting object attributes after upload", bucketName+"/"+objectName, err)
 	}
 
 	return c.mapObjectAttrsToResponse(attrs), nil
@@ -241,12 +242,12 @@ func (c *GCPStorageClient) UploadObject(ctx context.Context, bucketName, objectN
 
 // DownloadObject downloads an object from a bucket
 func (c *GCPStorageClient) DownloadObject(ctx context.Context, bucketName, objectName string) (io.ReadCloser, error) {
-	if err := ValidateBucketName(bucketName); err != nil {
-		return nil, WrapError("downloading object", bucketName+"/"+objectName, err)
+	if err := gcp.ValidateBucketName(bucketName); err != nil {
+		return nil, gcp.WrapError("downloading object", bucketName+"/"+objectName, err)
 	}
 
-	if err := ValidateObjectName(objectName); err != nil {
-		return nil, WrapError("downloading object", bucketName+"/"+objectName, err)
+	if err := gcp.ValidateObjectName(objectName); err != nil {
+		return nil, gcp.WrapError("downloading object", bucketName+"/"+objectName, err)
 	}
 
 	bucket := c.client.Bucket(bucketName)
@@ -254,7 +255,7 @@ func (c *GCPStorageClient) DownloadObject(ctx context.Context, bucketName, objec
 
 	reader, err := obj.NewReader(ctx)
 	if err != nil {
-		return nil, WrapError("downloading object", bucketName+"/"+objectName, err)
+		return nil, gcp.WrapError("downloading object", bucketName+"/"+objectName, err)
 	}
 
 	return reader, nil
@@ -262,19 +263,19 @@ func (c *GCPStorageClient) DownloadObject(ctx context.Context, bucketName, objec
 
 // DeleteObject deletes an object from a bucket
 func (c *GCPStorageClient) DeleteObject(ctx context.Context, bucketName, objectName string) error {
-	if err := ValidateBucketName(bucketName); err != nil {
-		return WrapError("deleting object", bucketName+"/"+objectName, err)
+	if err := gcp.ValidateBucketName(bucketName); err != nil {
+		return gcp.WrapError("deleting object", bucketName+"/"+objectName, err)
 	}
 
-	if err := ValidateObjectName(objectName); err != nil {
-		return WrapError("deleting object", bucketName+"/"+objectName, err)
+	if err := gcp.ValidateObjectName(objectName); err != nil {
+		return gcp.WrapError("deleting object", bucketName+"/"+objectName, err)
 	}
 
 	bucket := c.client.Bucket(bucketName)
 	obj := bucket.Object(objectName)
 
 	if err := obj.Delete(ctx); err != nil {
-		return WrapError("deleting object", bucketName+"/"+objectName, err)
+		return gcp.WrapError("deleting object", bucketName+"/"+objectName, err)
 	}
 
 	return nil

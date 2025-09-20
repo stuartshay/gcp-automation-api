@@ -57,4 +57,5 @@ When adding new documentation:
 
 ---
 
-*This documentation organization follows the principle that all project documentation should be centralized and easily discoverable.*
+_This documentation organization follows the principle that all project documentation should be
+centralized and easily discoverable._

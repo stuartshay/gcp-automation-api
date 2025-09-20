@@ -1,6 +1,7 @@
 # GCP Validation Package
 
-This package provides comprehensive validation functions for Google Cloud Platform (GCP) resources. It is organized into subpackages for different GCP service types.
+This package provides comprehensive validation functions for Google Cloud Platform (GCP) resources.
+It is organized into subpackages for different GCP service types.
 
 ## Package Structure
 
@@ -35,10 +36,12 @@ err := gcp.ValidateObjectName("path/to/my-file.txt")
 err := gcp.ValidateStorageClass("STANDARD")
 ```
 
-#### Features:
+#### Features
+
 - **Bucket Name Validation**: Ensures compliance with GCS bucket naming rules
 - **Object Name Validation**: Validates object names for size and character restrictions
-- **Storage Class Validation**: Supports all GCS storage classes (STANDARD, NEARLINE, COLDLINE, ARCHIVE)
+- **Storage Class Validation**: Supports all GCS storage classes (STANDARD, NEARLINE, COLDLINE,
+  ARCHIVE)
 - **IP Address Detection**: Prevents bucket names that resemble IP addresses
 
 ### Location Validation
@@ -57,14 +60,16 @@ err := validator.ValidateLocationDynamic(ctx, "us-central1-a")
 err := gcp.ValidateLocationWithFallback(ctx, "us-central1", validator)
 ```
 
-#### Features:
+#### Features
+
 - **Static Validation**: Fast validation against known regions/zones
 - **Dynamic Validation**: Real-time validation using GCP Compute Engine API
 - **Intelligent Caching**: Thread-safe caching with TTL for API results
 - **Fallback Strategy**: Static validation first, API validation for unknown locations
 - **Performance Optimized**: Benchmarked for high-throughput scenarios
 
-#### Cache Management:
+#### Cache Management
+
 - **TTL**: 1 hour for valid locations, 10 minutes for invalid ones
 - **Thread Safety**: Concurrent access protected with sync.RWMutex
 - **Auto-cleanup**: Automatic cleanup of expired cache entries
@@ -161,6 +166,7 @@ BenchmarkValidateLocation-8        2000000   600 ns/op
 ### Caching Performance
 
 Dynamic location validation includes intelligent caching:
+
 - Cache hits: ~50ns per validation
 - Cache misses: ~200-500ms (API call time)
 - Memory efficient with automatic cleanup

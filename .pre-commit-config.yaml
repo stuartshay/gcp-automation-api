@@ -107,17 +107,36 @@ repos:
       - id: hadolint-docker
         args: [--ignore, DL3008, --ignore, DL3009]
 
-  # Markdown linting
+  # Markdown linting and formatting
   - repo: https://github.com/igorshubovych/markdownlint-cli
     rev: v0.45.0
     hooks:
       - id: markdownlint
-        args: [--fix, --disable, MD013]
+        name: markdownlint (check)
+        args: [--config, .markdownlint.json]
+        exclude: \.markdownlintignore$
+      - id: markdownlint
+        name: markdownlint-fix
+        alias: markdownlint-fix
+        args: [--fix, --config, .markdownlint.json]
+        stages: [manual]
+        exclude: \.markdownlintignore$
+
+  # Enhanced Markdown formatting with Prettier
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v4.0.0-alpha.8
+    hooks:
+      - id: prettier
+        name: prettier (markdown)
+        types: [markdown]
+        args: [--prose-wrap, always, --print-width, "100"]
+        exclude: ^docs/swagger\.yaml$
 
   # YAML formatting
   - repo: https://github.com/pre-commit/mirrors-prettier
     rev: v4.0.0-alpha.8
     hooks:
       - id: prettier
+        name: prettier (yaml)
         types: [yaml]
         exclude: ^docs/swagger\.yaml$

@@ -2,7 +2,8 @@
 
 ## Overview
 
-This document outlines the setup of the GitHub Actions environment "copilot" with secure access to Google Cloud Platform resources.
+This document outlines the setup of the GitHub Actions environment "copilot" with secure access to
+Google Cloud Platform resources.
 
 ## Environment Configuration
 
@@ -47,7 +48,7 @@ To use the copilot environment in GitHub Actions workflows:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: copilot  # This enables access to environment secrets
+    environment: copilot # This enables access to environment secrets
     steps:
       - name: Setup GCP Auth
         uses: google-github-actions/auth@v2
@@ -92,7 +93,8 @@ Create a test workflow that uses the `copilot` environment to verify secret acce
 4. **Firewall Rules Blocking metadata.google.internal**
    - **Problem**: GitHub Actions firewall blocks access to `metadata.google.internal`
    - **Symptoms**: Error message about DNS blocks for metadata.google.internal
-   - **Solution**: Set environment variables to prevent GCP client initialization during build/test phases:
+   - **Solution**: Set environment variables to prevent GCP client initialization during build/test
+     phases:
 
      ```yaml
      env:
@@ -100,7 +102,9 @@ Create a test workflow that uses the `copilot` environment to verify secret acce
        GCP_PROJECT_ID: "mock-project"
      ```
 
-   - **Explanation**: GCP clients attempt to use Application Default Credentials by accessing the metadata service. During build/test phases, we don't need real GCP access, so we disable it to avoid firewall blocks.
+   - **Explanation**: GCP clients attempt to use Application Default Credentials by accessing the
+     metadata service. During build/test phases, we don't need real GCP access, so we disable it to
+     avoid firewall blocks.
 
 ### GitHub Actions Firewall Configuration
 

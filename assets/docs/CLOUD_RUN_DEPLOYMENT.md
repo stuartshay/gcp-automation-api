@@ -2,7 +2,9 @@
 
 ## Overview
 
-This document describes the Cloud Run deployment setup for the GCP Automation API. The API is automatically deployed to Google Cloud Run using a CI/CD pipeline that builds Docker images and deploys them to a managed Cloud Run service.
+This document describes the Cloud Run deployment setup for the GCP Automation API. The API is
+automatically deployed to Google Cloud Run using a CI/CD pipeline that builds Docker images and
+deploys them to a managed Cloud Run service.
 
 ## Cloud Run Service Details
 
@@ -36,7 +38,8 @@ The following environment variables are automatically configured for the Cloud R
 
 ### Workflow Overview
 
-The deployment is triggered automatically when code is pushed to the `master` branch. The workflow consists of:
+The deployment is triggered automatically when code is pushed to the `master` branch. The workflow
+consists of:
 
 1. **Lint and Test**: Code quality checks and unit tests
 2. **Build**: Compile the Go binary
@@ -57,7 +60,8 @@ deploy:
 
 ### Authentication
 
-The deployment uses the `copilot` environment with the `GCP_SA_KEY` secret containing service account credentials with the following permissions:
+The deployment uses the `copilot` environment with the `GCP_SA_KEY` secret containing service
+account credentials with the following permissions:
 
 - `roles/run.admin` - Deploy and manage Cloud Run services
 - `roles/iam.serviceAccountUser` - Act as service accounts

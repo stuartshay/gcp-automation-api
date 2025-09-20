@@ -1,6 +1,7 @@
 # 🚀 GCP Automation API - Development Environment Setup Complete
 
-Your development environment has been successfully configured with all necessary tools and dependencies.
+Your development environment has been successfully configured with all necessary tools and
+dependencies.
 
 ## ✅ What's Installed
 
@@ -172,12 +173,16 @@ make docker-run  # Run in container
 
 If you encounter any issues:
 
-1. **Go tools not found**: Ensure you've activated the development environment with `source activate-dev.sh`
-2. **Permission issues**: Make sure your user has the necessary permissions for Docker and GCP operations
-3. **Python virtual environment**: If `.venv` gets corrupted, delete it and run `python3 -m venv .venv` again
+1. **Go tools not found**: Ensure you've activated the development environment with
+   `source activate-dev.sh`
+2. **Permission issues**: Make sure your user has the necessary permissions for Docker and GCP
+   operations
+3. **Python virtual environment**: If `.venv` gets corrupted, delete it and run
+   `python3 -m venv .venv` again
 
 ## 🎉 You're Ready to Code
 
-Your GCP Automation API development environment is fully configured and ready for development. The pre-commit hooks will ensure code quality and security standards are maintained automatically.
+Your GCP Automation API development environment is fully configured and ready for development. The
+pre-commit hooks will ensure code quality and security standards are maintained automatically.
 
 Happy coding! 🚀

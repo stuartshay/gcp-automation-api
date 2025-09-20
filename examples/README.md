@@ -1,6 +1,7 @@
 # GCP Storage Client SDK Examples
 
-This directory contains complete, runnable examples demonstrating how to use the GCP Storage Client SDK.
+This directory contains complete, runnable examples demonstrating how to use the GCP Storage Client
+SDK.
 
 ## Prerequisites
 
@@ -16,7 +17,9 @@ Before running any examples, ensure you have:
 ## Examples
 
 ### 1. Basic Usage (`basic/`)
+
 Demonstrates fundamental operations:
+
 - Client initialization
 - Creating and deleting buckets
 - Basic object operations
@@ -28,7 +31,9 @@ go run main.go
 ```
 
 ### 2. Bucket Operations (`bucket-operations/`)
+
 Comprehensive bucket management:
+
 - Creating buckets with various configurations
 - Updating bucket settings
 - Listing and managing buckets
@@ -40,7 +45,9 @@ go run main.go
 ```
 
 ### 3. Object Operations (`object-operations/`)
+
 Complete object lifecycle management:
+
 - Uploading objects from various sources
 - Downloading objects
 - Object metadata operations
@@ -53,7 +60,9 @@ go run main.go
 ```
 
 ### 4. Validation (`validation/`)
+
 Input validation examples:
+
 - Bucket name validation
 - Location validation (static and dynamic)
 - Storage class validation

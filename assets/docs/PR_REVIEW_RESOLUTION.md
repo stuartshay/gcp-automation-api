@@ -6,9 +6,11 @@ This document summarizes the issues identified in PR #16 and how they were resol
 
 ### 1. Variable Scope Issue in Scripts (`DELETED_COUNT`) ✅ RESOLVED
 
-**Problem**: The variable `DELETED_COUNT` was incremented inside a while loop that runs in a subshell due to the pipe, causing the increment to not persist outside the loop.
+**Problem**: The variable `DELETED_COUNT` was incremented inside a while loop that runs in a
+subshell due to the pipe, causing the increment to not persist outside the loop.
 
 **Resolution**:
+
 - Replaced pipeline with process substitution (`< <(...)`) to avoid subshell
 - Used local variables with proper scope
 - Added proper counting for both successful deletions and failures
@@ -16,6 +18,7 @@ This document summarizes the issues identified in PR #16 and how they were resol
 **Files Changed**: `scripts/cleanup-caches.sh`
 
 **Before**:
+
 ```bash
 DELETED_COUNT=0
 echo "$CACHES" | jq ... | while read -r cache_id; do
@@ -24,6 +27,7 @@ done
 ```
 
 **After**:
+
 ```bash
 local deleted_count=0
 while read -r cache_id; do
@@ -32,9 +36,12 @@ done < <(echo "$CACHES" | jq ...)
 ```
 
 ### 2. Duplicated Date Calculation Logic
-**Problem**: Complex date calculation logic was duplicated across multiple functions with multiple fallbacks.
+
+**Problem**: Complex date calculation logic was duplicated across multiple functions with multiple
+fallbacks.
 
 **Resolution**:
+
 - Created helper function `get_cutoff_date()` that takes days as parameter
 - Centralized cross-platform date handling logic
 - Added proper error handling for unsupported date formats
@@ -42,11 +49,13 @@ done < <(echo "$CACHES" | jq ...)
 **Files Changed**: `scripts/cleanup-caches.sh`
 
 **Before**:
+
 ```bash
 CUTOFF_DATE=$(date -d '7 days ago' --iso-8601=seconds 2>/dev/null || date -v-7d '+%Y-%m-%dT%H:%M:%S%z' 2>/dev/null || date -d '7 days ago' '+%Y-%m-%dT%H:%M:%S%z')
 ```
 
 **After**:
+
 ```bash
 get_cutoff_date() {
     local days=$1
@@ -60,9 +69,12 @@ get_cutoff_date() {
 ```
 
 ### 3. Error Suppression with `|| true`
-**Problem**: Using `|| true` suppressed all errors from delete operations, making it difficult to distinguish between different failure scenarios.
+
+**Problem**: Using `|| true` suppressed all errors from delete operations, making it difficult to
+distinguish between different failure scenarios.
 
 **Resolution**:
+
 - Created helper function `delete_cache()` with proper error handling
 - Distinguished between different HTTP error codes (404 for already deleted vs other errors)
 - Added appropriate logging for different scenarios
@@ -71,11 +83,13 @@ get_cutoff_date() {
 **Files Changed**: `scripts/cleanup-caches.sh`, `.github/workflows/cache-cleanup.yml`
 
 **Before**:
+
 ```bash
 gh api --method DELETE repos/$REPO/actions/caches/$cache_id || true
 ```
 
 **After**:
+
 ```bash
 delete_cache() {
     local cache_id=$1
@@ -99,9 +113,11 @@ delete_cache() {
 
 ### 4. Complex AWK Script in Workflow ✅ RESOLVED
 
-**Problem**: The awk script in the aggressive cleanup section was overly complex and hard to maintain.
+**Problem**: The awk script in the aggressive cleanup section was overly complex and hard to
+maintain.
 
 **Resolution**:
+
 - Replaced complex awk script with simpler shell logic using temporary files
 - Used process substitution for better readability
 - Implemented iterative approach that fetches cache list once and processes it
@@ -109,6 +125,7 @@ delete_cache() {
 **Files Changed**: `.github/workflows/cache-cleanup.yml`
 
 **After**:
+
 ```bash
 while true; do
   # Get all caches sorted by creation date (oldest first), with their sizes
@@ -132,9 +149,11 @@ done
 
 ### 5. Inefficient API Calls in Script ✅ RESOLVED
 
-**Problem**: API calls were made inside loops for each cache deletion, which is inefficient and may hit rate limits.
+**Problem**: API calls were made inside loops for each cache deletion, which is inefficient and may
+hit rate limits.
 
 **Resolution**:
+
 - Pre-calculate the total amount of cache data that needs to be deleted
 - Use cache size information from initial API call to track running total
 - Avoid repeated API calls by calculating locally
@@ -142,6 +161,7 @@ done
 **Files Changed**: `scripts/cleanup-caches.sh`
 
 **Before**:
+
 ```bash
 while read -r created_at cache_id key; do
     current_size=$(gh api repos/$REPO/actions/caches --paginate | jq '[.actions_caches[].size_in_bytes] | add // 0')
@@ -152,6 +172,7 @@ done
 ```
 
 **After**:
+
 ```bash
 # Calculate remaining size needed to delete once
 remaining_size_to_delete=$(echo "$current_size - $max_size_bytes" | bc)
@@ -167,16 +188,19 @@ done
 
 ### 6. Additional Improvements Made
 
-#### Workflow File Enhancements:
+#### Workflow File Enhancements
+
 - Applied same error handling improvements to GitHub Actions workflow
 - Enhanced logging with status indicators
 - Improved user feedback during cache deletion operations
 
-#### Docker Cache Configuration:
+#### Docker Cache Configuration
+
 - Removed invalid `cache-from-inline: false` parameter
 - Kept optimized `cache-to: type=gha,mode=min` configuration
 
-#### General Code Quality:
+#### General Code Quality
+
 - Added proper local variable declarations
 - Improved function documentation
 - Enhanced error messages with context
@@ -187,11 +211,13 @@ done
 Before merging, test the following scenarios:
 
 1. **Script functionality**:
+
    ```bash
    ./scripts/cleanup-caches.sh stuartshay/gcp-automation-api 8 list
    ```
 
 2. **Workflow execution**:
+
    ```bash
    gh workflow run cache-cleanup.yml -f cleanup_strategy=conservative
    ```
@@ -209,4 +235,5 @@ Before merging, test the following scenarios:
 4. **Debugging**: Proper error codes and logging for troubleshooting
 5. **Cross-platform**: Improved compatibility across different operating systems
 
-All identified issues have been resolved while maintaining backward compatibility and improving overall code quality.
+All identified issues have been resolved while maintaining backward compatibility and improving
+overall code quality.

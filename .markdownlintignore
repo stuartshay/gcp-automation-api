@@ -1,0 +1,11 @@
+# Ignore auto-generated files
+docs/swagger.json
+docs/swagger.yaml
+docs/docs.go
+
+# Ignore files with intentional long lines
+assets/docs/CLI_AUTHENTICATION.md
+assets/docs/COPILOT_ENVIRONMENT_SETUP.md
+
+# Ignore GitHub Copilot chatmode files (special formatting)
+.github/chatmodes/*.md

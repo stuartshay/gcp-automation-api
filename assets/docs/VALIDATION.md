@@ -2,7 +2,9 @@
 
 ## Overview
 
-The GCP Automation API implements comprehensive request validation using the `go-playground/validator/v10` library. This ensures all API endpoints receive valid, properly formatted data before processing.
+The GCP Automation API implements comprehensive request validation using the
+`go-playground/validator/v10` library. This ensures all API endpoints receive valid, properly
+formatted data before processing.
 
 ## Implementation
 
@@ -24,6 +26,7 @@ The GCP Automation API implements comprehensive request validation using the `go
 ### Custom Validation Rules
 
 #### `project_id`
+
 - **Purpose**: Validates GCP project ID format
 - **Rules**:
   - 6-30 characters
@@ -32,6 +35,7 @@ The GCP Automation API implements comprehensive request validation using the `go
   - Cannot end with a hyphen
 
 #### `bucket_name`
+
 - **Purpose**: Validates Google Cloud Storage bucket names
 - **Rules**:
   - 3-63 characters
@@ -40,6 +44,7 @@ The GCP Automation API implements comprehensive request validation using the `go
   - Cannot be formatted as an IP address
 
 #### `label_key`
+
 - **Purpose**: Validates GCP resource label keys
 - **Rules**:
   - 1-63 characters
@@ -47,18 +52,21 @@ The GCP Automation API implements comprehensive request validation using the `go
   - Lowercase letters, digits, underscores, dashes only
 
 #### `label_value`
+
 - **Purpose**: Validates GCP resource label values
 - **Rules**:
   - 0-63 characters
   - Lowercase letters, digits, underscores, dashes only
 
 #### `gcp_location`
+
 - **Purpose**: Validates GCP regions and zones
 - **Rules**: Must match known GCP location patterns
 
 ### Usage Examples
 
 #### Project Request
+
 ```json
 {
   "project_id": "my-gcp-project",
@@ -73,6 +81,7 @@ The GCP Automation API implements comprehensive request validation using the `go
 ```
 
 #### Bucket Request
+
 ```json
 {
   "name": "my-storage-bucket",
@@ -101,6 +110,7 @@ When validation fails, the API returns a structured error response:
 ### Testing
 
 Comprehensive test suite in `internal/validators/validators_test.go` covers:
+
 - Valid request scenarios
 - Invalid field formats
 - Missing required fields
@@ -117,7 +127,8 @@ Comprehensive test suite in `internal/validators/validators_test.go` covers:
 
 ### Configuration
 
-The validator is initialized once at startup and shared across all handlers for optimal performance. Custom validation functions are registered during initialization and cached for reuse.
+The validator is initialized once at startup and shared across all handlers for optimal performance.
+Custom validation functions are registered during initialization and cached for reuse.
 
 ## Best Practices
 

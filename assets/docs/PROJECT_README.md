@@ -1,6 +1,8 @@
 # GCP Automation API
 
-A REST API built with Go for automating GCP (Google Cloud Platform) resource management. This service provides endpoints for creating and managing GCP Projects, Folders, and Cloud Storage Buckets.
+A REST API built with Go for automating GCP (Google Cloud Platform) resource management. This
+service provides endpoints for creating and managing GCP Projects, Folders, and Cloud Storage
+Buckets.
 
 ## Features
 
@@ -208,7 +210,7 @@ make docker-run
 ### Using Docker Compose
 
 ```yaml
-version: '3.8'
+version: "3.8"
 services:
   gcp-automation-api:
     build: .

@@ -1,10 +1,13 @@
 # CLI Authentication Tool
 
-The GCP Automation API now uses a CLI-based authentication system instead of exposing authentication endpoints through the HTTP API. This approach provides enhanced security by keeping authentication logic local and not exposing sensitive operations over the network.
+The GCP Automation API now uses a CLI-based authentication system instead of exposing authentication
+endpoints through the HTTP API. This approach provides enhanced security by keeping authentication
+logic local and not exposing sensitive operations over the network.
 
 ## Overview
 
 The `auth-cli` tool handles all authentication operations including:
+
 - Google OAuth login
 - JWT token generation and management
 - Token refresh
@@ -56,6 +59,7 @@ Performs Google OAuth authentication using your browser.
 ```
 
 This command:
+
 1. Opens your default browser to Google's OAuth page
 2. Starts a local callback server on port 8085
 3. Exchanges the OAuth code for a Google ID token
@@ -71,6 +75,7 @@ Shows current authentication status.
 ```
 
 Example output:
+
 ```
 Status: Authenticated
 User: John Doe (john@example.com)
@@ -88,6 +93,7 @@ Displays the current JWT access token.
 ```
 
 Use this token with API requests:
+
 ```bash
 TOKEN=$(./bin/auth-cli token)
 curl -H "Authorization: Bearer $TOKEN" http://localhost:8080/api/v1/projects
@@ -102,6 +108,7 @@ Shows detailed user profile information.
 ```
 
 Example output:
+
 ```
 User Profile:
   Name: John Doe
@@ -140,6 +147,7 @@ Clears all stored authentication credentials.
 Once authenticated, use the token with API requests:
 
 ### Using curl
+
 ```bash
 # Get token
 TOKEN=$(./bin/auth-cli token)
@@ -151,6 +159,7 @@ curl -H "Authorization: Bearer $TOKEN" \
 ```
 
 ### Using scripts
+
 ```bash
 #!/bin/bash
 
@@ -171,17 +180,20 @@ curl -H "Authorization: Bearer $TOKEN" \
 ## Security Features
 
 ### Local Storage
+
 - Credentials are stored in `~/.gcp-automation/credentials.json`
 - File permissions are set to 0600 (owner read/write only)
 - Credentials include token expiration tracking
 
 ### OAuth Security
+
 - Uses PKCE (Proof Key for Code Exchange) flow
 - State parameter validation prevents CSRF attacks
 - Local callback server with automatic shutdown
 - 5-minute timeout for authentication flow
 
 ### Token Management
+
 - JWT tokens have configurable expiration (default 24 hours)
 - Automatic expiration checking
 - Secure token refresh without re-authentication
@@ -192,23 +204,27 @@ curl -H "Authorization: Bearer $TOKEN" \
 ### Authentication Issues
 
 **Browser doesn't open automatically:**
+
 ```bash
 # The CLI will display the URL to visit manually
 Opening browser for Google authentication...
 If the browser doesn't open automatically, visit: https://accounts.google.com/o/oauth2/v2/auth?...
 ```
 
-**Port 8085 already in use:**
-The CLI uses port 8085 for the OAuth callback. If this port is busy, stop the conflicting service or wait for the authentication to timeout and try again.
+**Port 8085 already in use:** The CLI uses port 8085 for the OAuth callback. If this port is busy,
+stop the conflicting service or wait for the authentication to timeout and try again.
 
 **Google OAuth errors:**
+
 - Verify `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` are correctly set
-- Ensure the redirect URI `http://localhost:8085/callback` is configured in your Google OAuth application
+- Ensure the redirect URI `http://localhost:8085/callback` is configured in your Google OAuth
+  application
 - Check that the Google OAuth application is enabled
 
 ### Token Issues
 
 **Token expired:**
+
 ```bash
 ./bin/auth-cli refresh
 # or
@@ -216,17 +232,19 @@ The CLI uses port 8085 for the OAuth callback. If this port is busy, stop the co
 ```
 
 **Invalid token:**
+
 ```bash
 ./bin/auth-cli logout
 ./bin/auth-cli login
 ```
 
-**Test token in production:**
-Test tokens are disabled in production environments. Use the regular login flow instead.
+**Test token in production:** Test tokens are disabled in production environments. Use the regular
+login flow instead.
 
 ### Configuration Issues
 
 **Missing environment variables:**
+
 ```bash
 # Check required variables are set
 echo $GOOGLE_CLIENT_ID
@@ -253,6 +271,7 @@ If you were previously using the HTTP API authentication endpoints:
 ## Examples
 
 ### Complete Workflow
+
 ```bash
 # 1. Build and run auth-cli (shows help)
 make run-auth-cli
@@ -280,6 +299,7 @@ curl -H "Authorization: Bearer $TOKEN" \
 ```
 
 ### Development Workflow
+
 ```bash
 # For development/testing, use test tokens
 ./bin/auth-cli test-token --user-id "dev-user" --email "dev@company.com" --name "Developer"
@@ -287,3 +307,4 @@ curl -H "Authorization: Bearer $TOKEN" \
 # Use the test token
 TOKEN=$(./bin/auth-cli token)
 curl -H "Authorization: Bearer $TOKEN" http://localhost:8080/api/v1/projects
+```

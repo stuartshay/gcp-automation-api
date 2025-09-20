@@ -11,8 +11,7 @@ This directory contains GitHub Actions workflows for the GCP Automation API proj
 - Push to `master` or `develop` branches
 - Pull requests to `master` or `develop` branches
 
-**Purpose:**
-Runs pre-commit hooks on all files to ensure code quality and consistency.
+**Purpose:** Runs pre-commit hooks on all files to ensure code quality and consistency.
 
 **What it does:**
 
@@ -28,8 +27,7 @@ Runs pre-commit hooks on all files to ensure code quality and consistency.
 - Push to `master` or `develop` branches
 - Pull requests to `master` or `develop` branches
 
-**Purpose:**
-Comprehensive CI pipeline with linting, testing, building, and security scanning.
+**Purpose:** Comprehensive CI pipeline with linting, testing, building, and security scanning.
 
 **Jobs:**
 
@@ -46,8 +44,7 @@ Comprehensive CI pipeline with linting, testing, building, and security scanning
 - Daily schedule (6:00 AM UTC)
 - Manual workflow dispatch
 
-**Purpose:**
-Automatically updates Go dependencies and pre-commit hooks.
+**Purpose:** Automatically updates Go dependencies and pre-commit hooks.
 
 **What it does:**
 
@@ -63,8 +60,7 @@ Automatically updates Go dependencies and pre-commit hooks.
 - Git tags matching `v*`
 - Manual workflow dispatch with version input
 
-**Purpose:**
-Creates releases with multi-platform binaries and Docker images.
+**Purpose:** Creates releases with multi-platform binaries and Docker images.
 
 **What it does:**
 
@@ -140,10 +136,12 @@ To modify the workflows:
 
 Common issues and solutions:
 
-1. **Go tools not found:** The workflow installs tools in each run. If issues persist, check Go version compatibility.
+1. **Go tools not found:** The workflow installs tools in each run. If issues persist, check Go
+   version compatibility.
 
 2. **Pre-commit failures:** Run `pre-commit run --all-files` locally to debug issues before pushing.
 
 3. **Docker build failures:** Ensure the Dockerfile is valid and all dependencies are available.
 
-4. **Permission errors:** Check that the `GITHUB_TOKEN` has sufficient permissions for the repository.
+4. **Permission errors:** Check that the `GITHUB_TOKEN` has sufficient permissions for the
+   repository.

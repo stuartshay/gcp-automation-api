@@ -1,10 +1,12 @@
 # Integration Testing Guide
 
-This document provides comprehensive information about the integration testing framework for the GCP Automation API.
+This document provides comprehensive information about the integration testing framework for the GCP
+Automation API.
 
 ## Overview
 
 The integration testing framework provides comprehensive testing for:
+
 - **Projects** - GCP project creation, retrieval, and deletion
 - **Folders** - GCP folder management operations
 - **Buckets** - Cloud Storage bucket operations
@@ -78,12 +80,12 @@ make test-all
 
 ### Environment Variables
 
-| Variable | Description | Default | Required |
-|----------|-------------|---------|----------|
-| `TEST_MODE` | Test mode: `mock` or `integration` | `mock` | No |
-| `TEST_PROJECT_ID` | GCP project ID for real tests | - | Yes (for real GCP) |
-| `TEST_BUCKET_PREFIX` | Prefix for test bucket names | `test-gcp-automation` | No |
-| `GOOGLE_APPLICATION_CREDENTIALS` | Path to GCP service account key | - | Yes (for real GCP) |
+| Variable                         | Description                        | Default               | Required           |
+| -------------------------------- | ---------------------------------- | --------------------- | ------------------ |
+| `TEST_MODE`                      | Test mode: `mock` or `integration` | `mock`                | No                 |
+| `TEST_PROJECT_ID`                | GCP project ID for real tests      | -                     | Yes (for real GCP) |
+| `TEST_BUCKET_PREFIX`             | Prefix for test bucket names       | `test-gcp-automation` | No                 |
+| `GOOGLE_APPLICATION_CREDENTIALS` | Path to GCP service account key    | -                     | Yes (for real GCP) |
 
 ### Mock Mode Configuration
 
@@ -111,6 +113,7 @@ make test-integration-real
 **File**: `tests/integration/projects_test.go`
 
 **Test Cases**:
+
 - ✅ Create project with organization parent
 - ✅ Create project with folder parent
 - ✅ Create minimal project
@@ -122,6 +125,7 @@ make test-integration-real
 - ✅ Authentication required
 
 **Example**:
+
 ```bash
 go test -v ./tests/integration/ -run TestProjectOperations
 ```
@@ -131,6 +135,7 @@ go test -v ./tests/integration/ -run TestProjectOperations
 **File**: `tests/integration/folders_test.go`
 
 **Test Cases**:
+
 - Create folder with organization parent
 - Create folder with folder parent
 - Get existing folder
@@ -143,6 +148,7 @@ go test -v ./tests/integration/ -run TestProjectOperations
 **File**: `tests/integration/buckets_test.go`
 
 **Test Cases**:
+
 - Create bucket with different storage classes
 - Create bucket with versioning
 - Create bucket with labels
@@ -268,7 +274,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v3
         with:
-          go-version: '1.21'
+          go-version: "1.21"
 
       # Mock tests (always run)
       - name: Run Integration Tests (Mock)
@@ -312,6 +318,7 @@ jobs:
 ### Common Issues
 
 **Mock expectations not met**:
+
 ```bash
 # Check mock setup and reset between tests
 setup.MockService.ExpectedCalls = nil
@@ -319,6 +326,7 @@ setup.MockService.Calls = nil
 ```
 
 **Authentication failures**:
+
 ```bash
 # Verify JWT token generation
 token := GenerateTestJWT(t, setup.AuthService)
@@ -326,6 +334,7 @@ req.Header.Set("Authorization", "Bearer "+token)
 ```
 
 **Real GCP test failures**:
+
 ```bash
 # Check credentials and project setup
 export GOOGLE_APPLICATION_CREDENTIALS=/path/to/key.json
@@ -390,4 +399,5 @@ go test -v ./tests/integration/ -run TestProjectOperations/CreateProject/Valid_p
 
 ---
 
-For questions or issues with integration testing, please refer to the main project documentation or create an issue in the repository.
+For questions or issues with integration testing, please refer to the main project documentation or
+create an issue in the repository.

@@ -4,11 +4,13 @@
 
 A Go-based REST API for automating Google Cloud Platform operations with **JWT authentication**.
 
-Demo: [https://gcp-automation-api-902997681858.us-central1.run.app](https://gcp-automation-api-902997681858.us-central1.run.app/swagger/index.html#/)
+Demo:
+[https://gcp-automation-api-902997681858.us-central1.run.app](https://gcp-automation-api-902997681858.us-central1.run.app/swagger/index.html#/)
 
 ## 🔐 Authentication
 
-The API uses **CLI-based authentication** for enhanced security. Authentication is handled by the `auth-cli` tool, not through HTTP endpoints.
+The API uses **CLI-based authentication** for enhanced security. Authentication is handled by the
+`auth-cli` tool, not through HTTP endpoints.
 
 ### Quick Start with CLI Authentication
 
@@ -49,7 +51,8 @@ curl -H "Authorization: Bearer $TOKEN" http://localhost:8080/api/v1/projects
 4. Enter: `Bearer YOUR_JWT_TOKEN`
 5. Test endpoints interactively
 
-See [CLI Authentication Documentation](./assets/docs/CLI_AUTHENTICATION.md) for complete authentication details.
+See [CLI Authentication Documentation](./assets/docs/CLI_AUTHENTICATION.md) for complete
+authentication details.
 
 ## Quick Start
 
@@ -67,14 +70,15 @@ ${EDITOR:-nano} .env
 make dev
 ```
 
-> **Need a full workstation setup?** The legacy `./install.sh` script is still available
-> if you need system packages such as Docker or the Google Cloud SDK installed globally.
+> **Need a full workstation setup?** The legacy `./install.sh` script is still available if you need
+> system packages such as Docker or the Google Cloud SDK installed globally.
 
 ## Documentation
 
 📚 **All documentation is located in the [`docs/`](./docs/) folder.**
 
-- **[Project Documentation](./assets/docs/PROJECT_README.md)** - Complete project overview, architecture, and detailed setup
+- **[Project Documentation](./assets/docs/PROJECT_README.md)** - Complete project overview,
+  architecture, and detailed setup
 - **[API Documentation](./docs/API.md)** - REST API endpoints and usage
 - **[Setup Documentation](./docs/)** - Installation and configuration guides
 
@@ -117,4 +121,5 @@ See [`docs/README.md`](./docs/README.md) for complete documentation organization
 
 ---
 
-For detailed information, please refer to the [complete documentation](./docs/) in the `docs/` folder.
+For detailed information, please refer to the [complete documentation](./docs/) in the `docs/`
+folder.

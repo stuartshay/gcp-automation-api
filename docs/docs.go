@@ -24,6 +24,302 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/v1/cloudrun/logging/configure": {
+            "post": {
+                "description": "Configure logging settings for a Cloud Run service including log level, retention, exports, metrics, and alerts",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cloudrun"
+                ],
+                "summary": "Configure Cloud Run logging",
+                "parameters": [
+                    {
+                        "description": "Logging configuration request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.CloudRunLoggingConfigRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.CloudRunLoggingConfigResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/cloudrun/logging/{serviceName}/{region}": {
+            "get": {
+                "description": "Retrieve the current logging configuration for a Cloud Run service",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cloudrun"
+                ],
+                "summary": "Get Cloud Run logging configuration",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Cloud Run service name",
+                        "name": "serviceName",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Cloud Run service region",
+                        "name": "region",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.CloudRunLoggingConfigResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Update the logging configuration for a Cloud Run service",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cloudrun"
+                ],
+                "summary": "Update Cloud Run logging configuration",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Cloud Run service name",
+                        "name": "serviceName",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Cloud Run service region",
+                        "name": "region",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Logging configuration update request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.CloudRunLoggingConfigUpdateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.CloudRunLoggingConfigResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/cloudrun/logs/{serviceName}/{region}": {
+            "get": {
+                "description": "Retrieve logs for a Cloud Run service with optional filtering and pagination",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cloudrun"
+                ],
+                "summary": "Get Cloud Run logs",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Cloud Run service name",
+                        "name": "serviceName",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Cloud Run service region",
+                        "name": "region",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Start time for logs (RFC3339 format)",
+                        "name": "startTime",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "End time for logs (RFC3339 format)",
+                        "name": "endTime",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Additional log filter",
+                        "name": "filter",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Number of logs to return (default: 100, max: 1000)",
+                        "name": "pageSize",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.CloudRunLogsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/cloudrun/service/{serviceName}/{region}": {
+            "get": {
+                "description": "Retrieve detailed information about a Cloud Run service",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cloudrun"
+                ],
+                "summary": "Get Cloud Run service information",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Cloud Run service name",
+                        "name": "serviceName",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Cloud Run service region",
+                        "name": "region",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.CloudRunServiceInfo"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/buckets": {
             "post": {
                 "security": [
@@ -660,6 +956,161 @@ const docTemplate = `{
                 }
             }
         },
+        "github_com_stuartshay_gcp-automation-api_internal_models.CloudRunLoggingConfigRequest": {
+            "type": "object",
+            "required": [
+                "logging_config",
+                "region",
+                "service_name"
+            ],
+            "properties": {
+                "alerts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.LogAlert"
+                    }
+                },
+                "logging_config": {
+                    "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.LoggingConfig"
+                },
+                "metrics": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.LogMetric"
+                    }
+                },
+                "region": {
+                    "type": "string",
+                    "example": "us-central1"
+                },
+                "service_name": {
+                    "type": "string",
+                    "example": "my-api-service"
+                }
+            }
+        },
+        "github_com_stuartshay_gcp-automation-api_internal_models.CloudRunLoggingConfigResponse": {
+            "type": "object",
+            "properties": {
+                "alerts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.LogAlertResponse"
+                    }
+                },
+                "configured_at": {
+                    "type": "string",
+                    "example": "2025-09-20T10:00:00Z"
+                },
+                "logging_config": {
+                    "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.LoggingConfig"
+                },
+                "logging_url": {
+                    "type": "string",
+                    "example": "https://console.cloud.google.com/logs/query"
+                },
+                "metrics": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.LogMetricResponse"
+                    }
+                },
+                "region": {
+                    "type": "string",
+                    "example": "us-central1"
+                },
+                "service_name": {
+                    "type": "string",
+                    "example": "my-api-service"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "configured"
+                }
+            }
+        },
+        "github_com_stuartshay_gcp-automation-api_internal_models.CloudRunLoggingConfigUpdateRequest": {
+            "type": "object",
+            "properties": {
+                "alerts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.LogAlert"
+                    }
+                },
+                "logging_config": {
+                    "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.LoggingConfig"
+                },
+                "metrics": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.LogMetric"
+                    }
+                }
+            }
+        },
+        "github_com_stuartshay_gcp-automation-api_internal_models.CloudRunLogsResponse": {
+            "type": "object",
+            "properties": {
+                "logs": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.LogEntry"
+                    }
+                },
+                "next_page_token": {
+                    "type": "string",
+                    "example": "abc123"
+                },
+                "region": {
+                    "type": "string",
+                    "example": "us-central1"
+                },
+                "service_name": {
+                    "type": "string",
+                    "example": "my-api-service"
+                },
+                "total_count": {
+                    "type": "integer",
+                    "example": 150
+                }
+            }
+        },
+        "github_com_stuartshay_gcp-automation-api_internal_models.CloudRunServiceInfo": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string",
+                    "example": "2025-09-20T09:00:00Z"
+                },
+                "labels": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "region": {
+                    "type": "string",
+                    "example": "us-central1"
+                },
+                "service_name": {
+                    "type": "string",
+                    "example": "my-api-service"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "READY"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2025-09-20T10:00:00Z"
+                },
+                "url": {
+                    "type": "string",
+                    "example": "https://my-api-service-hash-uc.a.run.app"
+                }
+            }
+        },
         "github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse": {
             "type": "object",
             "properties": {
@@ -671,6 +1122,47 @@ const docTemplate = `{
                 },
                 "message": {
                     "type": "string"
+                }
+            }
+        },
+        "github_com_stuartshay_gcp-automation-api_internal_models.ExportDestination": {
+            "type": "object",
+            "required": [
+                "type"
+            ],
+            "properties": {
+                "bucket": {
+                    "type": "string",
+                    "example": "logs-bucket"
+                },
+                "dataset": {
+                    "type": "string",
+                    "example": "logs_dataset"
+                },
+                "filter": {
+                    "type": "string",
+                    "example": "severity \u003e= WARNING"
+                },
+                "labels": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "example": {
+                        "environment": "production"
+                    }
+                },
+                "table": {
+                    "type": "string",
+                    "example": "cloudrun_logs"
+                },
+                "topic": {
+                    "type": "string",
+                    "example": "projects/my-project/topics/logs"
+                },
+                "type": {
+                    "type": "string",
+                    "example": "bigquery"
                 }
             }
         },
@@ -726,6 +1218,286 @@ const docTemplate = `{
                 },
                 "update_time": {
                     "type": "string"
+                }
+            }
+        },
+        "github_com_stuartshay_gcp-automation-api_internal_models.HTTPRequest": {
+            "type": "object",
+            "properties": {
+                "latency": {
+                    "type": "string",
+                    "example": "0.123s"
+                },
+                "remote_ip": {
+                    "type": "string",
+                    "example": "203.0.113.1"
+                },
+                "request_method": {
+                    "type": "string",
+                    "example": "GET"
+                },
+                "request_url": {
+                    "type": "string",
+                    "example": "/api/v1/health"
+                },
+                "response_size": {
+                    "type": "integer",
+                    "example": 1024
+                },
+                "status": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "user_agent": {
+                    "type": "string",
+                    "example": "curl/7.68.0"
+                }
+            }
+        },
+        "github_com_stuartshay_gcp-automation-api_internal_models.LogAlert": {
+            "type": "object",
+            "required": [
+                "condition",
+                "name"
+            ],
+            "properties": {
+                "condition": {
+                    "type": "string",
+                    "example": "error_rate \u003e 0.05"
+                },
+                "description": {
+                    "type": "string",
+                    "example": "Alert when error rate exceeds threshold"
+                },
+                "enabled": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "name": {
+                    "type": "string",
+                    "example": "high_error_rate"
+                },
+                "notification_channels": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "projects/my-project/notificationChannels/12345"
+                    ]
+                }
+            }
+        },
+        "github_com_stuartshay_gcp-automation-api_internal_models.LogAlertResponse": {
+            "type": "object",
+            "properties": {
+                "alert_url": {
+                    "type": "string",
+                    "example": "https://console.cloud.google.com/monitoring/alerting"
+                },
+                "condition": {
+                    "type": "string",
+                    "example": "error_rate \u003e 0.05"
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2025-09-20T10:00:00Z"
+                },
+                "description": {
+                    "type": "string",
+                    "example": "Alert when error rate exceeds threshold"
+                },
+                "enabled": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "name": {
+                    "type": "string",
+                    "example": "high_error_rate"
+                },
+                "notification_channels": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "github_com_stuartshay_gcp-automation-api_internal_models.LogEntry": {
+            "type": "object",
+            "properties": {
+                "http_request": {
+                    "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.HTTPRequest"
+                },
+                "labels": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Request processed successfully"
+                },
+                "resource": {
+                    "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.LogResource"
+                },
+                "severity": {
+                    "type": "string",
+                    "example": "INFO"
+                },
+                "source_file": {
+                    "type": "string",
+                    "example": "main.go"
+                },
+                "source_line": {
+                    "type": "integer",
+                    "example": 42
+                },
+                "timestamp": {
+                    "type": "string",
+                    "example": "2025-09-20T10:00:00Z"
+                },
+                "trace_id": {
+                    "type": "string",
+                    "example": "projects/my-project/traces/12345"
+                }
+            }
+        },
+        "github_com_stuartshay_gcp-automation-api_internal_models.LogMetric": {
+            "type": "object",
+            "required": [
+                "filter",
+                "name"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "example": "Rate of error logs"
+                },
+                "filter": {
+                    "type": "string",
+                    "example": "severity \u003e= ERROR"
+                },
+                "labels": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "example": {
+                        "service": "api"
+                    }
+                },
+                "name": {
+                    "type": "string",
+                    "example": "error_rate"
+                },
+                "type": {
+                    "type": "string",
+                    "example": "counter"
+                }
+            }
+        },
+        "github_com_stuartshay_gcp-automation-api_internal_models.LogMetricResponse": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string",
+                    "example": "2025-09-20T10:00:00Z"
+                },
+                "description": {
+                    "type": "string",
+                    "example": "Rate of error logs"
+                },
+                "filter": {
+                    "type": "string",
+                    "example": "severity \u003e= ERROR"
+                },
+                "labels": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "metric_url": {
+                    "type": "string",
+                    "example": "https://console.cloud.google.com/monitoring/metrics-explorer"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "error_rate"
+                },
+                "type": {
+                    "type": "string",
+                    "example": "counter"
+                }
+            }
+        },
+        "github_com_stuartshay_gcp-automation-api_internal_models.LogResource": {
+            "type": "object",
+            "properties": {
+                "configuration_name": {
+                    "type": "string",
+                    "example": "my-api-service"
+                },
+                "labels": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "location": {
+                    "type": "string",
+                    "example": "us-central1"
+                },
+                "revision_name": {
+                    "type": "string",
+                    "example": "my-api-service-00001"
+                },
+                "service_name": {
+                    "type": "string",
+                    "example": "my-api-service"
+                },
+                "type": {
+                    "type": "string",
+                    "example": "cloud_run_revision"
+                }
+            }
+        },
+        "github_com_stuartshay_gcp-automation-api_internal_models.LoggingConfig": {
+            "type": "object",
+            "properties": {
+                "custom_fields": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "example": {
+                        "environment": "production",
+                        "team": "backend"
+                    }
+                },
+                "export_destinations": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ExportDestination"
+                    }
+                },
+                "log_level": {
+                    "type": "string",
+                    "example": "INFO"
+                },
+                "retention_days": {
+                    "type": "integer",
+                    "example": 30
+                },
+                "sampling_rate": {
+                    "type": "number",
+                    "example": 0.1
+                },
+                "structured_logging": {
+                    "type": "boolean",
+                    "example": true
                 }
             }
         },

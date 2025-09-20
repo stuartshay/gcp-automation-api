@@ -6,7 +6,7 @@ export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin
 # Load environment variables from .env file
 if [ -f .env ]; then
     echo "Loading environment variables from .env file..."
-    export $(grep -v '^#' .env | grep -v '^$' | xargs)
+    export "$(grep -v '^#' .env | grep -v '^$' | xargs)"
 fi
 
 # Verify Go installation

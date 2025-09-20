@@ -119,7 +119,8 @@ install_system_deps() {
 # Install Go
 install_go() {
     if command_exists go; then
-        local current_version=$(go version | awk '{print $3}' | sed 's/go//')
+        local current_version
+        current_version=$(go version | awk '{print $3}' | sed 's/go//')
         if [[ "$current_version" == "$GO_VERSION" ]]; then
             log_success "Go $GO_VERSION is already installed"
             return
@@ -158,7 +159,8 @@ install_go() {
     fi
 
     # Add Go bin directory (for go install tools) to PATH
-    local go_bin_dir="$(go env GOPATH)/bin"
+    local go_bin_dir
+    go_bin_dir="$(go env GOPATH)/bin"
     if [[ ":$PATH:" != *":$go_bin_dir:"* ]]; then
         echo "export PATH=\$PATH:$go_bin_dir" >> ~/.bashrc
         echo "export PATH=\$PATH:$go_bin_dir" >> ~/.zshrc 2>/dev/null || true

@@ -127,7 +127,7 @@ func isIPAddress(s string) bool {
 		return false
 	}
 
-	// Additional validation for valid IP ranges
+	// Additional validation for valid IP ranges (0-255)
 	parts := strings.Split(s, ".")
 	for _, part := range parts {
 		if len(part) > 3 {
@@ -136,7 +136,14 @@ func isIPAddress(s string) bool {
 		if part[0] == '0' && len(part) > 1 {
 			return false
 		}
-		// You could add more validation here for valid IP ranges
+		// Validate octet range (0-255)
+		var octet int
+		if _, err := fmt.Sscanf(part, "%d", &octet); err != nil {
+			return false
+		}
+		if octet > 255 {
+			return false
+		}
 	}
 
 	return true

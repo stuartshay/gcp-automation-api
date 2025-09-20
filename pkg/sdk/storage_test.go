@@ -91,6 +91,54 @@ func TestValidateBucketName(t *testing.T) {
 	}
 }
 
+func TestIsIPAddress(t *testing.T) {
+	tests := []struct {
+		name   string
+		input  string
+		wantIP bool
+	}{
+		{
+			name:   "valid IP address",
+			input:  "192.168.1.1",
+			wantIP: true,
+		},
+		{
+			name:   "invalid IP with out of range octets",
+			input:  "999.999.999.999",
+			wantIP: false,
+		},
+		{
+			name:   "valid IP edge case",
+			input:  "255.255.255.255",
+			wantIP: true,
+		},
+		{
+			name:   "invalid IP with leading zeros",
+			input:  "192.168.01.1",
+			wantIP: false,
+		},
+		{
+			name:   "not an IP address",
+			input:  "my-bucket-name",
+			wantIP: false,
+		},
+		{
+			name:   "IP with invalid format",
+			input:  "192.168.1",
+			wantIP: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := isIPAddress(tt.input)
+			if result != tt.wantIP {
+				t.Errorf("isIPAddress(%s) = %v, want %v", tt.input, result, tt.wantIP)
+			}
+		})
+	}
+}
+
 func TestValidateObjectName(t *testing.T) {
 	tests := []struct {
 		name       string
@@ -361,5 +409,7 @@ func BenchmarkValidateStorageClass(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		_ = ValidateStorageClass(storageClass)
 	}
-} // Note: Helper functions for creating test requests can be added here when needed
+}
+
+// Note: Helper functions for creating test requests can be added here when needed
 // for integration tests that require actual GCP connections

@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"log"
 	"time"
 
 	"cloud.google.com/go/storage"
@@ -222,14 +221,13 @@ func (c *GCPStorageClient) UploadObject(ctx context.Context, bucketName, objectN
 	obj := bucket.Object(objectName)
 
 	writer := obj.NewWriter(ctx)
-	defer func() {
-		if err := writer.Close(); err != nil {
-			log.Printf("Failed to close object writer: %v", err)
-		}
-	}()
 
 	if _, err := io.Copy(writer, data); err != nil {
 		return nil, WrapError("uploading object", bucketName+"/"+objectName, err)
+	}
+
+	if err := writer.Close(); err != nil {
+		return nil, WrapError("closing object writer after upload", bucketName+"/"+objectName, err)
 	}
 
 	// Get object attributes

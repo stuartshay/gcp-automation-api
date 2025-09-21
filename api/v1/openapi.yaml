@@ -38,6 +38,7 @@ paths:
                     example: healthy
 
   /auth/login:
+    x-hidden: true
     post:
       summary: Login with Google ID token
       description: Authenticate user with Google ID token and receive JWT access token
@@ -82,6 +83,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
   /auth/test-token:
+    x-hidden: true
     post:
       summary: Generate test token (Development only)
       description: Generate a test JWT token for development and testing purposes
@@ -150,6 +152,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
   /auth/refresh:
+    x-hidden: true
     post:
       summary: Refresh JWT token
       description: Refresh an existing JWT token to extend its expiration
@@ -183,6 +186,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
   /auth/profile:
+    x-hidden: true
     get:
       summary: Get user profile
       description: Get the current authenticated user's profile information

@@ -2,7 +2,9 @@
 
 ## Project Overview
 
-This is a **GCP Automation API** built with **Go 1.24.7** that provides RESTful endpoints for automating Google Cloud Platform resource management. The service supports creating, retrieving, and managing GCP Projects, Folders, and Cloud Storage Buckets.
+This is a **GCP Automation API** built with **Go 1.24.7** that provides RESTful endpoints for
+automating Google Cloud Platform resource management. The service supports creating, retrieving, and
+managing GCP Projects, Folders, and Cloud Storage Buckets.
 
 ## Architecture & Technology Stack
 
@@ -347,4 +349,5 @@ func (s *GCPService) CreateProject(ctx context.Context, req CreateProjectRequest
 - Use **structured JSON responses**
 - Follow **Go conventions** for package organization
 
-This documentation should help GitHub Copilot provide more accurate and contextually relevant suggestions for your GCP Automation API project!
+This documentation should help GitHub Copilot provide more accurate and contextually relevant
+suggestions for your GCP Automation API project!

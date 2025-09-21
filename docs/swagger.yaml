@@ -18,19 +18,19 @@ definitions:
         type: string
       public_access_prevention:
         enum:
-        - inherited
-        - enforced
-        - unspecified
+          - inherited
+          - enforced
+          - unspecified
         example: enforced
         type: string
       retention_policy:
-        $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.RetentionPolicy'
+        $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.RetentionPolicy"
       storage_class:
         enum:
-        - STANDARD
-        - NEARLINE
-        - COLDLINE
-        - ARCHIVE
+          - STANDARD
+          - NEARLINE
+          - COLDLINE
+          - ARCHIVE
         example: STANDARD
         type: string
       uniform_bucket_level_access:
@@ -40,8 +40,8 @@ definitions:
         example: true
         type: boolean
     required:
-    - location
-    - name
+      - location
+      - name
     type: object
   github_com_stuartshay_gcp-automation-api_internal_models.BucketResponse:
     properties:
@@ -61,7 +61,7 @@ definitions:
       public_access_prevention:
         type: string
       retention_policy:
-        $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.RetentionPolicy'
+        $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.RetentionPolicy"
       self_link:
         type: string
       storage_class:
@@ -73,6 +73,114 @@ definitions:
       versioning:
         type: boolean
     type: object
+  github_com_stuartshay_gcp-automation-api_internal_models.CloudRunLoggingConfigRequest:
+    properties:
+      alerts:
+        items:
+          $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.LogAlert"
+        type: array
+      logging_config:
+        $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.LoggingConfig"
+      metrics:
+        items:
+          $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.LogMetric"
+        type: array
+      region:
+        example: us-central1
+        type: string
+      service_name:
+        example: my-api-service
+        type: string
+    required:
+      - logging_config
+      - region
+      - service_name
+    type: object
+  github_com_stuartshay_gcp-automation-api_internal_models.CloudRunLoggingConfigResponse:
+    properties:
+      alerts:
+        items:
+          $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.LogAlertResponse"
+        type: array
+      configured_at:
+        example: "2025-09-20T10:00:00Z"
+        type: string
+      logging_config:
+        $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.LoggingConfig"
+      logging_url:
+        example: https://console.cloud.google.com/logs/query
+        type: string
+      metrics:
+        items:
+          $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.LogMetricResponse"
+        type: array
+      region:
+        example: us-central1
+        type: string
+      service_name:
+        example: my-api-service
+        type: string
+      status:
+        example: configured
+        type: string
+    type: object
+  github_com_stuartshay_gcp-automation-api_internal_models.CloudRunLoggingConfigUpdateRequest:
+    properties:
+      alerts:
+        items:
+          $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.LogAlert"
+        type: array
+      logging_config:
+        $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.LoggingConfig"
+      metrics:
+        items:
+          $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.LogMetric"
+        type: array
+    type: object
+  github_com_stuartshay_gcp-automation-api_internal_models.CloudRunLogsResponse:
+    properties:
+      logs:
+        items:
+          $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.LogEntry"
+        type: array
+      next_page_token:
+        example: abc123
+        type: string
+      region:
+        example: us-central1
+        type: string
+      service_name:
+        example: my-api-service
+        type: string
+      total_count:
+        example: 150
+        type: integer
+    type: object
+  github_com_stuartshay_gcp-automation-api_internal_models.CloudRunServiceInfo:
+    properties:
+      created_at:
+        example: "2025-09-20T09:00:00Z"
+        type: string
+      labels:
+        additionalProperties:
+          type: string
+        type: object
+      region:
+        example: us-central1
+        type: string
+      service_name:
+        example: my-api-service
+        type: string
+      status:
+        example: READY
+        type: string
+      updated_at:
+        example: "2025-09-20T10:00:00Z"
+        type: string
+      url:
+        example: https://my-api-service-hash-uc.a.run.app
+        type: string
+    type: object
   github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse:
     properties:
       code:
@@ -81,6 +189,35 @@ definitions:
         type: string
       message:
         type: string
+    type: object
+  github_com_stuartshay_gcp-automation-api_internal_models.ExportDestination:
+    properties:
+      bucket:
+        example: logs-bucket
+        type: string
+      dataset:
+        example: logs_dataset
+        type: string
+      filter:
+        example: severity >= WARNING
+        type: string
+      labels:
+        additionalProperties:
+          type: string
+        example:
+          environment: production
+        type: object
+      table:
+        example: cloudrun_logs
+        type: string
+      topic:
+        example: projects/my-project/topics/logs
+        type: string
+      type:
+        example: bigquery
+        type: string
+    required:
+      - type
     type: object
   github_com_stuartshay_gcp-automation-api_internal_models.FolderRequest:
     properties:
@@ -95,14 +232,14 @@ definitions:
       parent_type:
         description: '"organization" or "folder"'
         enum:
-        - organization
-        - folder
+          - organization
+          - folder
         example: organization
         type: string
     required:
-    - display_name
-    - parent_id
-    - parent_type
+      - display_name
+      - parent_id
+      - parent_type
     type: object
   github_com_stuartshay_gcp-automation-api_internal_models.FolderResponse:
     properties:
@@ -121,6 +258,205 @@ definitions:
       update_time:
         type: string
     type: object
+  github_com_stuartshay_gcp-automation-api_internal_models.HTTPRequest:
+    properties:
+      latency:
+        example: 0.123s
+        type: string
+      remote_ip:
+        example: 203.0.113.1
+        type: string
+      request_method:
+        example: GET
+        type: string
+      request_url:
+        example: /api/v1/health
+        type: string
+      response_size:
+        example: 1024
+        type: integer
+      status:
+        example: 200
+        type: integer
+      user_agent:
+        example: curl/7.68.0
+        type: string
+    type: object
+  github_com_stuartshay_gcp-automation-api_internal_models.LogAlert:
+    properties:
+      condition:
+        example: error_rate > 0.05
+        type: string
+      description:
+        example: Alert when error rate exceeds threshold
+        type: string
+      enabled:
+        example: true
+        type: boolean
+      name:
+        example: high_error_rate
+        type: string
+      notification_channels:
+        example:
+          - projects/my-project/notificationChannels/12345
+        items:
+          type: string
+        type: array
+    required:
+      - condition
+      - name
+    type: object
+  github_com_stuartshay_gcp-automation-api_internal_models.LogAlertResponse:
+    properties:
+      alert_url:
+        example: https://console.cloud.google.com/monitoring/alerting
+        type: string
+      condition:
+        example: error_rate > 0.05
+        type: string
+      created_at:
+        example: "2025-09-20T10:00:00Z"
+        type: string
+      description:
+        example: Alert when error rate exceeds threshold
+        type: string
+      enabled:
+        example: true
+        type: boolean
+      name:
+        example: high_error_rate
+        type: string
+      notification_channels:
+        items:
+          type: string
+        type: array
+    type: object
+  github_com_stuartshay_gcp-automation-api_internal_models.LogEntry:
+    properties:
+      http_request:
+        $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.HTTPRequest"
+      labels:
+        additionalProperties:
+          type: string
+        type: object
+      message:
+        example: Request processed successfully
+        type: string
+      resource:
+        $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.LogResource"
+      severity:
+        example: INFO
+        type: string
+      source_file:
+        example: main.go
+        type: string
+      source_line:
+        example: 42
+        type: integer
+      timestamp:
+        example: "2025-09-20T10:00:00Z"
+        type: string
+      trace_id:
+        example: projects/my-project/traces/12345
+        type: string
+    type: object
+  github_com_stuartshay_gcp-automation-api_internal_models.LogMetric:
+    properties:
+      description:
+        example: Rate of error logs
+        type: string
+      filter:
+        example: severity >= ERROR
+        type: string
+      labels:
+        additionalProperties:
+          type: string
+        example:
+          service: api
+        type: object
+      name:
+        example: error_rate
+        type: string
+      type:
+        example: counter
+        type: string
+    required:
+      - filter
+      - name
+    type: object
+  github_com_stuartshay_gcp-automation-api_internal_models.LogMetricResponse:
+    properties:
+      created_at:
+        example: "2025-09-20T10:00:00Z"
+        type: string
+      description:
+        example: Rate of error logs
+        type: string
+      filter:
+        example: severity >= ERROR
+        type: string
+      labels:
+        additionalProperties:
+          type: string
+        type: object
+      metric_url:
+        example: https://console.cloud.google.com/monitoring/metrics-explorer
+        type: string
+      name:
+        example: error_rate
+        type: string
+      type:
+        example: counter
+        type: string
+    type: object
+  github_com_stuartshay_gcp-automation-api_internal_models.LogResource:
+    properties:
+      configuration_name:
+        example: my-api-service
+        type: string
+      labels:
+        additionalProperties:
+          type: string
+        type: object
+      location:
+        example: us-central1
+        type: string
+      revision_name:
+        example: my-api-service-00001
+        type: string
+      service_name:
+        example: my-api-service
+        type: string
+      type:
+        example: cloud_run_revision
+        type: string
+    type: object
+  github_com_stuartshay_gcp-automation-api_internal_models.LoggingConfig:
+    properties:
+      custom_fields:
+        additionalProperties:
+          type: string
+        example:
+          environment: production
+          team: backend
+        type: object
+      export_destinations:
+        items:
+          $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ExportDestination"
+        type: array
+      log_level:
+        example: INFO
+        type: string
+      retention_days:
+        example: 30
+        type: integer
+      sampling_rate:
+        example: 0.1
+        type: number
+      structured_logging:
+        example: true
+        type: boolean
+    type: object
   github_com_stuartshay_gcp-automation-api_internal_models.ProjectRequest:
     properties:
       display_name:
@@ -138,16 +474,16 @@ definitions:
       parent_type:
         description: '"organization" or "folder"'
         enum:
-        - organization
-        - folder
+          - organization
+          - folder
         example: organization
         type: string
       project_id:
         example: my-dev-project-2024
         type: string
     required:
-    - display_name
-    - project_id
+      - display_name
+      - project_id
     type: object
   github_com_stuartshay_gcp-automation-api_internal_models.ProjectResponse:
     properties:
@@ -204,10 +540,211 @@ info:
   title: GCP Automation API
   version: "1.0"
 paths:
+  /api/v1/cloudrun/logging/{serviceName}/{region}:
+    get:
+      description: Retrieve the current logging configuration for a Cloud Run service
+      parameters:
+        - description: Cloud Run service name
+          in: path
+          name: serviceName
+          required: true
+          type: string
+        - description: Cloud Run service region
+          in: path
+          name: region
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.CloudRunLoggingConfigResponse"
+        "400":
+          description: Bad Request
+          schema:
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+        "404":
+          description: Not Found
+          schema:
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+      summary: Get Cloud Run logging configuration
+      tags:
+        - cloudrun
+    patch:
+      consumes:
+        - application/json
+      description: Update the logging configuration for a Cloud Run service
+      parameters:
+        - description: Cloud Run service name
+          in: path
+          name: serviceName
+          required: true
+          type: string
+        - description: Cloud Run service region
+          in: path
+          name: region
+          required: true
+          type: string
+        - description: Logging configuration update request
+          in: body
+          name: request
+          required: true
+          schema:
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.CloudRunLoggingConfigUpdateRequest"
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.CloudRunLoggingConfigResponse"
+        "400":
+          description: Bad Request
+          schema:
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+        "404":
+          description: Not Found
+          schema:
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+      summary: Update Cloud Run logging configuration
+      tags:
+        - cloudrun
+  /api/v1/cloudrun/logging/configure:
+    post:
+      consumes:
+        - application/json
+      description:
+        Configure logging settings for a Cloud Run service including log
+        level, retention, exports, metrics, and alerts
+      parameters:
+        - description: Logging configuration request
+          in: body
+          name: request
+          required: true
+          schema:
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.CloudRunLoggingConfigRequest"
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.CloudRunLoggingConfigResponse"
+        "400":
+          description: Bad Request
+          schema:
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+      summary: Configure Cloud Run logging
+      tags:
+        - cloudrun
+  /api/v1/cloudrun/logs/{serviceName}/{region}:
+    get:
+      description:
+        Retrieve logs for a Cloud Run service with optional filtering and
+        pagination
+      parameters:
+        - description: Cloud Run service name
+          in: path
+          name: serviceName
+          required: true
+          type: string
+        - description: Cloud Run service region
+          in: path
+          name: region
+          required: true
+          type: string
+        - description: Start time for logs (RFC3339 format)
+          in: query
+          name: startTime
+          type: string
+        - description: End time for logs (RFC3339 format)
+          in: query
+          name: endTime
+          type: string
+        - description: Additional log filter
+          in: query
+          name: filter
+          type: string
+        - description: "Number of logs to return (default: 100, max: 1000)"
+          in: query
+          name: pageSize
+          type: integer
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.CloudRunLogsResponse"
+        "400":
+          description: Bad Request
+          schema:
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+        "404":
+          description: Not Found
+          schema:
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+      summary: Get Cloud Run logs
+      tags:
+        - cloudrun
+  /api/v1/cloudrun/service/{serviceName}/{region}:
+    get:
+      description: Retrieve detailed information about a Cloud Run service
+      parameters:
+        - description: Cloud Run service name
+          in: path
+          name: serviceName
+          required: true
+          type: string
+        - description: Cloud Run service region
+          in: path
+          name: region
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.CloudRunServiceInfo"
+        "400":
+          description: Bad Request
+          schema:
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+        "404":
+          description: Not Found
+          schema:
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+      summary: Get Cloud Run service information
+      tags:
+        - cloudrun
   /buckets:
     post:
       consumes:
-      - application/json
+        - application/json
       description: |-
         Create a new Google Cloud Storage bucket with the specified parameters including advanced options for KMS encryption, retention policies, and access controls
 
@@ -217,112 +754,113 @@ paths:
         ### Advanced Example (models.AdvancedBucketRequest):
         Enterprise bucket with security features, labels, and compliance settings
       parameters:
-      - description: Bucket creation request
-        in: body
-        name: bucket
-        required: true
-        schema:
-          $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.BucketRequest'
+        - description: Bucket creation request
+          in: body
+          name: bucket
+          required: true
+          schema:
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.BucketRequest"
       produces:
-      - application/json
+        - application/json
       responses:
         "201":
           description: Created
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse'
-            - properties:
-                data:
-                  $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.BucketResponse'
-              type: object
+              - $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
+              - properties:
+                  data:
+                    $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.BucketResponse"
+                type: object
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Create a new Cloud Storage bucket
       tags:
-      - Buckets
+        - Buckets
   /buckets/{name}:
     delete:
       consumes:
-      - application/json
+        - application/json
       description: Delete a Google Cloud Storage bucket by its bucket name
       parameters:
-      - description: Bucket name
-        in: path
-        name: name
-        required: true
-        type: string
+        - description: Bucket name
+          in: path
+          name: name
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse'
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Delete a Cloud Storage bucket
       tags:
-      - Buckets
+        - Buckets
     get:
       consumes:
-      - application/json
-      description: Retrieve details of a Google Cloud Storage bucket by its bucket
+        - application/json
+      description:
+        Retrieve details of a Google Cloud Storage bucket by its bucket
         name
       parameters:
-      - description: Bucket name
-        in: path
-        name: name
-        required: true
-        type: string
+        - description: Bucket name
+          in: path
+          name: name
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse'
-            - properties:
-                data:
-                  $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.BucketResponse'
-              type: object
+              - $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
+              - properties:
+                  data:
+                    $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.BucketResponse"
+                type: object
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Get a Cloud Storage bucket by name
       tags:
-      - Buckets
+        - Buckets
   /folders:
     post:
       consumes:
-      - application/json
+        - application/json
       description: |-
         Create a new Google Cloud Platform folder with the specified parameters
 
@@ -332,112 +870,113 @@ paths:
         ### Advanced Example (models.AdvancedFolderRequest):
         Nested folder structure for complex hierarchies
       parameters:
-      - description: Folder creation request
-        in: body
-        name: folder
-        required: true
-        schema:
-          $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.FolderRequest'
+        - description: Folder creation request
+          in: body
+          name: folder
+          required: true
+          schema:
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.FolderRequest"
       produces:
-      - application/json
+        - application/json
       responses:
         "201":
           description: Created
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse'
-            - properties:
-                data:
-                  $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.FolderResponse'
-              type: object
+              - $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
+              - properties:
+                  data:
+                    $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.FolderResponse"
+                type: object
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Create a new GCP folder
       tags:
-      - Folders
+        - Folders
   /folders/{id}:
     delete:
       consumes:
-      - application/json
+        - application/json
       description: Delete a Google Cloud Platform folder by its folder ID
       parameters:
-      - description: Folder ID
-        in: path
-        name: id
-        required: true
-        type: string
+        - description: Folder ID
+          in: path
+          name: id
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse'
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Delete a GCP folder
       tags:
-      - Folders
+        - Folders
     get:
       consumes:
-      - application/json
-      description: Retrieve details of a Google Cloud Platform folder by its folder
+        - application/json
+      description:
+        Retrieve details of a Google Cloud Platform folder by its folder
         ID
       parameters:
-      - description: Folder ID
-        in: path
-        name: id
-        required: true
-        type: string
+        - description: Folder ID
+          in: path
+          name: id
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse'
-            - properties:
-                data:
-                  $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.FolderResponse'
-              type: object
+              - $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
+              - properties:
+                  data:
+                    $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.FolderResponse"
+                type: object
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Get a GCP folder by ID
       tags:
-      - Folders
+        - Folders
   /projects:
     post:
       consumes:
-      - application/json
+        - application/json
       description: |-
         Create a new Google Cloud Platform project with the specified parameters
 
@@ -447,114 +986,116 @@ paths:
         ### Advanced Example (models.AdvancedProjectRequest):
         Enterprise project with organization hierarchy, labels, and governance
       parameters:
-      - description: Project creation request
-        in: body
-        name: project
-        required: true
-        schema:
-          $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ProjectRequest'
+        - description: Project creation request
+          in: body
+          name: project
+          required: true
+          schema:
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ProjectRequest"
       produces:
-      - application/json
+        - application/json
       responses:
         "201":
           description: Created
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse'
-            - properties:
-                data:
-                  $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ProjectResponse'
-              type: object
+              - $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
+              - properties:
+                  data:
+                    $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ProjectResponse"
+                type: object
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Create a new GCP project
       tags:
-      - Projects
+        - Projects
   /projects/{id}:
     delete:
       consumes:
-      - application/json
+        - application/json
       description: Delete a Google Cloud Platform project by its project ID
       parameters:
-      - description: Project ID
-        in: path
-        name: id
-        required: true
-        type: string
+        - description: Project ID
+          in: path
+          name: id
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse'
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Delete a GCP project
       tags:
-      - Projects
+        - Projects
     get:
       consumes:
-      - application/json
-      description: Retrieve details of a Google Cloud Platform project by its project
+        - application/json
+      description:
+        Retrieve details of a Google Cloud Platform project by its project
         ID
       parameters:
-      - description: Project ID
-        in: path
-        name: id
-        required: true
-        type: string
+        - description: Project ID
+          in: path
+          name: id
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse'
-            - properties:
-                data:
-                  $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ProjectResponse'
-              type: object
+              - $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
+              - properties:
+                  data:
+                    $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ProjectResponse"
+                type: object
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse'
+            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Get a GCP project by ID
       tags:
-      - Projects
+        - Projects
 schemes:
-- http
-- https
+  - http
+  - https
 securityDefinitions:
   BearerAuth:
-    description: 'JWT Authorization header using the Bearer scheme. Example: "Authorization:
+    description:
+      'JWT Authorization header using the Bearer scheme. Example: "Authorization:
       Bearer {token}"'
     in: header
     name: Authorization

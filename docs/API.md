@@ -2,16 +2,19 @@
 
 ## Overview
 
-The GCP Automation API provides RESTful endpoints for managing Google Cloud Platform resources including Projects, Folders, and Cloud Storage Buckets.
+The GCP Automation API provides RESTful endpoints for managing Google Cloud Platform resources
+including Projects, Folders, and Cloud Storage Buckets.
 
 ## Interactive API Documentation
 
 The API includes **Swagger UI** for interactive documentation and testing:
 
-- **Swagger UI**: [http://localhost:8080/swagger/index.html](http://localhost:8080/swagger/index.html)
+- **Swagger UI**:
+  [http://localhost:8080/swagger/index.html](http://localhost:8080/swagger/index.html)
 - **Swagger JSON**: [http://localhost:8080/swagger/doc.json](http://localhost:8080/swagger/doc.json)
 
 The Swagger UI provides:
+
 - Complete API endpoint documentation
 - Interactive request/response testing
 - Model schemas and examples
@@ -20,6 +23,7 @@ The Swagger UI provides:
 ## Framework & Architecture
 
 The API is built with:
+
 - **Echo v4** - High performance web framework
 - **Swaggo** - Automated Swagger documentation generation
 - **Clean Architecture** - Separation of concerns with handlers, services, and models
@@ -102,7 +106,8 @@ curl -X GET "http://localhost:8080/api/v1/projects/my-project" \
 
 The Swagger UI includes a convenient **"Authorize" button** for JWT authentication:
 
-1. Open Swagger UI: [http://localhost:8080/swagger/index.html](http://localhost:8080/swagger/index.html)
+1. Open Swagger UI:
+   [http://localhost:8080/swagger/index.html](http://localhost:8080/swagger/index.html)
 2. Click the **"Authorize"** button (lock icon)
 3. Enter your JWT token in the format: `Bearer <your-token>`
 4. Click **"Authorize"**
@@ -110,12 +115,12 @@ The Swagger UI includes a convenient **"Authorize" button** for JWT authenticati
 
 ### Authentication Endpoints
 
-| Endpoint | Method | Purpose | Auth Required |
-|----------|--------|---------|---------------|
-| `/auth/login` | POST | Google OAuth login | No |
-| `/auth/test-token` | POST | Generate test token (dev only) | No |
-| `/auth/refresh` | POST | Refresh JWT token | Yes |
-| `/auth/profile` | GET | Get user profile | Yes |
+| Endpoint           | Method | Purpose                        | Auth Required |
+| ------------------ | ------ | ------------------------------ | ------------- |
+| `/auth/login`      | POST   | Google OAuth login             | No            |
+| `/auth/test-token` | POST   | Generate test token (dev only) | No            |
+| `/auth/refresh`    | POST   | Refresh JWT token              | Yes           |
+| `/auth/profile`    | GET    | Get user profile               | Yes           |
 
 ### Environment Variables
 
@@ -173,7 +178,8 @@ For backend GCP operations, the API uses Google Cloud Service Account authentica
 
 ## Rate Limiting
 
-The API implements basic rate limiting to prevent abuse. In production, consider implementing more sophisticated rate limiting based on your needs.
+The API implements basic rate limiting to prevent abuse. In production, consider implementing more
+sophisticated rate limiting based on your needs.
 
 ## Error Handling
 
@@ -276,7 +282,8 @@ Content-Type: application/json
 
 ## Best Practices
 
-1. **Project IDs**: Must be globally unique, 6-30 characters, lowercase letters, digits, and hyphens only
+1. **Project IDs**: Must be globally unique, 6-30 characters, lowercase letters, digits, and hyphens
+   only
 2. **Bucket Names**: Must be globally unique, 3-63 characters, follow DNS naming conventions
 3. **Labels**: Use consistent labeling strategy for resource organization and cost tracking
 4. **Error Handling**: Always check HTTP status codes and error messages
@@ -284,7 +291,8 @@ Content-Type: application/json
 
 ## Monitoring
 
-The API includes a health check endpoint at `/health` that can be used for monitoring and load balancer health checks.
+The API includes a health check endpoint at `/health` that can be used for monitoring and load
+balancer health checks.
 
 ## Logs
 

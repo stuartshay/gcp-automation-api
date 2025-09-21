@@ -1,7 +1,11 @@
 # Development dependencies for pre-commit and code quality
 pre-commit>=3.0.0
-black>=22.0.0
+black>=25.9.0
 flake8>=4.0.0
 isort>=5.0.0
 mypy>=0.910
 bandit>=1.7.0
+
+# Note: Markdown tools are installed via npm:
+# - markdownlint-cli (globally via npm)
+# - prettier (globally via npm)

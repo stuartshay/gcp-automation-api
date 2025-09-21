@@ -185,6 +185,7 @@ source activate-dev.sh && make dev
 
 ## 🎉 Success
 
-Your GCP Automation API is now fully configured and ready for development! The authentication is working correctly, and you can start building and testing your GCP automation workflows.
+Your GCP Automation API is now fully configured and ready for development! The authentication is
+working correctly, and you can start building and testing your GCP automation workflows.
 
 **Next steps**: Start creating and testing your GCP resources through the API endpoints! 🚀

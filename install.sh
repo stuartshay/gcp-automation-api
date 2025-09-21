@@ -119,7 +119,8 @@ install_system_deps() {
 # Install Go
 install_go() {
     if command_exists go; then
-        local current_version=$(go version | awk '{print $3}' | sed 's/go//')
+        local current_version
+        current_version=$(go version | awk '{print $3}' | sed 's/go//')
         if [[ "$current_version" == "$GO_VERSION" ]]; then
             log_success "Go $GO_VERSION is already installed"
             return
@@ -286,23 +287,75 @@ setup_python_venv() {
 
     log_success "Python tools installed in virtual environment"
 
-    # Create requirements.txt for Python dependencies
-    cat > requirements-dev.txt << EOF
-# Development dependencies for pre-commit and code quality
-pre-commit>=3.0.0
-black>=22.0.0
-flake8>=4.0.0
-isort>=5.0.0
-mypy>=0.910
-bandit>=1.7.0
-EOF
+    # Install Node.js and npm if not available (needed for markdownlint)
+    if ! command_exists node; then
+        log_info "Installing Node.js for markdown tools..."
+        if [[ "$OS" == "linux" ]]; then
+            curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+            sudo apt-get install -y nodejs
+        elif [[ "$OS" == "macos" ]]; then
+            brew install node
+        fi
+        log_success "Node.js installed"
+    fi
 
-    log_success "Created requirements-dev.txt"
+    # Install markdownlint-cli and prettier globally
+    npm install -g markdownlint-cli prettier
+
+    log_success "Markdown tools installed globally"
 }
 
 # Setup pre-commit configuration
 setup_precommit() {
     log_info "Setting up pre-commit configuration..."
+
+    # Create markdownlint configuration
+    cat > .markdownlint.json << 'EOF'
+{
+  "default": true,
+  "MD013": false,
+  "MD025": false,
+  "MD022": {
+    "lines_above": 1,
+    "lines_below": 1
+  },
+  "MD024": {
+    "siblings_only": true
+  },
+  "MD026": {
+    "punctuation": ".,;:!?"
+  },
+  "MD029": {
+    "style": "ordered"
+  },
+  "MD031": true,
+  "MD032": true,
+  "MD034": false,
+  "MD036": false,
+  "MD040": false,
+  "MD041": false,
+  "MD046": {
+    "style": "fenced"
+  }
+}
+EOF
+
+    # Create markdownlint ignore file
+    cat > .markdownlintignore << 'EOF'
+# Ignore auto-generated files
+docs/swagger.json
+docs/swagger.yaml
+docs/docs.go
+
+# Ignore files with intentional long lines
+assets/docs/CLI_AUTHENTICATION.md
+assets/docs/COPILOT_ENVIRONMENT_SETUP.md
+
+# Ignore GitHub Copilot chatmode files (special formatting)
+.github/chatmodes/*.md
+EOF
+
+    log_success "Created markdownlint configuration files"
 
     # Create .pre-commit-config.yaml
     cat > .pre-commit-config.yaml << 'EOF'
@@ -380,12 +433,30 @@ repos:
       - id: hadolint-docker
         args: [--ignore, DL3008, --ignore, DL3009]
 
-  # Markdown linting
+  # Markdown linting and formatting
   - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.35.0
+    rev: v0.45.0
     hooks:
       - id: markdownlint
-        args: [--fix]
+        name: markdownlint (check)
+        args: [--config, .markdownlint.json]
+        exclude: \.markdownlintignore$
+      - id: markdownlint
+        name: markdownlint-fix
+        alias: markdownlint-fix
+        args: [--fix, --config, .markdownlint.json]
+        stages: [manual]
+        exclude: \.markdownlintignore$
+
+  # Enhanced Markdown formatting with Prettier
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v4.0.0-alpha.8
+    hooks:
+      - id: prettier
+        name: prettier (markdown)
+        types: [markdown]
+        args: [--prose-wrap, always, --print-width, "100"]
+        exclude: ^docs/swagger\.yaml$
 
   # YAML formatting
   - repo: https://github.com/pre-commit/mirrors-prettier
@@ -436,6 +507,19 @@ if command -v golangci-lint >/dev/null 2>&1; then
     echo "golangci-lint version: $(golangci-lint version | head -1)"
 else
     echo "❌ golangci-lint not found in PATH"
+fi
+
+# Verify markdown tools
+if command -v markdownlint >/dev/null 2>&1; then
+    echo "markdownlint version: $(markdownlint --version)"
+else
+    echo "❌ markdownlint not found in PATH"
+fi
+
+if command -v prettier >/dev/null 2>&1; then
+    echo "prettier version: $(prettier --version)"
+else
+    echo "❌ prettier not found in PATH"
 fi
 
 echo "Development environment activated!"
@@ -490,6 +574,7 @@ main() {
     log_info "  - Google Cloud SDK"
     log_info "  - Docker"
     log_info "  - Go development tools"
+    log_info "  - Node.js and markdown tools (markdownlint, prettier)"
     log_info "  - Python virtual environment"
     log_info "  - Pre-commit hooks"
     echo

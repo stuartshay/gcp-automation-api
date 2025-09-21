@@ -1,10 +1,13 @@
 # Swagger Configuration Guide
 
-This document explains how to configure the Swagger documentation for different deployment environments.
+This document explains how to configure the Swagger documentation for different deployment
+environments.
 
 ## Overview
 
-The GCP Automation API uses dynamic Swagger configuration that allows you to set the correct host and scheme based on your deployment environment. This ensures that the Swagger UI displays the correct URLs for your API endpoints.
+The GCP Automation API uses dynamic Swagger configuration that allows you to set the correct host
+and scheme based on your deployment environment. This ensures that the Swagger UI displays the
+correct URLs for your API endpoints.
 
 ## Configuration
 
@@ -67,12 +70,12 @@ spec:
   template:
     spec:
       containers:
-      - image: gcr.io/your-project/gcp-automation-api
-        env:
-        - name: SWAGGER_HOST
-          value: "gcp-automation-api-902997681858.us-central1.run.app"
-        - name: SWAGGER_SCHEME
-          value: "https"
+        - image: gcr.io/your-project/gcp-automation-api
+          env:
+            - name: SWAGGER_HOST
+              value: "gcp-automation-api-902997681858.us-central1.run.app"
+            - name: SWAGGER_SCHEME
+              value: "https"
 ```
 
 ## How It Works
@@ -86,7 +89,8 @@ spec:
 
 After deploying with the correct environment variables:
 
-1. Visit your Swagger UI: `https://gcp-automation-api-902997681858.us-central1.run.app/swagger/index.html`
+1. Visit your Swagger UI:
+   `https://gcp-automation-api-902997681858.us-central1.run.app/swagger/index.html`
 2. Check that the "Servers" dropdown shows only HTTPS with your correct domain
 3. Verify that the "Try it out" functionality uses the correct URLs
 
@@ -102,10 +106,12 @@ After deploying with the correct environment variables:
 
 ### Issue: Wrong hostname in Swagger UI
 
-**Solution**: Double-check the `SWAGGER_HOST` environment variable matches your actual Cloud Run service URL.
+**Solution**: Double-check the `SWAGGER_HOST` environment variable matches your actual Cloud Run
+service URL.
 
 ## Security Considerations
 
 - Always use `https` for production deployments
-- The Swagger UI will only show the configured scheme, improving security by preventing accidental HTTP requests in production
+- The Swagger UI will only show the configured scheme, improving security by preventing accidental
+  HTTP requests in production
 - Ensure your Cloud Run service is configured to redirect HTTP to HTTPS

@@ -12,6 +12,9 @@ var (
 	// Must be lowercase, start with letter, contain only letters, numbers, hyphens
 	cloudRunServiceNameRegex = regexp.MustCompile(`^[a-z]([a-z0-9-]*[a-z0-9])?$`)
 
+	// metricNameRegex defines the valid metric name pattern
+	metricNameRegex = regexp.MustCompile(`^[a-zA-Z][a-zA-Z0-9_]*$`)
+
 	// Valid log levels for Cloud Run services
 	validLogLevels = map[string]bool{
 		"DEFAULT":   true,
@@ -151,7 +154,6 @@ func ValidateMetricName(metricName string) error {
 	}
 
 	// Metric names should be valid identifiers
-	metricNameRegex := regexp.MustCompile(`^[a-zA-Z][a-zA-Z0-9_]*$`)
 	if !metricNameRegex.MatchString(metricName) {
 		return fmt.Errorf("metric name must start with a letter and contain only letters, numbers, and underscores")
 	}

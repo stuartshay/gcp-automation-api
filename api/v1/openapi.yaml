@@ -1,4 +1,4 @@
-openapi: 3.0.3
+openapi: 3.1.0
 info:
   title: GCP Automation API
   description: REST API for automating GCP resource management with JWT authentication
@@ -24,7 +24,8 @@ paths:
     get:
       summary: Health check
       description: Check if the service is healthy
-      security: [] # No authentication required
+      security:
+        - BearerAuth: []
       responses:
         "200":
           description: Service is healthy
@@ -42,7 +43,8 @@ paths:
     post:
       summary: Login with Google ID token
       description: Authenticate user with Google ID token and receive JWT access token
-      security: [] # No authentication required
+      security:
+        - BearerAuth: []
       tags:
         - Authentication
       requestBody:
@@ -87,7 +89,8 @@ paths:
     post:
       summary: Generate test token (Development only)
       description: Generate a test JWT token for development and testing purposes
-      security: [] # No authentication required
+      security:
+        - BearerAuth: []
       tags:
         - Authentication
       requestBody:

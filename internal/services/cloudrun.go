@@ -20,7 +20,7 @@ import (
 type CloudRunService struct {
 	projectID      string
 	runClient      *run.ServicesClient
-	loggingClient  *logging.Client
+	LoggingClient  *logging.Client
 	logAdminClient *logadmin.Client
 }
 
@@ -64,7 +64,7 @@ func NewCloudRunService(ctx context.Context, projectID string, opts ...option.Cl
 	return &CloudRunService{
 		projectID:      projectID,
 		runClient:      runClient,
-		loggingClient:  loggingClient,
+		LoggingClient:  loggingClient,
 		logAdminClient: logAdminClient,
 	}, nil
 }
@@ -289,7 +289,7 @@ func (s *CloudRunService) Close() error {
 		errs = append(errs, fmt.Errorf("failed to close run client: %w", err))
 	}
 
-	if err := s.loggingClient.Close(); err != nil {
+	if err := s.LoggingClient.Close(); err != nil {
 		errs = append(errs, fmt.Errorf("failed to close logging client: %w", err))
 	}
 

@@ -3,7 +3,7 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/labstack/echo/v4"
+	"github.com/gin-gonic/gin"
 	"github.com/stuartshay/gcp-automation-api/internal/models"
 )
 
@@ -25,35 +25,38 @@ import (
 // @Failure 400 {object} models.ErrorResponse
 // @Failure 500 {object} models.ErrorResponse
 // @Router /folders [post]
-func (h *Handler) CreateFolder(c echo.Context) error {
+func (h *Handler) CreateFolder(c *gin.Context) {
 	var req models.FolderRequest
-	if err := c.Bind(&req); err != nil {
-		return c.JSON(http.StatusBadRequest, models.ErrorResponse{
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{
 			Error:   "Invalid request format",
 			Message: err.Error(),
 			Code:    http.StatusBadRequest,
 		})
+		return
 	}
 
 	// Validate the request
 	if err := h.validator.Validate(&req); err != nil {
-		return c.JSON(http.StatusBadRequest, models.ErrorResponse{
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{
 			Error:   "Validation failed",
 			Message: err.Error(),
 			Code:    http.StatusBadRequest,
 		})
+		return
 	}
 
 	folder, err := h.gcpService.CreateFolder(&req)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, models.ErrorResponse{
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
 			Error:   "Failed to create folder",
 			Message: err.Error(),
 			Code:    http.StatusInternalServerError,
 		})
+		return
 	}
 
-	return c.JSON(http.StatusCreated, models.SuccessResponse{
+	c.JSON(http.StatusCreated, models.SuccessResponse{
 		Message: "Folder created successfully",
 		Data:    folder,
 	})
@@ -72,26 +75,28 @@ func (h *Handler) CreateFolder(c echo.Context) error {
 // @Failure 404 {object} models.ErrorResponse
 // @Failure 500 {object} models.ErrorResponse
 // @Router /folders/{id} [get]
-func (h *Handler) GetFolder(c echo.Context) error {
+func (h *Handler) GetFolder(c *gin.Context) {
 	folderID := c.Param("id")
 	if folderID == "" {
-		return c.JSON(http.StatusBadRequest, models.ErrorResponse{
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{
 			Error:   "Missing folder ID",
 			Message: "Folder ID is required",
 			Code:    http.StatusBadRequest,
 		})
+		return
 	}
 
 	folder, err := h.gcpService.GetFolder(folderID)
 	if err != nil {
-		return c.JSON(http.StatusNotFound, models.ErrorResponse{
+		c.JSON(http.StatusNotFound, models.ErrorResponse{
 			Error:   "Folder not found",
 			Message: err.Error(),
 			Code:    http.StatusNotFound,
 		})
+		return
 	}
 
-	return c.JSON(http.StatusOK, models.SuccessResponse{
+	c.JSON(http.StatusOK, models.SuccessResponse{
 		Message: "Folder retrieved successfully",
 		Data:    folder,
 	})
@@ -109,25 +114,27 @@ func (h *Handler) GetFolder(c echo.Context) error {
 // @Failure 400 {object} models.ErrorResponse
 // @Failure 500 {object} models.ErrorResponse
 // @Router /folders/{id} [delete]
-func (h *Handler) DeleteFolder(c echo.Context) error {
+func (h *Handler) DeleteFolder(c *gin.Context) {
 	folderID := c.Param("id")
 	if folderID == "" {
-		return c.JSON(http.StatusBadRequest, models.ErrorResponse{
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{
 			Error:   "Missing folder ID",
 			Message: "Folder ID is required",
 			Code:    http.StatusBadRequest,
 		})
+		return
 	}
 
 	if err := h.gcpService.DeleteFolder(folderID); err != nil {
-		return c.JSON(http.StatusInternalServerError, models.ErrorResponse{
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
 			Error:   "Failed to delete folder",
 			Message: err.Error(),
 			Code:    http.StatusInternalServerError,
 		})
+		return
 	}
 
-	return c.JSON(http.StatusOK, models.SuccessResponse{
+	c.JSON(http.StatusOK, models.SuccessResponse{
 		Message: "Folder deleted successfully",
 	})
 }

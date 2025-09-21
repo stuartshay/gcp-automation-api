@@ -3,13 +3,13 @@ package middleware
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
-	echojwt "github.com/labstack/echo-jwt/v4"
-	"github.com/labstack/echo/v4"
 	"google.golang.org/api/idtoken"
 
 	"github.com/stuartshay/gcp-automation-api/internal/config"
@@ -28,31 +28,44 @@ func NewAuthMiddleware(cfg *config.Config) *AuthMiddleware {
 	}
 }
 
-// JWTMiddleware returns Echo JWT middleware configured for our application
-func (am *AuthMiddleware) JWTMiddleware() echo.MiddlewareFunc {
-	return echojwt.WithConfig(echojwt.Config{
-		SigningKey:  []byte(am.config.JWTSecret),
-		TokenLookup: "header:Authorization:Bearer ,query:token",
-		NewClaimsFunc: func(c echo.Context) jwt.Claims {
-			return &models.JWTClaims{}
-		},
-		ErrorHandler: func(c echo.Context, err error) error {
-			return c.JSON(http.StatusUnauthorized, models.ErrorResponse{
+// GinJWTMiddleware returns Gin middleware for JWT authentication
+func (am *AuthMiddleware) GinJWTMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		log.Println("DEBUG: GinJWTMiddleware invoked for", c.Request.URL.Path)
+		tokenString := c.GetHeader("Authorization")
+		if tokenString == "" {
+			log.Println("DEBUG: Missing Authorization header, aborting with 401")
+			c.AbortWithStatusJSON(http.StatusUnauthorized, models.ErrorResponse{
 				Error:   "unauthorized",
-				Message: "Invalid or missing JWT token",
+				Message: "missing authorization header",
 				Code:    http.StatusUnauthorized,
 			})
-		},
-		SuccessHandler: func(c echo.Context) {
-			// Extract user information from JWT claims and add to context
-			token := c.Get("user").(*jwt.Token)
-			if claims, ok := token.Claims.(*models.JWTClaims); ok && token.Valid {
-				c.Set("user_id", claims.UserID)
-				c.Set("user_email", claims.Email)
-				c.Set("user_name", claims.Name)
+			return
+		}
+		tokenString = strings.TrimPrefix(tokenString, "Bearer ")
+		token, err := jwt.ParseWithClaims(tokenString, &models.JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
+			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+				return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 			}
-		},
-	})
+			return []byte(am.config.JWTSecret), nil
+		})
+		if err != nil || !token.Valid {
+			log.Printf("DEBUG: Invalid JWT token: %v, aborting with 401", err)
+			c.AbortWithStatusJSON(http.StatusUnauthorized, models.ErrorResponse{
+				Error:   "unauthorized",
+				Message: "invalid or missing jwt token",
+				Code:    http.StatusUnauthorized,
+			})
+			return
+		}
+		if claims, ok := token.Claims.(*models.JWTClaims); ok {
+			c.Set("user_id", claims.UserID)
+			c.Set("user_email", claims.Email)
+			c.Set("user_name", claims.Name)
+		}
+		log.Println("DEBUG: JWT valid, proceeding to next handler")
+		c.Next()
+	}
 }
 
 // GenerateJWT generates a new JWT token with user information
@@ -163,36 +176,29 @@ func (am *AuthMiddleware) ValidateGoogleIDToken(ctx context.Context, idToken str
 	return userInfo, nil
 }
 
-// RequireAuth is a convenience function that returns the JWT middleware
-func (am *AuthMiddleware) RequireAuth() echo.MiddlewareFunc {
-	return am.JWTMiddleware()
+// RequireAuth returns Gin JWT middleware
+func (am *AuthMiddleware) RequireAuth() gin.HandlerFunc {
+	return am.GinJWTMiddleware()
 }
 
-// GetUserFromContext extracts user information from Echo context
-func GetUserFromContext(c echo.Context) (userID, email, name string) {
-	if uid, ok := c.Get("user_id").(string); ok {
-		userID = uid
+// GetUserFromContext extracts user information from Gin context
+func GetUserFromContext(c *gin.Context) (userID, email, name string) {
+	if val, exists := c.Get("user_id"); exists {
+		if uid, ok := val.(string); ok {
+			userID = uid
+		}
 	}
-	if em, ok := c.Get("user_email").(string); ok {
-		email = em
+	if val, exists := c.Get("user_email"); exists {
+		if em, ok := val.(string); ok {
+			email = em
+		}
 	}
-	if nm, ok := c.Get("user_name").(string); ok {
-		name = nm
+	if val, exists := c.Get("user_name"); exists {
+		if nm, ok := val.(string); ok {
+			name = nm
+		}
 	}
 	return userID, email, name
 }
 
-// SkipAuth returns a middleware that skips authentication for specific paths
-func SkipAuth(paths ...string) echo.MiddlewareFunc {
-	return echojwt.WithConfig(echojwt.Config{
-		Skipper: func(c echo.Context) bool {
-			path := c.Request().URL.Path
-			for _, skipPath := range paths {
-				if strings.HasPrefix(path, skipPath) {
-					return true
-				}
-			}
-			return false
-		},
-	})
-}
+// SkipAuth is not implemented for Gin. Use route group configuration for public endpoints.

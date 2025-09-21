@@ -15,6 +15,7 @@
 //
 // @contact.name API Support
 // @contact.url http://www.swagger.io/support
+
 // @contact.email support@swagger.io
 //
 // @license.name MIT
@@ -43,13 +44,12 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
+	"cloud.google.com/go/logging"
+	"github.com/gin-gonic/gin"
 	"github.com/stuartshay/gcp-automation-api/internal/config"
 	"github.com/stuartshay/gcp-automation-api/internal/handlers"
 	authmiddleware "github.com/stuartshay/gcp-automation-api/internal/middleware"
 	"github.com/stuartshay/gcp-automation-api/internal/services"
-	"gopkg.in/yaml.v3"
 )
 
 // setupLogging configures logging to write to both file and console
@@ -104,6 +104,11 @@ func main() {
 	// Setup router
 	router := setupRouter(handler, authService, cfg)
 
+	// Debug: print all registered routes
+	for _, ri := range router.Routes() {
+		log.Printf("Registered route: %s %s -> %s", ri.Method, ri.Path, ri.Handler)
+	}
+
 	// Create HTTP server
 	srv := &http.Server{
 		Addr:              fmt.Sprintf(":%s", cfg.Port),
@@ -139,76 +144,84 @@ func main() {
 	log.Println("Server exited")
 }
 
-func setupRouter(handler *handlers.Handler, authService *services.AuthService, cfg *config.Config) *echo.Echo {
-	// Create Echo instance
-	e := echo.New()
-
-	// Middleware
-	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
-	e.Use(middleware.CORS())
+func setupRouter(handler *handlers.Handler, authService *services.AuthService, cfg *config.Config) *gin.Engine {
+	r := gin.New()
+	r.Use(gin.Logger())
+	r.Use(gin.Recovery())
 
 	// Custom logging middleware to write to our log file
 	if cfg.LogFile != "" {
 		logFile, err := os.OpenFile(cfg.LogFile, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0600)
 		if err == nil {
-			e.Logger.SetOutput(io.MultiWriter(os.Stdout, logFile))
+			gin.DefaultWriter = io.MultiWriter(os.Stdout, logFile)
 		}
 	}
 
+	// GCP logging client for middleware (inject as Logger interface)
+	var logger handlers.Logger
+	{
+		loggingClient, err := logging.NewClient(context.Background(), cfg.GCPProjectID)
+		if err != nil {
+			log.Fatalf("Failed to initialize GCP logging client: %v", err)
+		}
+		cloudLogger := loggingClient.Logger("cloudrun-api")
+		logger = &handlers.LoggerAdapter{Logger: cloudLogger}
+	}
+
+	// Gin middleware to inject GCP logger as Logger interface
+	r.Use(func(c *gin.Context) {
+		c.Set("logger", logger)
+		c.Next()
+	})
+
+	// Serve static files from /static directory
+	r.Static("/static", "./static")
+
 	// Custom Swagger UI endpoint
-	e.GET("/swagger/", func(c echo.Context) error {
-		return c.File("static/swagger-ui.html")
+	r.GET("/swagger/", func(c *gin.Context) {
+		c.File("static/swagger-ui.html")
+	})
+
+	// Serve OpenAPI spec for Swagger UI
+	r.GET("/swagger/doc.json", func(c *gin.Context) {
+		log.Println("DEBUG: /swagger/doc.json handler invoked")
+		absPath, err := filepath.Abs("static/doc.json")
+		if err != nil {
+			log.Printf("ERROR: Failed to resolve doc.json path: %v", err)
+			c.String(http.StatusInternalServerError, "Failed to resolve doc.json path")
+			return
+		}
+		log.Printf("DEBUG: Serving file at %s", absPath)
+		c.File(absPath)
 	})
 
 	// Redirect common swagger URLs to the correct path
-	e.GET("/swagger", func(c echo.Context) error {
-		return c.Redirect(http.StatusMovedPermanently, "/swagger/")
+	r.GET("/swagger", func(c *gin.Context) {
+		c.Redirect(http.StatusMovedPermanently, "/swagger/")
 	})
-	e.GET("/swagger/index.html", func(c echo.Context) error {
-		return c.Redirect(http.StatusMovedPermanently, "/swagger/")
-	})
-
-	// Swagger JSON endpoint
-	e.GET("/swagger/doc.json", func(c echo.Context) error {
-		// Read the OpenAPI 3.0 specification file directly (contains proper examples)
-		openapiFile := "api/v1/openapi.yaml"
-		openapiData, err := os.ReadFile(openapiFile)
-		if err != nil {
-			log.Printf("Failed to read openapi.yaml file: %v", err)
-			return echo.NewHTTPError(http.StatusInternalServerError, "Failed to load swagger documentation")
-		}
-
-		// Parse the YAML content
-		var openapiSpec map[string]interface{}
-		if err := yaml.Unmarshal(openapiData, &openapiSpec); err != nil {
-			log.Printf("Failed to unmarshal openapi.yaml file: %v", err)
-			return echo.NewHTTPError(http.StatusInternalServerError, "Invalid openapi.yaml format")
-		}
-
-		// Update servers to match configuration
-		servers := []map[string]interface{}{
-			{
-				"url":         fmt.Sprintf("%s://%s", cfg.SwaggerScheme, cfg.SwaggerHost),
-				"description": "API Server",
-			},
-		}
-		openapiSpec["servers"] = servers
-
-		// Return the OpenAPI 3.0 specification with examples intact
-		return c.JSON(http.StatusOK, openapiSpec)
+	r.GET("/swagger/index.html", func(c *gin.Context) {
+		c.Redirect(http.StatusMovedPermanently, "/swagger/")
 	})
 
 	// Health check endpoint (no authentication required)
-	e.GET("/health", func(c echo.Context) error {
-		return c.JSON(http.StatusOK, map[string]string{"status": "healthy"})
+	r.GET("/health", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{"status": "healthy"})
+	})
+
+	// NoRoute handler: return 404 for unregistered routes only
+	r.NoRoute(func(c *gin.Context) {
+		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{
+			"error":   "not_found",
+			"message": "route not found",
+			"code":    http.StatusNotFound,
+		})
 	})
 
 	// Create authentication middleware
 	authMiddleware := authmiddleware.NewAuthMiddleware(cfg)
 
 	// API v1 routes (all require authentication)
-	v1 := e.Group("/api/v1")
+	v1 := r.Group("/api/v1")
 	v1.Use(authMiddleware.RequireAuth())
 	{
 		// Project endpoints
@@ -236,5 +249,5 @@ func setupRouter(handler *handlers.Handler, authService *services.AuthService, c
 		}
 	}
 
-	return e
+	return r
 }

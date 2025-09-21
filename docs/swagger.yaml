@@ -1,6 +1,6 @@
 basePath: /api/v1
 definitions:
-  github_com_stuartshay_gcp-automation-api_internal_models.BucketRequest:
+  models.BucketRequest:
     properties:
       kms_key_name:
         description: Phase 1 Advanced Options - Security & Compliance
@@ -24,7 +24,7 @@ definitions:
         example: enforced
         type: string
       retention_policy:
-        $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.RetentionPolicy"
+        $ref: "#/definitions/models.RetentionPolicy"
       storage_class:
         enum:
           - STANDARD
@@ -43,7 +43,7 @@ definitions:
       - location
       - name
     type: object
-  github_com_stuartshay_gcp-automation-api_internal_models.BucketResponse:
+  models.BucketResponse:
     properties:
       create_time:
         type: string
@@ -61,7 +61,7 @@ definitions:
       public_access_prevention:
         type: string
       retention_policy:
-        $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.RetentionPolicy"
+        $ref: "#/definitions/models.RetentionPolicy"
       self_link:
         type: string
       storage_class:
@@ -73,17 +73,17 @@ definitions:
       versioning:
         type: boolean
     type: object
-  github_com_stuartshay_gcp-automation-api_internal_models.CloudRunLoggingConfigRequest:
+  models.CloudRunLoggingConfigRequest:
     properties:
       alerts:
         items:
-          $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.LogAlert"
+          $ref: "#/definitions/models.LogAlert"
         type: array
       logging_config:
-        $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.LoggingConfig"
+        $ref: "#/definitions/models.LoggingConfig"
       metrics:
         items:
-          $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.LogMetric"
+          $ref: "#/definitions/models.LogMetric"
         type: array
       region:
         example: us-central1
@@ -96,23 +96,23 @@ definitions:
       - region
       - service_name
     type: object
-  github_com_stuartshay_gcp-automation-api_internal_models.CloudRunLoggingConfigResponse:
+  models.CloudRunLoggingConfigResponse:
     properties:
       alerts:
         items:
-          $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.LogAlertResponse"
+          $ref: "#/definitions/models.LogAlertResponse"
         type: array
       configured_at:
         example: "2025-09-20T10:00:00Z"
         type: string
       logging_config:
-        $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.LoggingConfig"
+        $ref: "#/definitions/models.LoggingConfig"
       logging_url:
         example: https://console.cloud.google.com/logs/query
         type: string
       metrics:
         items:
-          $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.LogMetricResponse"
+          $ref: "#/definitions/models.LogMetricResponse"
         type: array
       region:
         example: us-central1
@@ -124,24 +124,24 @@ definitions:
         example: configured
         type: string
     type: object
-  github_com_stuartshay_gcp-automation-api_internal_models.CloudRunLoggingConfigUpdateRequest:
+  models.CloudRunLoggingConfigUpdateRequest:
     properties:
       alerts:
         items:
-          $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.LogAlert"
+          $ref: "#/definitions/models.LogAlert"
         type: array
       logging_config:
-        $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.LoggingConfig"
+        $ref: "#/definitions/models.LoggingConfig"
       metrics:
         items:
-          $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.LogMetric"
+          $ref: "#/definitions/models.LogMetric"
         type: array
     type: object
-  github_com_stuartshay_gcp-automation-api_internal_models.CloudRunLogsResponse:
+  models.CloudRunLogsResponse:
     properties:
       logs:
         items:
-          $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.LogEntry"
+          $ref: "#/definitions/models.LogEntry"
         type: array
       next_page_token:
         example: abc123
@@ -156,7 +156,7 @@ definitions:
         example: 150
         type: integer
     type: object
-  github_com_stuartshay_gcp-automation-api_internal_models.CloudRunServiceInfo:
+  models.CloudRunServiceInfo:
     properties:
       created_at:
         example: "2025-09-20T09:00:00Z"
@@ -181,7 +181,7 @@ definitions:
         example: https://my-api-service-hash-uc.a.run.app
         type: string
     type: object
-  github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse:
+  models.ErrorResponse:
     properties:
       code:
         type: integer
@@ -190,7 +190,7 @@ definitions:
       message:
         type: string
     type: object
-  github_com_stuartshay_gcp-automation-api_internal_models.ExportDestination:
+  models.ExportDestination:
     properties:
       bucket:
         example: logs-bucket
@@ -219,7 +219,7 @@ definitions:
     required:
       - type
     type: object
-  github_com_stuartshay_gcp-automation-api_internal_models.FolderRequest:
+  models.FolderRequest:
     properties:
       display_name:
         example: Development Environment
@@ -241,7 +241,7 @@ definitions:
       - parent_id
       - parent_type
     type: object
-  github_com_stuartshay_gcp-automation-api_internal_models.FolderResponse:
+  models.FolderResponse:
     properties:
       create_time:
         type: string
@@ -258,7 +258,7 @@ definitions:
       update_time:
         type: string
     type: object
-  github_com_stuartshay_gcp-automation-api_internal_models.HTTPRequest:
+  models.HTTPRequest:
     properties:
       latency:
         example: 0.123s
@@ -282,7 +282,7 @@ definitions:
         example: curl/7.68.0
         type: string
     type: object
-  github_com_stuartshay_gcp-automation-api_internal_models.LogAlert:
+  models.LogAlert:
     properties:
       condition:
         example: error_rate > 0.05
@@ -306,7 +306,7 @@ definitions:
       - condition
       - name
     type: object
-  github_com_stuartshay_gcp-automation-api_internal_models.LogAlertResponse:
+  models.LogAlertResponse:
     properties:
       alert_url:
         example: https://console.cloud.google.com/monitoring/alerting
@@ -331,10 +331,10 @@ definitions:
           type: string
         type: array
     type: object
-  github_com_stuartshay_gcp-automation-api_internal_models.LogEntry:
+  models.LogEntry:
     properties:
       http_request:
-        $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.HTTPRequest"
+        $ref: "#/definitions/models.HTTPRequest"
       labels:
         additionalProperties:
           type: string
@@ -343,7 +343,7 @@ definitions:
         example: Request processed successfully
         type: string
       resource:
-        $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.LogResource"
+        $ref: "#/definitions/models.LogResource"
       severity:
         example: INFO
         type: string
@@ -360,7 +360,7 @@ definitions:
         example: projects/my-project/traces/12345
         type: string
     type: object
-  github_com_stuartshay_gcp-automation-api_internal_models.LogMetric:
+  models.LogMetric:
     properties:
       description:
         example: Rate of error logs
@@ -384,7 +384,7 @@ definitions:
       - filter
       - name
     type: object
-  github_com_stuartshay_gcp-automation-api_internal_models.LogMetricResponse:
+  models.LogMetricResponse:
     properties:
       created_at:
         example: "2025-09-20T10:00:00Z"
@@ -409,7 +409,7 @@ definitions:
         example: counter
         type: string
     type: object
-  github_com_stuartshay_gcp-automation-api_internal_models.LogResource:
+  models.LogResource:
     properties:
       configuration_name:
         example: my-api-service
@@ -431,7 +431,7 @@ definitions:
         example: cloud_run_revision
         type: string
     type: object
-  github_com_stuartshay_gcp-automation-api_internal_models.LoggingConfig:
+  models.LoggingConfig:
     properties:
       custom_fields:
         additionalProperties:
@@ -442,7 +442,7 @@ definitions:
         type: object
       export_destinations:
         items:
-          $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ExportDestination"
+          $ref: "#/definitions/models.ExportDestination"
         type: array
       log_level:
         example: INFO
@@ -457,7 +457,7 @@ definitions:
         example: true
         type: boolean
     type: object
-  github_com_stuartshay_gcp-automation-api_internal_models.ProjectRequest:
+  models.ProjectRequest:
     properties:
       display_name:
         example: My Development Project
@@ -485,7 +485,7 @@ definitions:
       - display_name
       - project_id
     type: object
-  github_com_stuartshay_gcp-automation-api_internal_models.ProjectResponse:
+  models.ProjectResponse:
     properties:
       create_time:
         type: string
@@ -508,7 +508,7 @@ definitions:
       update_time:
         type: string
     type: object
-  github_com_stuartshay_gcp-automation-api_internal_models.RetentionPolicy:
+  models.RetentionPolicy:
     properties:
       is_locked:
         example: false
@@ -520,7 +520,7 @@ definitions:
         minimum: 1
         type: integer
     type: object
-  github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse:
+  models.SuccessResponse:
     properties:
       data: {}
       message:
@@ -560,19 +560,19 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.CloudRunLoggingConfigResponse"
+            $ref: "#/definitions/models.CloudRunLoggingConfigResponse"
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            $ref: "#/definitions/models.ErrorResponse"
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            $ref: "#/definitions/models.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            $ref: "#/definitions/models.ErrorResponse"
       summary: Get Cloud Run logging configuration
       tags:
         - cloudrun
@@ -596,26 +596,26 @@ paths:
           name: request
           required: true
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.CloudRunLoggingConfigUpdateRequest"
+            $ref: "#/definitions/models.CloudRunLoggingConfigUpdateRequest"
       produces:
         - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.CloudRunLoggingConfigResponse"
+            $ref: "#/definitions/models.CloudRunLoggingConfigResponse"
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            $ref: "#/definitions/models.ErrorResponse"
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            $ref: "#/definitions/models.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            $ref: "#/definitions/models.ErrorResponse"
       summary: Update Cloud Run logging configuration
       tags:
         - cloudrun
@@ -632,22 +632,22 @@ paths:
           name: request
           required: true
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.CloudRunLoggingConfigRequest"
+            $ref: "#/definitions/models.CloudRunLoggingConfigRequest"
       produces:
         - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.CloudRunLoggingConfigResponse"
+            $ref: "#/definitions/models.CloudRunLoggingConfigResponse"
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            $ref: "#/definitions/models.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            $ref: "#/definitions/models.ErrorResponse"
       summary: Configure Cloud Run logging
       tags:
         - cloudrun
@@ -689,19 +689,19 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.CloudRunLogsResponse"
+            $ref: "#/definitions/models.CloudRunLogsResponse"
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            $ref: "#/definitions/models.ErrorResponse"
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            $ref: "#/definitions/models.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            $ref: "#/definitions/models.ErrorResponse"
       summary: Get Cloud Run logs
       tags:
         - cloudrun
@@ -725,19 +725,19 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.CloudRunServiceInfo"
+            $ref: "#/definitions/models.CloudRunServiceInfo"
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            $ref: "#/definitions/models.ErrorResponse"
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            $ref: "#/definitions/models.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            $ref: "#/definitions/models.ErrorResponse"
       summary: Get Cloud Run service information
       tags:
         - cloudrun
@@ -759,7 +759,7 @@ paths:
           name: bucket
           required: true
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.BucketRequest"
+            $ref: "#/definitions/models.BucketRequest"
       produces:
         - application/json
       responses:
@@ -767,19 +767,19 @@ paths:
           description: Created
           schema:
             allOf:
-              - $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
+              - $ref: "#/definitions/models.SuccessResponse"
               - properties:
                   data:
-                    $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.BucketResponse"
+                    $ref: "#/definitions/models.BucketResponse"
                 type: object
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            $ref: "#/definitions/models.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            $ref: "#/definitions/models.ErrorResponse"
       security:
         - BearerAuth: []
       summary: Create a new Cloud Storage bucket
@@ -802,15 +802,15 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
+            $ref: "#/definitions/models.SuccessResponse"
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            $ref: "#/definitions/models.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            $ref: "#/definitions/models.ErrorResponse"
       security:
         - BearerAuth: []
       summary: Delete a Cloud Storage bucket
@@ -835,23 +835,23 @@ paths:
           description: OK
           schema:
             allOf:
-              - $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
+              - $ref: "#/definitions/models.SuccessResponse"
               - properties:
                   data:
-                    $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.BucketResponse"
+                    $ref: "#/definitions/models.BucketResponse"
                 type: object
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            $ref: "#/definitions/models.ErrorResponse"
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            $ref: "#/definitions/models.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            $ref: "#/definitions/models.ErrorResponse"
       security:
         - BearerAuth: []
       summary: Get a Cloud Storage bucket by name
@@ -875,7 +875,7 @@ paths:
           name: folder
           required: true
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.FolderRequest"
+            $ref: "#/definitions/models.FolderRequest"
       produces:
         - application/json
       responses:
@@ -883,19 +883,19 @@ paths:
           description: Created
           schema:
             allOf:
-              - $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
+              - $ref: "#/definitions/models.SuccessResponse"
               - properties:
                   data:
-                    $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.FolderResponse"
+                    $ref: "#/definitions/models.FolderResponse"
                 type: object
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            $ref: "#/definitions/models.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            $ref: "#/definitions/models.ErrorResponse"
       security:
         - BearerAuth: []
       summary: Create a new GCP folder
@@ -918,15 +918,15 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
+            $ref: "#/definitions/models.SuccessResponse"
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            $ref: "#/definitions/models.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            $ref: "#/definitions/models.ErrorResponse"
       security:
         - BearerAuth: []
       summary: Delete a GCP folder
@@ -951,23 +951,23 @@ paths:
           description: OK
           schema:
             allOf:
-              - $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
+              - $ref: "#/definitions/models.SuccessResponse"
               - properties:
                   data:
-                    $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.FolderResponse"
+                    $ref: "#/definitions/models.FolderResponse"
                 type: object
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            $ref: "#/definitions/models.ErrorResponse"
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            $ref: "#/definitions/models.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            $ref: "#/definitions/models.ErrorResponse"
       security:
         - BearerAuth: []
       summary: Get a GCP folder by ID
@@ -991,7 +991,7 @@ paths:
           name: project
           required: true
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ProjectRequest"
+            $ref: "#/definitions/models.ProjectRequest"
       produces:
         - application/json
       responses:
@@ -999,19 +999,19 @@ paths:
           description: Created
           schema:
             allOf:
-              - $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
+              - $ref: "#/definitions/models.SuccessResponse"
               - properties:
                   data:
-                    $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ProjectResponse"
+                    $ref: "#/definitions/models.ProjectResponse"
                 type: object
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            $ref: "#/definitions/models.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            $ref: "#/definitions/models.ErrorResponse"
       security:
         - BearerAuth: []
       summary: Create a new GCP project
@@ -1034,15 +1034,15 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
+            $ref: "#/definitions/models.SuccessResponse"
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            $ref: "#/definitions/models.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            $ref: "#/definitions/models.ErrorResponse"
       security:
         - BearerAuth: []
       summary: Delete a GCP project
@@ -1067,23 +1067,23 @@ paths:
           description: OK
           schema:
             allOf:
-              - $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
+              - $ref: "#/definitions/models.SuccessResponse"
               - properties:
                   data:
-                    $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ProjectResponse"
+                    $ref: "#/definitions/models.ProjectResponse"
                 type: object
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            $ref: "#/definitions/models.ErrorResponse"
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            $ref: "#/definitions/models.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+            $ref: "#/definitions/models.ErrorResponse"
       security:
         - BearerAuth: []
       summary: Get a GCP project by ID

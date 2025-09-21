@@ -3,7 +3,7 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/labstack/echo/v4"
+	"github.com/gin-gonic/gin"
 	"github.com/stuartshay/gcp-automation-api/internal/models"
 )
 
@@ -25,35 +25,38 @@ import (
 // @Failure 400 {object} models.ErrorResponse
 // @Failure 500 {object} models.ErrorResponse
 // @Router /projects [post]
-func (h *Handler) CreateProject(c echo.Context) error {
+func (h *Handler) CreateProject(c *gin.Context) {
 	var req models.ProjectRequest
-	if err := c.Bind(&req); err != nil {
-		return c.JSON(http.StatusBadRequest, models.ErrorResponse{
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{
 			Error:   "Invalid request format",
 			Message: err.Error(),
 			Code:    http.StatusBadRequest,
 		})
+		return
 	}
 
 	// Validate the request
 	if err := h.validator.Validate(&req); err != nil {
-		return c.JSON(http.StatusBadRequest, models.ErrorResponse{
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{
 			Error:   "Validation failed",
 			Message: err.Error(),
 			Code:    http.StatusBadRequest,
 		})
+		return
 	}
 
 	project, err := h.gcpService.CreateProject(&req)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, models.ErrorResponse{
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
 			Error:   "Failed to create project",
 			Message: err.Error(),
 			Code:    http.StatusInternalServerError,
 		})
+		return
 	}
 
-	return c.JSON(http.StatusCreated, models.SuccessResponse{
+	c.JSON(http.StatusCreated, models.SuccessResponse{
 		Message: "Project created successfully",
 		Data:    project,
 	})
@@ -72,26 +75,28 @@ func (h *Handler) CreateProject(c echo.Context) error {
 // @Failure 404 {object} models.ErrorResponse
 // @Failure 500 {object} models.ErrorResponse
 // @Router /projects/{id} [get]
-func (h *Handler) GetProject(c echo.Context) error {
+func (h *Handler) GetProject(c *gin.Context) {
 	projectID := c.Param("id")
 	if projectID == "" {
-		return c.JSON(http.StatusBadRequest, models.ErrorResponse{
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{
 			Error:   "Missing project ID",
 			Message: "Project ID is required",
 			Code:    http.StatusBadRequest,
 		})
+		return
 	}
 
 	project, err := h.gcpService.GetProject(projectID)
 	if err != nil {
-		return c.JSON(http.StatusNotFound, models.ErrorResponse{
+		c.JSON(http.StatusNotFound, models.ErrorResponse{
 			Error:   "Project not found",
 			Message: err.Error(),
 			Code:    http.StatusNotFound,
 		})
+		return
 	}
 
-	return c.JSON(http.StatusOK, models.SuccessResponse{
+	c.JSON(http.StatusOK, models.SuccessResponse{
 		Message: "Project retrieved successfully",
 		Data:    project,
 	})
@@ -109,25 +114,27 @@ func (h *Handler) GetProject(c echo.Context) error {
 // @Failure 400 {object} models.ErrorResponse
 // @Failure 500 {object} models.ErrorResponse
 // @Router /projects/{id} [delete]
-func (h *Handler) DeleteProject(c echo.Context) error {
+func (h *Handler) DeleteProject(c *gin.Context) {
 	projectID := c.Param("id")
 	if projectID == "" {
-		return c.JSON(http.StatusBadRequest, models.ErrorResponse{
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{
 			Error:   "Missing project ID",
 			Message: "Project ID is required",
 			Code:    http.StatusBadRequest,
 		})
+		return
 	}
 
 	if err := h.gcpService.DeleteProject(projectID); err != nil {
-		return c.JSON(http.StatusInternalServerError, models.ErrorResponse{
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
 			Error:   "Failed to delete project",
 			Message: err.Error(),
 			Code:    http.StatusInternalServerError,
 		})
+		return
 	}
 
-	return c.JSON(http.StatusOK, models.SuccessResponse{
+	c.JSON(http.StatusOK, models.SuccessResponse{
 		Message: "Project deleted successfully",
 	})
 }

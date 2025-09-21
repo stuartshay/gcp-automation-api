@@ -44,7 +44,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.CloudRunLoggingConfigRequest"
+                            "$ref": "#/definitions/models.CloudRunLoggingConfigRequest"
                         }
                     }
                 ],
@@ -52,19 +52,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.CloudRunLoggingConfigResponse"
+                            "$ref": "#/definitions/models.CloudRunLoggingConfigResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     }
                 }
@@ -100,25 +100,25 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.CloudRunLoggingConfigResponse"
+                            "$ref": "#/definitions/models.CloudRunLoggingConfigResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     }
                 }
@@ -156,7 +156,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.CloudRunLoggingConfigUpdateRequest"
+                            "$ref": "#/definitions/models.CloudRunLoggingConfigUpdateRequest"
                         }
                     }
                 ],
@@ -164,25 +164,25 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.CloudRunLoggingConfigResponse"
+                            "$ref": "#/definitions/models.CloudRunLoggingConfigResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     }
                 }
@@ -242,25 +242,25 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.CloudRunLogsResponse"
+                            "$ref": "#/definitions/models.CloudRunLogsResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     }
                 }
@@ -296,25 +296,25 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.CloudRunServiceInfo"
+                            "$ref": "#/definitions/models.CloudRunServiceInfo"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     }
                 }
@@ -345,7 +345,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.BucketRequest"
+                            "$ref": "#/definitions/models.BucketRequest"
                         }
                     }
                 ],
@@ -355,13 +355,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
+                                    "$ref": "#/definitions/models.SuccessResponse"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.BucketResponse"
+                                            "$ref": "#/definitions/models.BucketResponse"
                                         }
                                     }
                                 }
@@ -371,13 +371,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     }
                 }
@@ -416,13 +416,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
+                                    "$ref": "#/definitions/models.SuccessResponse"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.BucketResponse"
+                                            "$ref": "#/definitions/models.BucketResponse"
                                         }
                                     }
                                 }
@@ -432,19 +432,19 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     }
                 }
@@ -479,19 +479,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
+                            "$ref": "#/definitions/models.SuccessResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     }
                 }
@@ -522,7 +522,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.FolderRequest"
+                            "$ref": "#/definitions/models.FolderRequest"
                         }
                     }
                 ],
@@ -532,13 +532,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
+                                    "$ref": "#/definitions/models.SuccessResponse"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.FolderResponse"
+                                            "$ref": "#/definitions/models.FolderResponse"
                                         }
                                     }
                                 }
@@ -548,13 +548,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     }
                 }
@@ -593,13 +593,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
+                                    "$ref": "#/definitions/models.SuccessResponse"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.FolderResponse"
+                                            "$ref": "#/definitions/models.FolderResponse"
                                         }
                                     }
                                 }
@@ -609,19 +609,19 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     }
                 }
@@ -656,19 +656,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
+                            "$ref": "#/definitions/models.SuccessResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     }
                 }
@@ -699,7 +699,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ProjectRequest"
+                            "$ref": "#/definitions/models.ProjectRequest"
                         }
                     }
                 ],
@@ -709,13 +709,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
+                                    "$ref": "#/definitions/models.SuccessResponse"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ProjectResponse"
+                                            "$ref": "#/definitions/models.ProjectResponse"
                                         }
                                     }
                                 }
@@ -725,13 +725,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     }
                 }
@@ -770,13 +770,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
+                                    "$ref": "#/definitions/models.SuccessResponse"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ProjectResponse"
+                                            "$ref": "#/definitions/models.ProjectResponse"
                                         }
                                     }
                                 }
@@ -786,19 +786,19 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     }
                 }
@@ -833,19 +833,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse"
+                            "$ref": "#/definitions/models.SuccessResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     }
                 }
@@ -853,7 +853,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "github_com_stuartshay_gcp-automation-api_internal_models.BucketRequest": {
+        "models.BucketRequest": {
             "type": "object",
             "required": [
                 "location",
@@ -889,7 +889,7 @@ const docTemplate = `{
                     "example": "enforced"
                 },
                 "retention_policy": {
-                    "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.RetentionPolicy"
+                    "$ref": "#/definitions/models.RetentionPolicy"
                 },
                 "storage_class": {
                     "type": "string",
@@ -911,7 +911,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_stuartshay_gcp-automation-api_internal_models.BucketResponse": {
+        "models.BucketResponse": {
             "type": "object",
             "properties": {
                 "create_time": {
@@ -937,7 +937,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "retention_policy": {
-                    "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.RetentionPolicy"
+                    "$ref": "#/definitions/models.RetentionPolicy"
                 },
                 "self_link": {
                     "type": "string"
@@ -956,7 +956,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_stuartshay_gcp-automation-api_internal_models.CloudRunLoggingConfigRequest": {
+        "models.CloudRunLoggingConfigRequest": {
             "type": "object",
             "required": [
                 "logging_config",
@@ -967,16 +967,16 @@ const docTemplate = `{
                 "alerts": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.LogAlert"
+                        "$ref": "#/definitions/models.LogAlert"
                     }
                 },
                 "logging_config": {
-                    "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.LoggingConfig"
+                    "$ref": "#/definitions/models.LoggingConfig"
                 },
                 "metrics": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.LogMetric"
+                        "$ref": "#/definitions/models.LogMetric"
                     }
                 },
                 "region": {
@@ -989,13 +989,13 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_stuartshay_gcp-automation-api_internal_models.CloudRunLoggingConfigResponse": {
+        "models.CloudRunLoggingConfigResponse": {
             "type": "object",
             "properties": {
                 "alerts": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.LogAlertResponse"
+                        "$ref": "#/definitions/models.LogAlertResponse"
                     }
                 },
                 "configured_at": {
@@ -1003,7 +1003,7 @@ const docTemplate = `{
                     "example": "2025-09-20T10:00:00Z"
                 },
                 "logging_config": {
-                    "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.LoggingConfig"
+                    "$ref": "#/definitions/models.LoggingConfig"
                 },
                 "logging_url": {
                     "type": "string",
@@ -1012,7 +1012,7 @@ const docTemplate = `{
                 "metrics": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.LogMetricResponse"
+                        "$ref": "#/definitions/models.LogMetricResponse"
                     }
                 },
                 "region": {
@@ -1029,33 +1029,33 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_stuartshay_gcp-automation-api_internal_models.CloudRunLoggingConfigUpdateRequest": {
+        "models.CloudRunLoggingConfigUpdateRequest": {
             "type": "object",
             "properties": {
                 "alerts": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.LogAlert"
+                        "$ref": "#/definitions/models.LogAlert"
                     }
                 },
                 "logging_config": {
-                    "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.LoggingConfig"
+                    "$ref": "#/definitions/models.LoggingConfig"
                 },
                 "metrics": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.LogMetric"
+                        "$ref": "#/definitions/models.LogMetric"
                     }
                 }
             }
         },
-        "github_com_stuartshay_gcp-automation-api_internal_models.CloudRunLogsResponse": {
+        "models.CloudRunLogsResponse": {
             "type": "object",
             "properties": {
                 "logs": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.LogEntry"
+                        "$ref": "#/definitions/models.LogEntry"
                     }
                 },
                 "next_page_token": {
@@ -1076,7 +1076,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_stuartshay_gcp-automation-api_internal_models.CloudRunServiceInfo": {
+        "models.CloudRunServiceInfo": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -1111,7 +1111,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_stuartshay_gcp-automation-api_internal_models.ErrorResponse": {
+        "models.ErrorResponse": {
             "type": "object",
             "properties": {
                 "code": {
@@ -1125,7 +1125,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_stuartshay_gcp-automation-api_internal_models.ExportDestination": {
+        "models.ExportDestination": {
             "type": "object",
             "required": [
                 "type"
@@ -1166,7 +1166,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_stuartshay_gcp-automation-api_internal_models.FolderRequest": {
+        "models.FolderRequest": {
             "type": "object",
             "required": [
                 "display_name",
@@ -1195,7 +1195,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_stuartshay_gcp-automation-api_internal_models.FolderResponse": {
+        "models.FolderResponse": {
             "type": "object",
             "properties": {
                 "create_time": {
@@ -1221,7 +1221,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_stuartshay_gcp-automation-api_internal_models.HTTPRequest": {
+        "models.HTTPRequest": {
             "type": "object",
             "properties": {
                 "latency": {
@@ -1254,7 +1254,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_stuartshay_gcp-automation-api_internal_models.LogAlert": {
+        "models.LogAlert": {
             "type": "object",
             "required": [
                 "condition",
@@ -1288,7 +1288,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_stuartshay_gcp-automation-api_internal_models.LogAlertResponse": {
+        "models.LogAlertResponse": {
             "type": "object",
             "properties": {
                 "alert_url": {
@@ -1323,11 +1323,11 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_stuartshay_gcp-automation-api_internal_models.LogEntry": {
+        "models.LogEntry": {
             "type": "object",
             "properties": {
                 "http_request": {
-                    "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.HTTPRequest"
+                    "$ref": "#/definitions/models.HTTPRequest"
                 },
                 "labels": {
                     "type": "object",
@@ -1340,7 +1340,7 @@ const docTemplate = `{
                     "example": "Request processed successfully"
                 },
                 "resource": {
-                    "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.LogResource"
+                    "$ref": "#/definitions/models.LogResource"
                 },
                 "severity": {
                     "type": "string",
@@ -1364,7 +1364,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_stuartshay_gcp-automation-api_internal_models.LogMetric": {
+        "models.LogMetric": {
             "type": "object",
             "required": [
                 "filter",
@@ -1398,7 +1398,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_stuartshay_gcp-automation-api_internal_models.LogMetricResponse": {
+        "models.LogMetricResponse": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -1433,7 +1433,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_stuartshay_gcp-automation-api_internal_models.LogResource": {
+        "models.LogResource": {
             "type": "object",
             "properties": {
                 "configuration_name": {
@@ -1464,7 +1464,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_stuartshay_gcp-automation-api_internal_models.LoggingConfig": {
+        "models.LoggingConfig": {
             "type": "object",
             "properties": {
                 "custom_fields": {
@@ -1480,7 +1480,7 @@ const docTemplate = `{
                 "export_destinations": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/github_com_stuartshay_gcp-automation-api_internal_models.ExportDestination"
+                        "$ref": "#/definitions/models.ExportDestination"
                     }
                 },
                 "log_level": {
@@ -1501,7 +1501,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_stuartshay_gcp-automation-api_internal_models.ProjectRequest": {
+        "models.ProjectRequest": {
             "type": "object",
             "required": [
                 "display_name",
@@ -1539,7 +1539,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_stuartshay_gcp-automation-api_internal_models.ProjectResponse": {
+        "models.ProjectResponse": {
             "type": "object",
             "properties": {
                 "create_time": {
@@ -1574,7 +1574,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_stuartshay_gcp-automation-api_internal_models.RetentionPolicy": {
+        "models.RetentionPolicy": {
             "type": "object",
             "properties": {
                 "is_locked": {
@@ -1590,7 +1590,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_stuartshay_gcp-automation-api_internal_models.SuccessResponse": {
+        "models.SuccessResponse": {
             "type": "object",
             "properties": {
                 "data": {},

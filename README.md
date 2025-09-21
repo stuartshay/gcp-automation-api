@@ -54,6 +54,11 @@ curl -H "Authorization: Bearer $TOKEN" http://localhost:8080/api/v1/projects
 See [CLI Authentication Documentation](./assets/docs/CLI_AUTHENTICATION.md) for complete
 authentication details.
 
+## Local Logging
+
+When running locally, all logs are written to `logs/app.log` by default. Check this file for API
+logs and errors.
+
 ## Quick Start
 
 ```bash

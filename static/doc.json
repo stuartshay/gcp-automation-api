@@ -1,0 +1,1225 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "GCP Automation API",
+    "description": "REST API for automating GCP resource management with JWT authentication",
+    "version": "1.0.0",
+    "contact": {
+      "name": "API Support",
+      "url": "https://github.com/stuartshay/gcp-automation-api"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://localhost:8080",
+      "description": "Development server"
+    },
+    {
+      "url": "https://gcp-automation-api-902997681858.us-central1.run.app",
+      "description": "Production server"
+    }
+  ],
+  "securityDefinitions": {
+    "BearerAuth": {
+      "type": "http",
+      "scheme": "bearer",
+      "bearerFormat": "JWT",
+      "description": "JWT token obtained from /auth/login endpoint"
+    }
+  },
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Health check",
+        "description": "Check if the service is healthy",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Service is healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "healthy"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "x-hidden": true,
+      "post": {
+        "summary": "Login with Google ID token",
+        "description": "Authenticate user with Google ID token and receive JWT access token",
+        "security": [],
+        "tags": [
+          "Authentication"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/LoginResponse"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/test-token": {
+      "x-hidden": true,
+      "post": {
+        "summary": "Generate test token (Development only)",
+        "description": "Generate a test JWT token for development and testing purposes",
+        "security": [],
+        "tags": [
+          "Authentication"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "user_id",
+                  "email",
+                  "name"
+                ],
+                "properties": {
+                  "user_id": {
+                    "type": "string",
+                    "example": "test-user-123"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "test@example.com"
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "Test User"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Test token generated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "access_token": {
+                              "type": "string"
+                            },
+                            "token_type": {
+                              "type": "string",
+                              "example": "Bearer"
+                            },
+                            "expires_in": {
+                              "type": "integer",
+                              "example": 86400
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not allowed in production",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/refresh": {
+      "x-hidden": true,
+      "post": {
+        "summary": "Refresh JWT token",
+        "description": "Refresh an existing JWT token to extend its expiration",
+        "tags": [
+          "Authentication"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Token refreshed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/LoginResponse"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/profile": {
+      "x-hidden": true,
+      "get": {
+        "summary": "Get user profile",
+        "description": "Get the current authenticated user's profile information",
+        "tags": [
+          "Authentication"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profile retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/GoogleUserInfo"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects": {
+      "post": {
+        "summary": "Create a GCP project",
+        "description": "Create a new Google Cloud Platform project with the specified parameters",
+        "tags": [
+          "Projects"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectRequest"
+              },
+              "examples": {
+                "basic": {
+                  "summary": "Basic Project Creation",
+                  "description": "Simple project creation with just ID and display name",
+                  "value": {
+                    "project_id": "my-simple-project-2024",
+                    "display_name": "My Simple Project"
+                  }
+                },
+                "advanced": {
+                  "summary": "Advanced Project Creation",
+                  "description": "Enterprise project with organization hierarchy, labels, and governance",
+                  "value": {
+                    "project_id": "enterprise-app-prod-2024",
+                    "display_name": "Enterprise Application - Production",
+                    "parent_id": "123456789012",
+                    "parent_type": "organization",
+                    "labels": {
+                      "environment": "production",
+                      "team": "backend",
+                      "cost-center": "engineering",
+                      "compliance": "sox"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Project created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{id}": {
+      "get": {
+        "summary": "Get a GCP project",
+        "description": "Retrieve details of a Google Cloud Platform project",
+        "tags": [
+          "Projects"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Project ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Project retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Project not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a GCP project",
+        "description": "Delete a Google Cloud Platform project",
+        "tags": [
+          "Projects"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Project ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Project deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Project not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/buckets": {
+      "post": {
+        "summary": "Create a GCS bucket",
+        "description": "Create a new Google Cloud Storage bucket with the specified parameters including advanced options for KMS encryption, retention policies, and access controls",
+        "tags": [
+          "Buckets"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BucketRequest"
+              },
+              "examples": {
+                "basic": {
+                  "summary": "Basic Bucket Creation",
+                  "description": "Simple bucket creation with minimal required fields",
+                  "value": {
+                    "name": "my-simple-storage-bucket",
+                    "location": "us-central1",
+                    "storage_class": "STANDARD"
+                  }
+                },
+                "advanced": {
+                  "summary": "Advanced Bucket Creation",
+                  "description": "Enterprise bucket with security features, labels, and compliance settings",
+                  "value": {
+                    "name": "my-enterprise-bucket-2024",
+                    "location": "us-central1",
+                    "storage_class": "STANDARD",
+                    "labels": {
+                      "environment": "production",
+                      "team": "platform",
+                      "cost-center": "engineering"
+                    },
+                    "versioning": true,
+                    "kms_key_name": "projects/my-project/locations/us-central1/keyRings/my-keyring/cryptoKeys/my-key",
+                    "retention_policy": {
+                      "retention_period_seconds": 7776000,
+                      "is_locked": false
+                    },
+                    "uniform_bucket_level_access": true,
+                    "public_access_prevention": "enforced"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Bucket created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/buckets/{name}": {
+      "get": {
+        "summary": "Get a GCS bucket",
+        "description": "Retrieve details of a Google Cloud Storage bucket",
+        "tags": [
+          "Buckets"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Bucket name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Bucket retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Bucket not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a GCS bucket",
+        "description": "Delete a Google Cloud Storage bucket",
+        "tags": [
+          "Buckets"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Bucket name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Bucket deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Bucket not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/folders": {
+      "post": {
+        "summary": "Create a GCP folder",
+        "description": "Create a new Google Cloud Platform folder with the specified parameters",
+        "tags": [
+          "Folders"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FolderRequest"
+              },
+              "examples": {
+                "basic": {
+                  "summary": "Basic Folder Creation",
+                  "description": "Simple folder under organization root",
+                  "value": {
+                    "display_name": "Development Environment",
+                    "parent_id": "123456789012",
+                    "parent_type": "organization"
+                  }
+                },
+                "advanced": {
+                  "summary": "Advanced Folder Creation",
+                  "description": "Nested folder structure for complex hierarchies",
+                  "value": {
+                    "display_name": "Production - North America Region",
+                    "parent_id": "987654321098",
+                    "parent_type": "folder"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Folder created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/folders/{id}": {
+      "get": {
+        "summary": "Get a GCP folder",
+        "description": "Retrieve details of a Google Cloud Platform folder",
+        "tags": [
+          "Folders"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Folder ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folder retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Folder not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a GCP folder",
+        "description": "Delete a Google Cloud Platform folder",
+        "tags": [
+          "Folders"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Folder ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folder deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Folder not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "JWT token obtained from /auth/login endpoint"
+      }
+    },
+    "schemas": {
+      "ProjectRequest": {
+        "type": "object",
+        "required": [
+          "project_id",
+          "display_name"
+        ],
+        "properties": {
+          "project_id": {
+            "type": "string",
+            "description": "Unique project ID",
+            "example": "my-project-123"
+          },
+          "display_name": {
+            "type": "string",
+            "description": "Human-readable project name",
+            "example": "My Project"
+          },
+          "parent_id": {
+            "type": "string",
+            "description": "Parent organization or folder ID",
+            "example": "123456789"
+          },
+          "parent_type": {
+            "type": "string",
+            "enum": [
+              "organization",
+              "folder"
+            ],
+            "description": "Type of parent resource",
+            "example": "organization"
+          },
+          "labels": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Key-value labels for the project",
+            "example": {
+              "environment": "production",
+              "team": "platform"
+            }
+          }
+        }
+      },
+      "FolderRequest": {
+        "type": "object",
+        "required": [
+          "display_name",
+          "parent_id",
+          "parent_type"
+        ],
+        "properties": {
+          "display_name": {
+            "type": "string",
+            "description": "Human-readable folder name",
+            "example": "My Folder"
+          },
+          "parent_id": {
+            "type": "string",
+            "description": "Parent organization or folder ID",
+            "example": "123456789"
+          },
+          "parent_type": {
+            "type": "string",
+            "enum": [
+              "organization",
+              "folder"
+            ],
+            "description": "Type of parent resource",
+            "example": "organization"
+          }
+        }
+      },
+      "BucketRequest": {
+        "type": "object",
+        "required": [
+          "name",
+          "location"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Bucket name",
+            "example": "my-storage-bucket"
+          },
+          "location": {
+            "type": "string",
+            "description": "Bucket location",
+            "example": "us-central1"
+          },
+          "storage_class": {
+            "type": "string",
+            "enum": [
+              "STANDARD",
+              "NEARLINE",
+              "COLDLINE",
+              "ARCHIVE"
+            ],
+            "description": "Storage class",
+            "example": "STANDARD"
+          },
+          "labels": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Key-value labels for the bucket",
+            "example": {
+              "environment": "production"
+            }
+          },
+          "versioning": {
+            "type": "boolean",
+            "description": "Enable object versioning",
+            "example": true
+          },
+          "kms_key_name": {
+            "type": "string",
+            "description": "KMS key name for encryption",
+            "example": "projects/my-project/locations/us-central1/keyRings/my-keyring/cryptoKeys/my-key"
+          },
+          "retention_policy": {
+            "type": "object",
+            "description": "Retention policy for the bucket",
+            "properties": {
+              "retention_period_seconds": {
+                "type": "integer",
+                "description": "Retention period in seconds (1 second to 100 years)",
+                "minimum": 1,
+                "maximum": 3155760000,
+                "example": 86400
+              },
+              "is_locked": {
+                "type": "boolean",
+                "description": "Whether the retention policy is locked",
+                "example": false
+              }
+            }
+          },
+          "uniform_bucket_level_access": {
+            "type": "boolean",
+            "description": "Enable uniform bucket-level access",
+            "example": true
+          },
+          "public_access_prevention": {
+            "type": "string",
+            "enum": [
+              "inherited",
+              "enforced",
+              "unspecified"
+            ],
+            "description": "Public access prevention setting",
+            "example": "enforced"
+          }
+        }
+      },
+      "SuccessResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Success message",
+            "example": "Operation completed successfully"
+          },
+          "data": {
+            "type": "object",
+            "description": "Response data"
+          }
+        }
+      },
+      "LoginRequest": {
+        "type": "object",
+        "required": [
+          "google_id_token"
+        ],
+        "properties": {
+          "google_id_token": {
+            "type": "string",
+            "description": "Google ID token from Google OAuth",
+            "example": "eyJhbGciOiJSUzI1NiIsImtpZCI6..."
+          }
+        }
+      },
+      "LoginResponse": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "description": "JWT access token",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6..."
+          },
+          "token_type": {
+            "type": "string",
+            "description": "Token type",
+            "example": "Bearer"
+          },
+          "expires_in": {
+            "type": "integer",
+            "description": "Token expiration time in seconds",
+            "example": 86400
+          },
+          "user_info": {
+            "$ref": "#/components/schemas/GoogleUserInfo"
+          }
+        }
+      },
+      "GoogleUserInfo": {
+        "type": "object",
+        "properties": {
+          "sub": {
+            "type": "string",
+            "description": "Google user ID",
+            "example": "123456789"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "User email address",
+            "example": "user@example.com"
+          },
+          "email_verified": {
+            "type": "boolean",
+            "description": "Whether email is verified",
+            "example": true
+          },
+          "name": {
+            "type": "string",
+            "description": "User full name",
+            "example": "John Doe"
+          },
+          "given_name": {
+            "type": "string",
+            "description": "User first name",
+            "example": "John"
+          },
+          "family_name": {
+            "type": "string",
+            "description": "User last name",
+            "example": "Doe"
+          },
+          "picture": {
+            "type": "string",
+            "format": "uri",
+            "description": "User profile picture URL",
+            "example": "https://lh3.googleusercontent.com/..."
+          },
+          "locale": {
+            "type": "string",
+            "description": "User locale",
+            "example": "en"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Error type",
+            "example": "Invalid request"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message",
+            "example": "Project ID is required"
+          },
+          "code": {
+            "type": "integer",
+            "description": "HTTP status code",
+            "example": 400
+          }
+        }
+      }
+    }
+  }
+}

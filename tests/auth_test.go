@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/labstack/echo/v4"
+	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"github.com/stuartshay/gcp-automation-api/internal/config"
 	"github.com/stuartshay/gcp-automation-api/internal/handlers"
@@ -17,8 +17,8 @@ import (
 	"github.com/stuartshay/gcp-automation-api/tests/integration/mocks"
 )
 
-// setupTestServer creates a test Echo server with authentication
-func setupTestServer(t *testing.T) (*echo.Echo, *handlers.Handler, *services.AuthService) {
+// setupTestServer creates a test Gin server with authentication
+func setupTestServer(t *testing.T) (*gin.Engine, *handlers.Handler, *services.AuthService) {
 	cfg := &config.Config{
 		Port:               "8080",
 		Environment:        "test",
@@ -34,10 +34,10 @@ func setupTestServer(t *testing.T) (*echo.Echo, *handlers.Handler, *services.Aut
 	authService := services.NewAuthService(cfg)
 	handler := handlers.NewHandler(mockGCPService, authService)
 
-	// Create Echo instance
-	e := echo.New()
-
-	return e, handler, authService
+	// Create Gin instance
+	gin.SetMode(gin.TestMode)
+	r := gin.New()
+	return r, handler, authService
 }
 
 // generateTestJWT creates a valid JWT token for testing
@@ -50,7 +50,7 @@ func generateTestJWT(t *testing.T, authService *services.AuthService) string {
 }
 
 func TestJWTMiddleware(t *testing.T) {
-	e, _, authService := setupTestServer(t)
+	r, _, authService := setupTestServer(t)
 
 	cfg := &config.Config{
 		JWTSecret: "test-secret-key-for-testing-only",
@@ -58,9 +58,9 @@ func TestJWTMiddleware(t *testing.T) {
 	authMiddleware := authmiddleware.NewAuthMiddleware(cfg)
 
 	// Create a test endpoint
-	e.GET("/protected", func(c echo.Context) error {
-		return c.JSON(http.StatusOK, map[string]string{"message": "access granted"})
-	}, authMiddleware.RequireAuth())
+	r.GET("/protected", authMiddleware.RequireAuth(), func(c *gin.Context) {
+		c.JSON(http.StatusOK, map[string]string{"message": "access granted"})
+	})
 
 	tests := []struct {
 		name           string
@@ -72,7 +72,7 @@ func TestJWTMiddleware(t *testing.T) {
 			name:           "No Authorization header",
 			authHeader:     "",
 			expectedStatus: http.StatusUnauthorized,
-			expectedError:  "invalid or missing jwt token",
+			expectedError:  "missing authorization header",
 		},
 		{
 			name:           "Invalid token format",
@@ -96,7 +96,7 @@ func TestJWTMiddleware(t *testing.T) {
 			}
 			rec := httptest.NewRecorder()
 
-			e.ServeHTTP(rec, req)
+			r.ServeHTTP(rec, req)
 
 			assert.Equal(t, tt.expectedStatus, rec.Code)
 
@@ -111,17 +111,17 @@ func TestJWTMiddleware(t *testing.T) {
 }
 
 func TestHealthEndpointNoAuth(t *testing.T) {
-	e, _, _ := setupTestServer(t)
+	r, _, _ := setupTestServer(t)
 
 	// Health endpoint should not require authentication
-	e.GET("/health", func(c echo.Context) error {
-		return c.JSON(http.StatusOK, map[string]string{"status": "healthy"})
+	r.GET("/health", func(c *gin.Context) {
+		c.JSON(http.StatusOK, map[string]string{"status": "healthy"})
 	})
 
 	req := httptest.NewRequest(http.MethodGet, "/health", nil)
 	rec := httptest.NewRecorder()
 
-	e.ServeHTTP(rec, req)
+	r.ServeHTTP(rec, req)
 
 	assert.Equal(t, http.StatusOK, rec.Code)
 
@@ -132,7 +132,7 @@ func TestHealthEndpointNoAuth(t *testing.T) {
 }
 
 func TestProtectedEndpointRequiresAuth(t *testing.T) {
-	e, _, _ := setupTestServer(t)
+	r, _, _ := setupTestServer(t)
 
 	cfg := &config.Config{
 		JWTSecret: "test-secret-key-for-testing-only",
@@ -140,20 +140,20 @@ func TestProtectedEndpointRequiresAuth(t *testing.T) {
 	authMiddleware := authmiddleware.NewAuthMiddleware(cfg)
 
 	// Simulate a protected API endpoint
-	e.GET("/api/v1/projects/test", func(c echo.Context) error {
-		return c.JSON(http.StatusOK, map[string]string{"message": "project data"})
-	}, authMiddleware.RequireAuth())
+	r.GET("/api/v1/projects/test", authMiddleware.RequireAuth(), func(c *gin.Context) {
+		c.JSON(http.StatusOK, map[string]string{"message": "project data"})
+	})
 
 	// Test without authorization header
 	req := httptest.NewRequest(http.MethodGet, "/api/v1/projects/test", nil)
 	rec := httptest.NewRecorder()
 
-	e.ServeHTTP(rec, req)
+	r.ServeHTTP(rec, req)
 
 	assert.Equal(t, http.StatusUnauthorized, rec.Code)
 
 	var response models.ErrorResponse
 	err := json.Unmarshal(rec.Body.Bytes(), &response)
 	assert.NoError(t, err)
-	assert.Contains(t, strings.ToLower(response.Message), "invalid or missing jwt")
+	assert.Contains(t, strings.ToLower(response.Message), "missing authorization header")
 }

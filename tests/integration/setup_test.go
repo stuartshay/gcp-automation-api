@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/labstack/echo/v4"
+	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"github.com/stuartshay/gcp-automation-api/internal/config"
 	"github.com/stuartshay/gcp-automation-api/internal/handlers"
@@ -25,7 +25,7 @@ type TestConfig struct {
 
 // TestSetup holds the test setup components
 type TestSetup struct {
-	Echo        *echo.Echo
+	Router      *gin.Engine
 	Handler     *handlers.Handler
 	MockService *mocks.MockGCPService
 	Config      *TestConfig
@@ -37,8 +37,9 @@ func SetupTestServer(t *testing.T) *TestSetup {
 	// Load test configuration
 	testConfig := loadTestConfig()
 
-	// Create Echo instance
-	e := echo.New()
+	// Create Gin instance
+	gin.SetMode(gin.TestMode)
+	r := gin.New()
 
 	// Load application config
 	cfg := &config.Config{
@@ -75,7 +76,7 @@ func SetupTestServer(t *testing.T) *TestSetup {
 	handler := handlers.NewHandler(gcpService, authService)
 
 	return &TestSetup{
-		Echo:        e,
+		Router:      r,
 		Handler:     handler,
 		MockService: mockService,
 		Config:      testConfig,

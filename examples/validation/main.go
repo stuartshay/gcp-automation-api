@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/stuartshay/gcp-automation-api/internal/models"
 	"github.com/stuartshay/gcp-automation-api/pkg/validation/gcp"
@@ -106,7 +107,7 @@ func main() {
 	ctx := context.Background()
 	projectID := getProjectID()
 
-	if projectID != "your-gcp-project-id" {
+	if isValidProjectID(projectID) {
 		fmt.Printf("Testing dynamic validation with project: %s\n", projectID)
 
 		// Create location validator
@@ -180,6 +181,14 @@ func main() {
 	fmt.Println("- Object name validation")
 	fmt.Println("- Integration with SDK operations")
 	fmt.Println("- Error handling for invalid inputs")
+}
+
+// isValidProjectID checks if the project ID looks like a real project ID
+func isValidProjectID(projectID string) bool {
+	return projectID != "" &&
+		projectID != "your-gcp-project-id" &&
+		len(projectID) > 5 &&
+		!strings.Contains(projectID, "your-")
 }
 
 func getProjectID() string {

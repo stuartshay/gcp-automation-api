@@ -107,19 +107,19 @@ func (lv *LocationValidator) updateCache(ctx context.Context) error {
 	}
 
 	// Create context with timeout for API calls
-	ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
+	timeoutCtx, cancel := context.WithTimeout(ctx, 30*time.Second)
 	defer cancel()
 
 	newRegions := make(map[string]bool)
 	newZones := make(map[string]bool)
 
 	// Fetch regions
-	if err := lv.fetchRegions(ctx, newRegions); err != nil {
+	if err := lv.fetchRegions(timeoutCtx, newRegions); err != nil {
 		return fmt.Errorf("failed to fetch regions: %w", err)
 	}
 
 	// Fetch zones
-	if err := lv.fetchZones(ctx, newZones); err != nil {
+	if err := lv.fetchZones(timeoutCtx, newZones); err != nil {
 		return fmt.Errorf("failed to fetch zones: %w", err)
 	}
 

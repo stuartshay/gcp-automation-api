@@ -64,8 +64,8 @@ func ValidateBucketName(name string) error {
 		return fmt.Errorf("bucket name cannot start with 'goog' prefix")
 	}
 
-	// Cannot contain "google" in the name
-	if strings.Contains(strings.ToLower(name), "google") {
+	// Cannot contain "google" in the name (since bucket names are already lowercase per regex)
+	if strings.Contains(name, "google") {
 		return fmt.Errorf("bucket name cannot contain 'google'")
 	}
 

@@ -2,6 +2,7 @@ package gcp
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 )
 
@@ -106,7 +107,7 @@ func TestValidateObjectName(t *testing.T) {
 		},
 		{
 			name:       "too long object name",
-			objectName: string(make([]byte, 1025)),
+			objectName: strings.Repeat("a", 1025),
 			wantError:  true,
 		},
 		{

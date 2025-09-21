@@ -333,33 +333,33 @@ func (c *GCPStorageClient) GetObjectMetadata(ctx context.Context, bucketName, ob
 	return c.mapObjectAttrsToResponse(attrs), nil
 }
 
-// SetBucketLifecycle sets the lifecycle policy for a bucket (simplified implementation)
+// SetBucketLifecycle is a placeholder method and is not yet implemented.
+// Calling this method will return a "not implemented" error.
 func (c *GCPStorageClient) SetBucketLifecycle(ctx context.Context, bucketName string, lifecycle *models.LifecyclePolicy) error {
-	// Simplified implementation - just return not implemented for now
 	return fmt.Errorf("lifecycle policy management not implemented yet")
 }
 
-// GetBucketLifecycle gets the lifecycle policy for a bucket (simplified implementation)
+// GetBucketLifecycle is a placeholder method and is not yet implemented.
+// Calling this method will return an empty lifecycle policy.
 func (c *GCPStorageClient) GetBucketLifecycle(ctx context.Context, bucketName string) (*models.LifecyclePolicy, error) {
-	// Return empty lifecycle policy for now
 	return &models.LifecyclePolicy{Rules: []models.LifecycleRule{}}, nil
 }
 
-// DeleteBucketLifecycle deletes the lifecycle policy for a bucket (simplified implementation)
+// DeleteBucketLifecycle is a placeholder method and is not yet implemented.
+// Calling this method will return a "not implemented" error.
 func (c *GCPStorageClient) DeleteBucketLifecycle(ctx context.Context, bucketName string) error {
-	// Simplified implementation - just return not implemented for now
 	return fmt.Errorf("lifecycle policy management not implemented yet")
 }
 
-// SetBucketIAM sets the IAM policy for a bucket (simplified implementation)
+// SetBucketIAM is a placeholder method and is not yet implemented.
+// Calling this method will return a "not implemented" error.
 func (c *GCPStorageClient) SetBucketIAM(ctx context.Context, bucketName string, policy *models.IAMPolicy) error {
-	// Simplified implementation - just return not implemented for now
 	return fmt.Errorf("IAM policy management not implemented yet")
 }
 
-// GetBucketIAM gets the IAM policy for a bucket (simplified implementation)
+// GetBucketIAM is a placeholder method and is not yet implemented.
+// Calling this method will return an empty IAM policy.
 func (c *GCPStorageClient) GetBucketIAM(ctx context.Context, bucketName string) (*models.IAMPolicy, error) {
-	// Return empty IAM policy for now
 	return &models.IAMPolicy{
 		Bindings: []models.IAMBinding{},
 		Etag:     "",
@@ -444,6 +444,3 @@ func (c *GCPStorageClient) mapObjectAttrsToResponse(attrs *storage.ObjectAttrs) 
 		SelfLink:     fmt.Sprintf("https://www.googleapis.com/storage/v1/b/%s/o/%s", attrs.Bucket, attrs.Name),
 	}
 }
-
-// Note: parseTimeString function removed as it was unused
-// Can be re-added when lifecycle policy management is fully implemented

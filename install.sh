@@ -159,8 +159,7 @@ install_go() {
     fi
 
     # Add Go bin directory (for go install tools) to PATH
-    local go_bin_dir
-    go_bin_dir="$(go env GOPATH)/bin"
+    local go_bin_dir="$(go env GOPATH)/bin"
     if [[ ":$PATH:" != *":$go_bin_dir:"* ]]; then
         echo "export PATH=\$PATH:$go_bin_dir" >> ~/.bashrc
         echo "export PATH=\$PATH:$go_bin_dir" >> ~/.zshrc 2>/dev/null || true

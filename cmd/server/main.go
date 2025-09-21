@@ -15,6 +15,7 @@
 //
 // @contact.name API Support
 // @contact.url http://www.swagger.io/support
+
 // @contact.email support@swagger.io
 //
 // @license.name MIT
@@ -155,6 +156,24 @@ func setupRouter(handler *handlers.Handler, authService *services.AuthService, c
 			e.Logger.SetOutput(io.MultiWriter(os.Stdout, logFile))
 		}
 	}
+
+	// Cloud Run logging client for middleware
+	var logger interface{}
+	{
+		cloudRunService, err := services.NewCloudRunService(context.Background(), cfg.GCPProjectID)
+		if err != nil {
+			log.Fatalf("Failed to initialize CloudRunService: %v", err)
+		}
+		logger = cloudRunService.LoggingClient.Logger("cloudrun-api")
+	}
+
+	// Gin logging middleware to inject GCP logger
+	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			c.Set("logger", logger)
+			return next(c)
+		}
+	})
 
 	// Custom Swagger UI endpoint
 	e.GET("/swagger/", func(c echo.Context) error {

@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"time"
 
+	"cloud.google.com/go/logging"
 	"github.com/gin-gonic/gin"
 
 	"github.com/stuartshay/gcp-automation-api/internal/models"
@@ -24,7 +25,7 @@ func NewCloudRunHandler(cloudRunService services.CloudRunServiceInterface) *Clou
 	}
 }
 
-// ConfigureLogging configures logging for a Cloud Run service
+// ConfigureLogging configures logging for a Cloud Run service and logs request/response
 // @Summary Configure Cloud Run logging
 // @Description Configure logging settings for a Cloud Run service including log level, retention, exports, metrics, and alerts
 // @Tags cloudrun
@@ -37,8 +38,20 @@ func NewCloudRunHandler(cloudRunService services.CloudRunServiceInterface) *Clou
 // @Router /api/v1/cloudrun/logging/configure [post]
 func (h *CloudRunHandler) ConfigureLogging(c *gin.Context) {
 	var req models.CloudRunLoggingConfigRequest
+	logger := c.MustGet("logger").(*logging.Logger)
+	start := time.Now()
 
 	if err := c.ShouldBindJSON(&req); err != nil {
+		logger.Log(logging.Entry{
+			Severity: logging.Error,
+			Payload: map[string]interface{}{
+				"error":       "invalid_request",
+				"message":     err.Error(),
+				"request":     c.Request.URL.Path,
+				"method":      c.Request.Method,
+				"duration_ms": time.Since(start).Milliseconds(),
+			},
+		})
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{
 			Error:   "invalid_request",
 			Message: "Invalid request body: " + err.Error(),
@@ -49,6 +62,16 @@ func (h *CloudRunHandler) ConfigureLogging(c *gin.Context) {
 
 	// Validate required fields
 	if req.ServiceName == "" {
+		logger.Log(logging.Entry{
+			Severity: logging.Error,
+			Payload: map[string]interface{}{
+				"error":       "validation_failed",
+				"message":     "Service name is required",
+				"request":     c.Request.URL.Path,
+				"method":      c.Request.Method,
+				"duration_ms": time.Since(start).Milliseconds(),
+			},
+		})
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{
 			Error:   "validation_failed",
 			Message: "Service name is required",
@@ -58,6 +81,16 @@ func (h *CloudRunHandler) ConfigureLogging(c *gin.Context) {
 	}
 
 	if req.Region == "" {
+		logger.Log(logging.Entry{
+			Severity: logging.Error,
+			Payload: map[string]interface{}{
+				"error":       "validation_failed",
+				"message":     "Region is required",
+				"request":     c.Request.URL.Path,
+				"method":      c.Request.Method,
+				"duration_ms": time.Since(start).Milliseconds(),
+			},
+		})
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{
 			Error:   "validation_failed",
 			Message: "Region is required",
@@ -68,6 +101,16 @@ func (h *CloudRunHandler) ConfigureLogging(c *gin.Context) {
 
 	response, err := h.cloudRunService.ConfigureLogging(c.Request.Context(), &req)
 	if err != nil {
+		logger.Log(logging.Entry{
+			Severity: logging.Error,
+			Payload: map[string]interface{}{
+				"error":       "configuration_failed",
+				"message":     err.Error(),
+				"request":     c.Request.URL.Path,
+				"method":      c.Request.Method,
+				"duration_ms": time.Since(start).Milliseconds(),
+			},
+		})
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
 			Error:   "configuration_failed",
 			Message: "Failed to configure logging: " + err.Error(),
@@ -76,6 +119,17 @@ func (h *CloudRunHandler) ConfigureLogging(c *gin.Context) {
 		return
 	}
 
+	logger.Log(logging.Entry{
+		Severity: logging.Info,
+		Payload: map[string]interface{}{
+			"message":      "ConfigureLogging success",
+			"service_name": req.ServiceName,
+			"region":       req.Region,
+			"request":      c.Request.URL.Path,
+			"method":       c.Request.Method,
+			"duration_ms":  time.Since(start).Milliseconds(),
+		},
+	})
 	c.JSON(http.StatusOK, response)
 }
 

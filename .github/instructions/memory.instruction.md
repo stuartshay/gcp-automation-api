@@ -1,13 +1,3 @@
----
-applyTo: "**"
----
-
-# User Memory
-
-## User Preferences
-
-- Programming languages: Go, Bash
-- Code style preferences: Follow idiomatic Go and shell best practices
 - Development environment: Linux, zsh, pre-commit hooks
 - Communication style: Concise, thorough, no unnecessary repetition
 

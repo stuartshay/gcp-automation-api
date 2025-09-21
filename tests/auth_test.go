@@ -14,6 +14,7 @@ import (
 	authmiddleware "github.com/stuartshay/gcp-automation-api/internal/middleware"
 	"github.com/stuartshay/gcp-automation-api/internal/models"
 	"github.com/stuartshay/gcp-automation-api/internal/services"
+	"github.com/stuartshay/gcp-automation-api/tests/integration/mocks"
 )
 
 // setupTestServer creates a test Echo server with authentication
@@ -28,14 +29,10 @@ func setupTestServer(t *testing.T) (*echo.Echo, *handlers.Handler, *services.Aut
 		LogFile:            "logs/test.log",
 	}
 
-	// Initialize services
-	gcpService, err := services.NewGCPService(cfg)
-	if err != nil {
-		t.Fatalf("Failed to initialize GCP service: %v", err)
-	}
-
+	// Use mock GCPService for unit tests to avoid requiring real credentials
+	mockGCPService := &mocks.MockGCPService{}
 	authService := services.NewAuthService(cfg)
-	handler := handlers.NewHandler(gcpService, authService)
+	handler := handlers.NewHandler(mockGCPService, authService)
 
 	// Create Echo instance
 	e := echo.New()
